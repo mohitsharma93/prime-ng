@@ -1,6 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/*
+// Layout
+*/
+@import 'assets/scss/layout/_flex.scss';
+@import 'assets/scss/layout/spacing.scss';
+
   body {
     background-color: #fff4e4;
     display: flex;
@@ -164,4 +170,3 @@ span.otp-login {
         padding-top: 50px;
     }
 }
-  
