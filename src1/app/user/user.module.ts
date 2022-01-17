@@ -9,10 +9,12 @@ import { IndexComponent } from './pages/index/index.component';
 import {InputTextModule} from 'primeng/inputtext';
 import {PasswordModule} from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
+import { OtpComponent } from './pages/otp/otp.component';
 @NgModule({
   declarations: [
     UserComponent,
-    IndexComponent
+    IndexComponent,
+    OtpComponent
   ],
   imports: [
     CommonModule,
