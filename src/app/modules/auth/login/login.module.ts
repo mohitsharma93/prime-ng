@@ -5,7 +5,6 @@ import { LoginComponent } from './login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { DividerModule } from 'primeng/divider';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -20,8 +19,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     FormsModule,
     InputTextModule,
-    PasswordModule,
-    DividerModule
+    PasswordModule
   ]
 })
 export class LoginModule { }

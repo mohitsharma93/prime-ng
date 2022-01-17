@@ -5,7 +5,7 @@
             <h3>Login to your account</h3>
         </div>
         <div class="logo content-right">
-            <img src="../../../../assets/img/logo.svg" width="60">
+            <img src="assets/img/logo.svg" width="60">
         </div>
     </div>
 
@@ -47,7 +47,7 @@
             </small>
         </ng-container>
 
-        <a [routerLink]="'#'" class="otp-login">Don't have a password, login with OTP</a>
+        <a [routerLink]="['/auth', 'otp-login']" class="otp-login">Don't have a password, login with OTP</a>
         <button class="btn-reg">Sign In</button>
     </form>
 </div>

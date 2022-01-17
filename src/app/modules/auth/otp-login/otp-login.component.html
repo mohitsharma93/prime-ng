@@ -7,17 +7,47 @@
 
         </div>
         <div class="logo content-right">
-            <img src="assets/logo.svg" width="60">
+            <img src="assets/img/logo.svg" width="60">
         </div>
     </div>
 
     <div class="clear"></div>
-    <form action="">
+    <form action="" [formGroup]="loginOtpForm" (ngSubmit)="verifyOtp()">
         <label for="mobile">Mobile No.</label>
-        <input type="text" placeholder="Your mobile number">
+        <div class="p-inputgroup">
+            <input pInputText formControlName="mobile" inputId="mobile_number" class="mb-2"
+                (keypress)="onlyDigit($event)" placeholder="Your mobile number"/>
+        </div>
+        <ng-container *ngIf="loginOtpForm.controls['mobile']?.touched">
+            <small *ngIf="loginOtpForm.controls['mobile'].errors?.['required']" class="p-error">
+                Mobile number is required.
+            </small>
+            <small 
+                *ngIf="
+                loginOtpForm.controls['mobile'].errors?.['maxlength'] || loginOtpForm.controls['mobile'].errors?.['minlength']
+                "
+                class="p-error"
+            >
+                Allowed mobile number length is 10.
+            </small>
+        </ng-container>
 
         <label for="otp">OTP</label>
-        <input type="password" placeholder="Your OTP">
+        <div class="p-inputgroup">
+            <input pInputText formControlName="otp" inputId="mobile_number" class="mb-2"
+                (keypress)="onlyDigit($event)" placeholder="Your OTP"/>
+        </div>
+        <ng-container *ngIf="loginOtpForm.controls['otp']?.touched">
+            <small *ngIf="loginOtpForm.controls['otp'].errors?.['required']" class="p-error">
+                otp is required.
+            </small>
+            <small 
+                *ngIf="loginOtpForm.controls['otp'].errors?.['maxlength'] || loginOtpForm.controls['otp'].errors?.['minlength']" 
+                class="p-error"
+            >
+                Allowed otp length is 6.
+            </small>
+        </ng-container>
 
         <span class="otp-login">Resend OTP</span>
         <button class="btn-reg">Verify OTP</button>

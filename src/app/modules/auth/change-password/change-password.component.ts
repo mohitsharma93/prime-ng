@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators, } from "@angular/forms";
+import { MEDIUM_PASSWORD_REGEX } from "src/app/utils/RegexConstant";
 
 @Component({
   selector: 'app-change-password',
@@ -8,24 +9,28 @@ import { FormBuilder, FormGroup, Validators, } from "@angular/forms";
 })
 export class ChangePasswordComponent implements OnInit {
 
-  changepwdForm!: FormGroup;
+  public changePasswordForm!: FormGroup;
 
-  constructor(public formBuilder: FormBuilder) { }
+  constructor() {
+    this.formInit();
+  }
 
-  ngOnInit(): void {
-    this.changepwdForm = this.formBuilder.group({
-      new_password: ['', [Validators.required, Validators.minLength(4)]],
-      confirm_Password: ['', [Validators.required]],
+  ngOnInit(): void { }
 
+  public formInit() {
+    this.changePasswordForm = new FormGroup({
+      password: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required, Validators.pattern(MEDIUM_PASSWORD_REGEX)])
     })
   }
 
-  get getControl() {
-    return this.changepwdForm.controls;
-  }
+  public onSubmit(): void {
+    console.log(this.changePasswordForm.value);
+    if (this.changePasswordForm.valid) {
 
-  onSubmit() {
-    console.log(this.changepwdForm);
+    } else {
+      this.changePasswordForm.markAllAsTouched();
+    }
   }
 
 }
