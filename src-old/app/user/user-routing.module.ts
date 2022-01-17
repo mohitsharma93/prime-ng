@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { IndexComponent } from '../user/pages/index/index.component';
+import { IndexComponent } from './pages/index/index.component';
 import { OtpComponent } from './pages/otp/otp.component';
 import { UserComponent } from './user.component';
 
