@@ -14,7 +14,7 @@
     <div class="clear"></div>
     <form action="" [formGroup]="loginOtpForm" (ngSubmit)="verifyOtp()">
         <label for="mobile">Mobile No.</label>
-        <div class="p-inputgroup">
+        <div class="prim-ng-input">
             <input pInputText formControlName="mobile" inputId="mobile_number" class="mb-2"
                 (keypress)="onlyDigit($event)" placeholder="Your mobile number"/>
         </div>
@@ -33,7 +33,7 @@
         </ng-container>
 
         <label for="otp">OTP</label>
-        <div class="p-inputgroup">
+        <div class="prim-ng-input">
             <input pInputText formControlName="otp" inputId="mobile_number" class="mb-2"
                 (keypress)="onlyDigit($event)" placeholder="Your OTP"/>
         </div>

@@ -1,5 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
+/*
+// Layout
+*/
+@import 'assets/scss/layout/_flex.scss';
+@import 'assets/scss/layout/spacing.scss';
+
 body {
   background-color: #f4f7fc;
   display: flex;
@@ -752,5 +758,22 @@ a.more {
 @media screen and (min-width: 620px) and (max-width: 920px) {
   .box-content .card {
     width: 43%;
+  }
+}
+
+
+// for input fields
+.prim-ng-input {
+  .p-inputtext:enabled:focus {
+    border-color: none !important;
+    box-shadow: none !important;
+  }
+  .p-inputtext {
+    border: none !important;
+    border-bottom: 1px solid #ced4da !important;
+    border-radius: 0 !important;
+  }
+  .p-password {
+    width: 100% !important;
   }
 }

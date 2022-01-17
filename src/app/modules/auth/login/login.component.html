@@ -12,9 +12,8 @@
     <div class="clear"></div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <label for="mobile">Mobile No.</label>
-        <div class="p-inputgroup">
-            <input pInputText formControlName="mobile" inputId="mobile_number" class="mb-2"
-                (keypress)="onlyDigit($event)" />
+        <div class="prim-ng-input">
+            <input pInputText formControlName="mobile" inputId="mobile_number" class="mb-2" (keypress)="onlyDigit($event)" placeholder="Enter Mobile Number" />
         </div>
         <ng-container *ngIf="loginForm.controls['mobile']?.touched">
             <small *ngIf="loginForm.controls['mobile'].errors?.['required']" class="p-error">
@@ -29,7 +28,7 @@
         </ng-container>
 
         <label for="pass">Password</label>
-        <div style="width: 100%;">
+        <div style="width: 100%;" class="prim-ng-input">
             <p-password class="mb-2" formControlName="password" placeholder="Your password" mediumRegex
                 [feedback]="false">
             </p-password>
