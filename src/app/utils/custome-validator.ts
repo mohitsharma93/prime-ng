@@ -5,7 +5,7 @@ type returnTypeKeyBoolean = { [key: string]: boolean } | null
 export class CustomValidators {
 
   public static passwordsMatchWithConfirm(whomWithMatchControlName: string): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
+    return (control: AbstractControl): returnTypeKeyBoolean => {
       if (!control || !control.parent) {
           return null;
       }
