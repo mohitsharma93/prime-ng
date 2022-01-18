@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators, } from "@angular/forms";
+import { CustomValidators } from "src/app/utils/custome-validator";
 import { MEDIUM_PASSWORD_REGEX } from "src/app/utils/RegexConstant";
 
 @Component({
@@ -19,8 +20,15 @@ export class ChangePasswordComponent implements OnInit {
 
   public formInit() {
     this.changePasswordForm = new FormGroup({
-      password: new FormControl('', [Validators.required]),
-      confirmPassword: new FormControl('', [Validators.required, Validators.pattern(MEDIUM_PASSWORD_REGEX)])
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(MEDIUM_PASSWORD_REGEX),
+      ]),
+      confirmPassword: new FormControl('', [
+        Validators.required,
+        Validators.pattern(MEDIUM_PASSWORD_REGEX),
+        CustomValidators.passwordsMatchWithConfirm('password')
+      ])
     })
   }
 
