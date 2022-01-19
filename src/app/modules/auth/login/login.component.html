@@ -11,18 +11,19 @@
 
     <div class="clear"></div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <label for="mobile">Mobile No.</label>
+        <label for="username">Mobile No.</label>
         <div class="prim-ng-input">
-            <input pInputText formControlName="mobile" inputId="mobile_number" class="mb-2" (keypress)="onlyDigit($event)" placeholder="Enter Mobile Number" />
+            <input pInputText formControlName="username" inputId="mobile_number" class="mb-2"
+                (keypress)="onlyDigit($event)" placeholder="Enter Mobile Number" />
         </div>
-        <ng-container *ngIf="loginForm.controls['mobile']?.touched">
-            <small *ngIf="loginForm.controls['mobile'].errors?.['required']" class="p-error">
+        <ng-container *ngIf="loginForm.controls['username']?.touched">
+            <small *ngIf="loginForm.controls['username'].errors?.['required']" class="p-error">
                 Mobile number is required.
             </small>
-            <small *ngIf="loginForm.controls['mobile'].errors?.['maxlength']" class="p-error">
+            <small *ngIf="loginForm.controls['username'].errors?.['maxlength']" class="p-error">
                 Allowed mobile number length is 10.
             </small>
-            <small *ngIf="loginForm.controls['mobile'].errors?.['minlength']" class="p-error">
+            <small *ngIf="loginForm.controls['username'].errors?.['minlength']" class="p-error">
                 Allowed mobile number length is 10.
             </small>
         </ng-container>
@@ -47,6 +48,6 @@
         </ng-container>
 
         <a [routerLink]="['/auth', 'otp-login']" class="otp-login">Don't have a password, login with OTP</a>
-        <button class="btn-reg">Sign In</button>
+        <button class="btn-reg" type="submit">Sign In</button>
     </form>
 </div>

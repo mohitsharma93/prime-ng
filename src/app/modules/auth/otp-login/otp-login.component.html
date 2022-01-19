@@ -12,44 +12,41 @@
     </div>
 
     <div class="clear"></div>
-    <form action="" [formGroup]="loginOtpForm" (ngSubmit)="verifyOtp()">
-        <label for="mobile">Mobile No.</label>
+    <form action="" [formGroup]="loginOtpForm" (ngSubmit)="onSubmit()">
+        <label for="MobileNumber">Mobile No.</label>
         <div class="prim-ng-input">
-            <input pInputText formControlName="mobile" inputId="mobile_number" class="mb-2"
-                (keypress)="onlyDigit($event)" placeholder="Your mobile number"/>
+            <input type="text" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
+                (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
         </div>
-        <ng-container *ngIf="loginOtpForm.controls['mobile']?.touched">
-            <small *ngIf="loginOtpForm.controls['mobile'].errors?.['required']" class="p-error">
+        <ng-container *ngIf="loginOtpForm.controls['MobileNumber']?.touched">
+            <small *ngIf="loginOtpForm.controls['MobileNumber'].errors?.['required']" class="p-error">
                 Mobile number is required.
             </small>
-            <small 
-                *ngIf="
-                loginOtpForm.controls['mobile'].errors?.['maxlength'] || loginOtpForm.controls['mobile'].errors?.['minlength']
-                "
-                class="p-error"
-            >
+            <small *ngIf="
+                loginOtpForm.controls['MobileNumber'].errors?.['maxlength'] || loginOtpForm.controls['MobileNumber'].errors?.['minlength']
+                " class="p-error">
                 Allowed mobile number length is 10.
             </small>
         </ng-container>
 
-        <label for="otp">OTP</label>
+        <label for="password">OTP</label>
         <div class="prim-ng-input">
-            <input pInputText formControlName="otp" inputId="mobile_number" class="mb-2"
-                (keypress)="onlyDigit($event)" placeholder="Your OTP"/>
+            <input type="text" pInputText formControlName="Otp" inputId="Otp" class="mb-2"
+                (keypress)="onlyDigit($event)" placeholder="Your OTP" />
         </div>
-        <ng-container *ngIf="loginOtpForm.controls['otp']?.touched">
-            <small *ngIf="loginOtpForm.controls['otp'].errors?.['required']" class="p-error">
+        <ng-container *ngIf="loginOtpForm.controls['Otp']?.touched">
+            <small *ngIf="loginOtpForm.controls['Otp'].errors?.['required']" class="p-error">
                 otp is required.
             </small>
-            <small 
-                *ngIf="loginOtpForm.controls['otp'].errors?.['maxlength'] || loginOtpForm.controls['otp'].errors?.['minlength']" 
-                class="p-error"
-            >
+            <small
+                *ngIf="loginOtpForm.controls['Otp'].errors?.['maxlength'] || loginOtpForm.controls['Otp'].errors?.['minlength']"
+                class="p-error">
                 Allowed otp length is 6.
             </small>
         </ng-container>
-
-        <span class="otp-login">Resend OTP</span>
-        <button class="btn-reg">Verify OTP</button>
+        <a href="javascript:void(0)" (click)="onSendOtp()">
+            <span class="otp-login">{{ sendCount === 0 ? 'Send OTP': 'Resend OTP'}}</span>
+        </a>
+        <button class="btn-reg" type="submit">Verify OTP</button>
     </form>
 </div>

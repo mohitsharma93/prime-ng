@@ -17,7 +17,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
-    ReactiveFormsModule
-  ]
+<<<<<<< .mine    ReactiveFormsModule,
+    // SharedModule,
+=======    ReactiveFormsModule
+>>>>>>> .theirs  ]
 })
 export class UserNotFoundModule { }

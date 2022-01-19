@@ -19,14 +19,7 @@ const routes: Routes = [
                 path: 'otp-login',
                 loadChildren: () => import('./otp-login/otp-login.module').then((m) => m.OtpLoginModule)
             },
-            {
-                path: 'user-not-found',
-                loadChildren: () => import('./user-not-found/user-not-found.module').then((m) => m.UserNotFoundModule)
-            },
-            {
-                path: 'wrong-password',
-                loadChildren: () => import('./wrong-password/wrong-password.module').then((m) => m.WrongPasswordModule)
-            }
+
         ]
     }
 ];
