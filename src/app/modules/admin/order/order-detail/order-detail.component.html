@@ -42,7 +42,7 @@
               </div>
             </div>
             <div>
-              <p-table responsiveLayout="scroll" [value]="products">
+              <p-table responsiveLayout="scroll" [value]="products"  [scrollable]="true" scrollHeight="700px">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th>ITEM NAME</th>
@@ -72,6 +72,14 @@
                 </ng-template>
               </p-table>
             </div>
+            <p-paginator
+              *ngIf="products?.length"
+              [rows]="10"
+              [rowsPerPageOptions]="[5,10,20,30]"
+              [totalRecords]="products.length"
+              (onPageChange)="paginate($event)"
+            ></p-paginator>
+              <!--  -->
             <div class="d-flex justify-content-center mt-3">
               <p-button label="Accept Order" class="p-button-outlined dashboard-filter-button"></p-button>
               <p-button label="Cancel Order" class="p-button-rounded dashboard-filter-button"

@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
 
 const routes: Routes = [
   { 
@@ -31,7 +32,8 @@ const routes: Routes = [
     ButtonModule,
     CalendarModule,
     CardModule,
-    TableModule
+    TableModule,
+    PaginatorModule
   ]
 })
 export class OrderModule { }

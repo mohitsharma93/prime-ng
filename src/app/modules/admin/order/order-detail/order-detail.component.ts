@@ -59,4 +59,11 @@ export class OrderDetailComponent implements OnInit {
     this.cancelModelShow = showHideModel
   }
 
+  public paginate(event: any): void {
+    //event.first = Index of the first record
+    //event.rows = Number of rows to display in new page
+    //event.page = Index of the new page
+    //event.pageCount = Total number of pages
+    this.products = [...this.products, ...data]
+  }
 }
