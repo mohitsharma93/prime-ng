@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import {ChartModule} from 'primeng/chart';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -20,7 +21,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     ButtonModule,
-    CalendarModule
+    CalendarModule,
+    ChartModule
   ]
 })
 export class DashboardModule { }

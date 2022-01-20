@@ -4,7 +4,7 @@
       <h2 class="page-title">Shop Overview</h2>
     </div>
     <div >
-      <p-button label="Today" class="p-button-outlined dashboard-filter-button"></p-button>
+      <p-button label="Today" class="p-button-outlined dashboard-filter-button ml-2"></p-button>
       <p-button label="Months" class="p-button-outlined dashboard-filter-button"></p-button>
       <p-button label="Over All" class="p-button-outlined btn-color"></p-button>
     </div>
@@ -17,6 +17,7 @@
         [maxDate]="maxDateValue"
         (onSelect)="dateChange($event)"
         #dashboardCalendar
+        [dateFormat]="dateFormat"
       ></p-calendar>
     </div>
   </div>
@@ -52,7 +53,13 @@
         <div class="card">
           <div class="card-body">
             <p class="">Order Processing Report</p>
-            <canvas id="myChart" style="width:100%; max-width:600px"></canvas>
+            <!-- <canvas id="myChart" style="width:100%; max-width:600px"></canvas> -->
+            <p-chart
+              type="doughnut"
+              [data]="chartData"
+              [options]="chartOptions" 
+              [style]="{'width': '40%'}"
+            ></p-chart>
             <hr>
             <a class="more" href="#">More Insights ></a>
           </div>
