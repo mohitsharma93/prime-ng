@@ -264,10 +264,22 @@ span.otp-login {
 
 // overwrite primeng p-sidebar
 .side-bar {
-  .p-sidebar .p-sidebar-content {
-    padding: 0 !important;
+  .p-sidebar {
+    .p-sidebar-content {
+      padding: 0 !important;
+    }
   }
 }
+
+.side-bar-open {
+  width: 220px !important;
+}
+
+.side-bar-half-open {
+  width: 70px !important;
+}
+
+
 
 .admin-a-active {
   color: #ff5722 !important;

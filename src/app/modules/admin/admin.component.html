@@ -1,6 +1,6 @@
 <div >
-  <app-admin-top-bar></app-admin-top-bar>
-  <app-admin-side-bar></app-admin-side-bar>
+  <app-admin-top-bar (sideBarToggle)="getSideBarToggle($event)"></app-admin-top-bar>
+  <app-admin-side-bar [minimize]="minimize"></app-admin-side-bar>
 </div>
 
 <main class="l-main">
