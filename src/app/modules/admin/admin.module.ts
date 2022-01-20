@@ -2,13 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminComponent } from './admin.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthRoutingModule } from '../auth/auth.routing';
 import { HttpClientModule } from '@angular/common/http';
 import { AdminRoutingModule } from './admin.routing';
+import { SideBarComponent } from './side-bar/side-bar.component';
+import { TopBarComponent } from './top-bar/top-bar.component';
+import {SidebarModule} from 'primeng/sidebar';
 
 @NgModule({
   declarations: [
-    AdminComponent
+    AdminComponent,
+    SideBarComponent,
+    TopBarComponent
   ],
   imports: [
     CommonModule,
@@ -16,7 +20,7 @@ import { AdminRoutingModule } from './admin.routing';
     ReactiveFormsModule,
     AdminRoutingModule,
     HttpClientModule,
-
+    SidebarModule
   ]
 })
 export class AdminModule { }

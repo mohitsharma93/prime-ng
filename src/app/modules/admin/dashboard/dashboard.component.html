@@ -1,1 +1,63 @@
-<p>dashboard works!</p>
+<div class="content-wrapper">
+  <div class="d-flex column-direction text-align-center">
+    <div>
+      <h2 class="page-title">Shop Overview</h2>
+    </div>
+    <div >
+      <p-button label="Today" class="p-button-outlined dashboard-filter-button"></p-button>
+      <p-button label="Months" class="p-button-outlined dashboard-filter-button"></p-button>
+      <p-button label="Over All" class="p-button-outlined btn-color"></p-button>
+    </div>
+    <div class="mx-4">
+      <p-calendar
+        [(ngModel)]="rangeDates"
+        selectionMode="range"
+        [readonlyInput]="true"
+        inputId="range"
+        [maxDate]="maxDateValue"
+        (onSelect)="dateChange($event)"
+        #dashboardCalendar
+      ></p-calendar>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="box-content">
+        <div class="card">
+          <div class="card-body">
+            <p class="">Total Order</p>
+            <h1>$306.20</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">Total Sale</p>
+            <h1>7650</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">Pending Orders</p>
+            <h1>3,137</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">In-transit Orders</p>
+            <h1>3,137</h1>
+          </div>
+        </div>
+      </div>
+      <div class="order-report">
+        <div class="card">
+          <div class="card-body">
+            <p class="">Order Processing Report</p>
+            <canvas id="myChart" style="width:100%; max-width:600px"></canvas>
+            <hr>
+            <a class="more" href="#">More Insights ></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

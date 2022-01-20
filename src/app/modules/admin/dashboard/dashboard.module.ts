@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {ButtonModule} from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
 ];
-
-
 
 @NgModule({
   declarations: [
@@ -18,7 +18,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ButtonModule,
+    CalendarModule
   ]
 })
 export class DashboardModule { }
