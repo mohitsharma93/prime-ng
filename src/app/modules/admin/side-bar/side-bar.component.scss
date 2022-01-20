@@ -1,1 +1,163 @@
-@import '../../../../assets/scss/component/admin/side-bar/side-bar.scss';
+.l-sidebar {
+  width: 70px;
+  background: #ffffff;
+}
+.l-sidebar .logo {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+}
+.l-sidebar .logo .logo__txt {
+  font-size: 22px;
+  line-height: 1;
+  color: #171725;
+  text-align: center;
+  font-weight: 500;
+}
+.l-sidebar__content {
+  height: 100%;
+  position: relative;
+}
+.l-sidebar {
+  width: 220px;
+}
+
+.c-menu > ul {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.c-menu > ul .c-menu__item {
+  max-width: 100%;
+  overflow: hidden;
+}
+.c-menu > ul .c-menu__item__inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 60px;
+  position: relative;
+  cursor: pointer;
+  -webkit-transition: background-color 0.5s ease-in-out;
+  -moz-transition: background-color 0.5s ease-in-out;
+  -ms-transition: background-color 0.5s ease-in-out;
+  -o-transition: background-color 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out;
+}
+.c-menu > ul .c-menu__item__inner:before {
+  position: absolute;
+  content: " ";
+  height: 0;
+  width: 2px;
+  left: 0;
+  top: 50%;
+  margin-top: -18px;
+  background-color: #ff5722;
+  opacity: 0;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+.c-menu > ul .c-menu__item.is-active {
+  color: #fff;
+}
+.c-menu > ul .c-menu__item.is-active .c-menu__item__inner {
+  border-left-color: #ff5722;
+    background-color: #fff8f6;
+}
+.c-menu > ul .c-menu__item.is-active .c-menu__item__inner svg {
+  color: #ff5722;
+}
+.c-menu > ul .c-menu__item.is-active .c-menu__item__inner .c-menu-item__title span {
+  color: #ff5722;
+}
+.c-menu > ul .c-menu__item.is-active .c-menu__item__inner:before {
+  height: 36px;
+  opacity: 1;
+}
+.c-menu > ul .c-menu__item:not(.is-active):hover {
+  color: #fff;
+}
+.c-menu > ul .c-menu__item:not(.is-active):hover .c-menu__item__inner {
+  background-color: #f5642d;
+  border-left-color: #f5642d;
+}
+.c-menu > ul .c-menu__item svg {
+  flex: 0 0 70px;
+  font-size: 16px;
+  font-weight: normal;
+  text-align: center;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+.c-menu > ul .c-menu__item .c-menu-item__expand {
+  position: relative;
+  left: 0;
+  padding-right: 20px;
+  color: #fff;
+  margin-left: auto;
+  -webkit-transition: left 1s ease-in-out;
+  -moz-transition: left 1s ease-in-out;
+  -ms-transition: left 1s ease-in-out;
+  -o-transition: left 1s ease-in-out;
+  transition: left 1s ease-in-out;
+}
+.sidebar-is-expanded .c-menu > ul .c-menu__item .c-menu-item__expand {
+  left: 0px;
+}
+.c-menu > ul .c-menu__item .c-menu-item__title {
+  flex-basis: 100%;
+  padding-right: 10px;
+  position: relative;
+  color: #171725;
+  left: 220px;
+  opacity: 0;
+  -webkit-transition: all 0.7s ease-in-out;
+  -moz-transition: all 0.7s ease-in-out;
+  -ms-transition: all 0.7s ease-in-out;
+  -o-transition: all 0.7s ease-in-out;
+  transition: all 0.7s ease-in-out;
+}
+.c-menu > ul .c-menu__item .c-menu-item__title span {
+  font-weight: 400;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-transition: left 0.5s ease-in-out;
+  -moz-transition: left 0.5s ease-in-out;
+  -ms-transition: left 0.5s ease-in-out;
+  -o-transition: left 0.5s ease-in-out;
+  transition: left 0.5s ease-in-out;
+}
+.sidebar-is-expanded .c-menu > ul .c-menu__item .c-menu-item__title {
+  left: 0px;
+  opacity: 1;
+}
+.c-menu > ul .c-menu__item .c-menu__submenu {
+  background-color: #051835;
+  padding: 15px;
+  font-size: 12px;
+  display: none;
+}
+.c-menu > ul .c-menu__item .c-menu__submenu li {
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid;
+  border-color: #072048;
+  color: #5f9cfd;
+}
+.c-menu > ul .c-menu__item .c-menu__submenu li:last-child {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
