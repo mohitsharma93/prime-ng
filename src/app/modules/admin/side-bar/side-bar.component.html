@@ -11,9 +11,10 @@
         <div class="c-menu">
           <ul class="u-list">
             <li 
-              class="c-menu__item is-active"
+              class="c-menu__item"
               data-toggle="tooltip"
               title="Dashboard"
+              [ngClass]="{'is-active': router.url.includes('/admin/dashboard')}"
             >
               <a [routerLink]="['/admin', 'dashboard']">
                 <div class="c-menu__item__inner" [ngClass]="{'admin-a-active': router.url.includes('/admin/dashboard')}">
@@ -23,9 +24,10 @@
               </a>
             </li>
             <li
-              class="c-menu__item has-submenu"
+              class="c-menu__item"
               data-toggle="tooltip"
               title="Order"
+              [ngClass]="{'is-active': router.url.includes('/admin/order')}"
             >
               <a [routerLink]="['/admin', 'order']">
                 <div class="c-menu__item__inner" [ngClass]="{'admin-a-active': router.url.includes('/admin/order')}">
