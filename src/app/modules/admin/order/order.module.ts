@@ -13,6 +13,10 @@ const routes: Routes = [
     path: '', 
     component: OrderComponent,
   },
+  { 
+    path: 'detail/:orderId', 
+    loadChildren: () => import('./order-detail/order-detail.module').then((m) => m.OrderDetailModule)
+  },
 ];
 
 @NgModule({

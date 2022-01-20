@@ -15,11 +15,7 @@ const routes: Routes = [
             {
                 path: 'order',
                 loadChildren: () => import('./order/order.module').then((m) => m.OrderModule)
-            },
-            {
-                path: 'order-detail/:orderId',
-                loadChildren: () => import('./order-detail/order-detail.module').then((m) => m.OrderDetailModule)
-            },
+            }
         ]
     }
 ];

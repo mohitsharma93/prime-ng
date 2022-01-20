@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {Location} from '@angular/common';
-import {data} from '../order/product-dummy';
+import {data} from '../product-dummy';
 
 interface Product {
   id?:string;
