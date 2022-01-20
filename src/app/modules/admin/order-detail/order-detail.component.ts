@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { PrimeNGConfig } from 'primeng/api';
+import {Location} from '@angular/common';
 import {data} from '../order/product-dummy';
 
 interface Product {
@@ -32,6 +32,7 @@ export class OrderDetailComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private actRoute: ActivatedRoute,
+    private _location: Location
   ) {
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
@@ -42,6 +43,10 @@ export class OrderDetailComponent implements OnInit {
 
   public ngOnInit(): void {
     this.products = data;
+  }
+
+  public backClicked(): void {
+    this._location.back();
   }
 
   public redirectToDetail(id: string): void {
