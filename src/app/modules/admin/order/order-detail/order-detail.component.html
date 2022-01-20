@@ -65,8 +65,7 @@
                     <td>{{product.order_date}}</td>
                     <td>{{product.status}}</td>
                     <td>
-                      <p-button class="p-button-outlined dashboard-filter-button" label="Edit">
-                      </p-button>
+                      <button pButton pRipple type="button" label="Edit" class="p-button-outlined p-button-danger"></button>
                     </td>
                   </tr>
                 </ng-template>
@@ -81,10 +80,10 @@
             ></p-paginator>
               <!--  -->
             <div class="d-flex justify-content-center mt-3">
-              <p-button label="Accept Order" class="p-button-outlined dashboard-filter-button"></p-button>
-              <p-button label="Cancel Order" class="p-button-rounded dashboard-filter-button"
-                (click)="cancelOrder(true)">
-              </p-button>
+              <button pButton pRipple type="button" label="Accept Order" class="p-button-raised p-button-success"></button>
+              <button pButton type="button" label="Cancel Order" class="p-button-raised p-button-danger ml-2"
+                (click)="cancelOrder(true)"
+              ></button>
             </div>
           </div>
         </p-card>
@@ -97,7 +96,7 @@
   <p-dialog
     header="Confirmation"
     [(visible)]="cancelModelShow"
-    [position]="'top'"
+    [position]="'center'"
     [modal]="true"
     [style]="{width: '50vw'}"
     [baseZIndex]="10000" 
@@ -115,9 +114,17 @@
         </div>
       </div>
     </div>
-    <ng-template pTemplate="footer">
-      <p-button class="p-button-outlined dashboard-filter-button" (click)="cancelModelShow=false" label="No"></p-button>
-      <p-button class="p-button-outlined dashboard-filter-button" (click)="cancelModelShow=false" label="Yes"></p-button>
-    </ng-template>
+    <div class="d-flex justify-content-center">
+      <p-button 
+        class="p-button-outlined popup-cancel"
+        (click)="cancelModelShow=false"
+        label="No"
+      ></p-button>
+      <p-button 
+        class="p-button-outlined popup-cancel ml-2"
+        (click)="cancelModelShow=false"
+        label="Yes"
+      ></p-button>
+    </div>
   </p-dialog>
 </div>
