@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { OrderComponent } from './order.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { OrderDetailComponent } from './order-detail.component';
 
 const routes: Routes = [
   { 
     path: '', 
-    component: OrderComponent,
-  },
+    component: OrderDetailComponent,
+  }
 ];
 
 @NgModule({
   declarations: [
-    OrderComponent
+    OrderDetailComponent
   ],
   imports: [
     CommonModule,
@@ -25,9 +25,9 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     ButtonModule,
-    CalendarModule,
     CardModule,
-    TableModule
+    TableModule,
+    DialogModule
   ]
 })
-export class OrderModule { }
+export class OrderDetailModule { }

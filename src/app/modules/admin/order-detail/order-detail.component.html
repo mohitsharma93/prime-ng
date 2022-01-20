@@ -1,0 +1,115 @@
+<div class="content-wrapper">
+  <h2 class="page-title">
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Order Details
+  </h2>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="mt-3">
+        <p-card>
+          <div class="d-flex flex-column">
+            <div>
+              <div class="tab_sec_left">
+                <p>
+                  ID: <span><b>SK12520</b></span>
+                </p>
+                <p>
+                  Store Name: <span><b>Kirana Store</b></span>
+                </p>
+                <p>
+                  Mobile No: <span><b>+1236547890</b></span>
+                </p>
+                <br>
+                <p>
+                  Address: <span>201, SP 365 Building, Janjeerwala Square, Indore, Madhya Pradesh 452001</span>
+                </p>
+                <br><br>
+                <p>
+                  Status: <span>Pending</span>
+                </p>
+                <br><br>
+                <p>
+                  Order Date: <span>Jan. 5, 2022 : 4:00 PM</span>
+                </p>
+              </div>
+              <div class="tab_sec_right">
+                <p>
+                  Order Value: <span>12052</span>
+                </p>
+                <p>
+                  Delevery Charges: <span>500</span>
+                </p>
+                <h2>Grant Total: <span><b>12552</b></span></h2>
+              </div>
+            </div>
+            <div>
+              <p-table responsiveLayout="scroll" [value]="products">
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th>ITEM NAME</th>
+                    <th>CATEGORY</th>
+                    <th>QUANTITY</th>
+                    <th>MOQ</th>
+                    <th>MRP</th>
+                    <th>SELLING PRICE</th>
+                    <th>NET AMOUNT</th>
+                    <th>Action</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-columns="columns">
+                  <tr>
+                    <td>{{product.id}}</td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.address}}</td>
+                    <td>{{product.mobile}}</td>
+                    <td>{{product.order_amt}}</td>
+                    <td>{{product.order_date}}</td>
+                    <td>{{product.status}}</td>
+                    <td>
+                      <p-button class="p-button-outlined dashboard-filter-button" label="Edit">
+                      </p-button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <p-button label="Accept Order" class="p-button-outlined dashboard-filter-button"></p-button>
+              <p-button label="Cancel Order" class="p-button-rounded dashboard-filter-button"
+                (click)="cancelOrder(true)">
+              </p-button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="custom-dialog">
+  <p-dialog
+    header="Confirmation"
+    [(visible)]="cancelModelShow"
+    [position]="'top'"
+    [modal]="true"
+    [style]="{width: '50vw'}"
+    [baseZIndex]="10000" 
+    [draggable]="false"
+    [resizable]="false"
+    [closeOnEscape]="true"
+    [closable]="true"
+  >
+    <div class="d-flex flex-column text-center justify-content-center">
+      <p >Are you sure you <br>want to cancel the order?</p>
+      <div class="content">
+        <label>Reason</label>
+        <div class="prim-ng-input">
+          <input pInputText inputId="cancel_reason" class="mb-2" placeholder="Enter Reason" />
+        </div>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button class="p-button-outlined dashboard-filter-button" (click)="cancelModelShow=false" label="No"></p-button>
+      <p-button class="p-button-outlined dashboard-filter-button" (click)="cancelModelShow=false" label="Yes"></p-button>
+    </ng-template>
+  </p-dialog>
+</div>
