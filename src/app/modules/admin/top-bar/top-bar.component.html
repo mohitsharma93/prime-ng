@@ -2,22 +2,20 @@
   <header class="l-header d-flex flex-column justify-content-center">
     <div class="l-header__inner clearfix">
       <div class="c-header-icon" (click)="toggleSideBar()">
-        <div 
-          class="hamburger-toggle" 
-          [ngClass]="{'is-opened': !toggleValue}"
-        >
+        <div class="hamburger-toggle" [ngClass]="{'is-opened': !toggleValue}">
           <span class="bar-top"></span>
           <span class="bar-mid"></span>
           <span class="bar-bot"></span>
         </div>
       </div>
-  
+
       <div class="c-search">
         <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile/Shipment I" type="text" />
       </div>
       <div class="header-icons-group">
         <div class="dropdown">
-          <button class="dropbtn"><img src="assets/img/user.png"> Ronnie Woodkin
+          <button class="dropbtn">
+            <img src="assets/img/user.png"> Ronnie Woodkin
             <i class="fa fa-caret-down"></i>
           </button>
           <div class="dropdown-content">
