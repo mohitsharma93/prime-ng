@@ -57,9 +57,33 @@
             <p-chart
               type="doughnut"
               [data]="chartData"
-              [options]="chartOptions" 
-              [style]="{'width': '40%'}"
-            ></p-chart>
+              [options]="chartOptions"
+              height="150"
+              ></p-chart>
+              <!-- [style]="{'width': '50px !important'}" -->
+              <div 
+                *ngIf="graphLabelDetail?.length"
+                class="d-flex text-center flex-column mt-3"
+              >
+                <div 
+                  *ngFor="let detail of graphLabelDetail"
+                  class="mb-2 d-flex text-center justify-content-between"
+                >
+                  <div 
+                    class="box"
+                    [ngClass]="{
+                      'pending': detail.status === 'Pending',
+                      'accepted': detail.status === 'Accepted',
+                      'shipped': detail.status === 'Shipped',
+                      'delivered': detail.status === 'Delivered',
+                      'cancelled': detail.status === 'Cancelled'
+                    }"
+                  > </div>
+                  <div>{{detail.status}}</div>
+                  <div>{{detail.first}}</div>
+                  <div>{{detail.second | number : '1.2-2'}}</div>
+                </div>
+              </div>
             <hr>
             <a class="more" href="#">More Insights ></a>
           </div>
