@@ -41,12 +41,9 @@
                 <td>{{product.order_date}}</td>
                 <td>{{product.status}}</td>
                 <td>
-                  <p-button
-                    class="p-button-outlined dashboard-filter-button"
-                    label="View" 
+                  <button pButton pRipple type="button" label="View" class="p-button-outlined p-button-danger"
                     (click)="redirectToDetail(product.id)"
-                  >
-                  </p-button>
+                  ></button>
                 </td>
               </tr>
             </ng-template>
