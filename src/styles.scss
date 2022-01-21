@@ -8,8 +8,8 @@
 @import 'assets/scss/layout/_display.scss';
 @import 'assets/scss/layout/_text.scss';
 
-/** common classes */
-@import 'assets/scss/common-classes.scss';
+/** component */
+@import 'assets/scss/component/_status.scss';
 
 body {
   background-color:#fff4e4;
@@ -388,4 +388,8 @@ span.otp-login {
     width: 150px !important;
   }
 
+}
+
+a.more {
+  color: #0058ff;
 }
