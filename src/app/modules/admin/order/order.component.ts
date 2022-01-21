@@ -27,6 +27,9 @@ export class OrderComponent implements OnInit {
   public maxDateValue: Date = new Date();
 
   public products: Product[] = [];
+  public status = [
+    {name: 'Approved', code: 'approved'},
+];
 
   constructor(
     private http: HttpClient,
@@ -57,6 +60,14 @@ export class OrderComponent implements OnInit {
     //event.page = Index of the new page
     //event.pageCount = Total number of pages
     this.products = [...this.products, ...data]
+  }
+
+  public statusChange(event: any): void {
+    console.log('status change', event)
+  }
+
+  public export(): void {
+    console.log('in export')
   }
 
 }
