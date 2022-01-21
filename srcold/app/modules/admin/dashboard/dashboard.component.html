@@ -1,0 +1,94 @@
+<div class="content-wrapper">
+  <div class="d-flex column-direction text-align-center">
+    <div>
+      <h2 class="page-title">Shop Overview</h2>
+    </div>
+    <div >
+      <p-button label="Today" class="p-button-outlined dashboard-filter-button"></p-button>
+      <p-button label="Months" class="p-button-outlined dashboard-filter-button"></p-button>
+      <p-button label="Over All" class="p-button-outlined btn-color"></p-button>
+    </div>
+    <div class="mx-4">
+      <p-calendar
+        [(ngModel)]="rangeDates"
+        selectionMode="range"
+        [readonlyInput]="true"
+        inputId="range"
+        [maxDate]="maxDateValue"
+        (onSelect)="dateChange($event)"
+        #dashboardCalendar
+        [dateFormat]="dateFormat"
+      ></p-calendar>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="box-content">
+        <div class="card">
+          <div class="card-body">
+            <p class="">Total Order</p>
+            <h1>$306.20</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">Total Sale</p>
+            <h1>7650</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">Pending Orders</p>
+            <h1>3,137</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">In-transit Orders</p>
+            <h1>3,137</h1>
+          </div>
+        </div>
+      </div>
+      <div class="order-report">
+        <div class="card">
+          <div class="card-body">
+            <p class="">Order Processing Report</p>
+            <!-- <canvas id="myChart" style="width:100%; max-width:600px"></canvas> -->
+            <p-chart
+              type="doughnut"
+              [data]="chartData"
+              [options]="chartOptions"
+              height="150"
+              ></p-chart>
+              <!-- [style]="{'width': '50px !important'}" -->
+              <div 
+                *ngIf="graphLabelDetail?.length"
+                class="d-flex text-center flex-column mt-3"
+              >
+                <div 
+                  *ngFor="let detail of graphLabelDetail"
+                  class="mb-2 d-flex text-center justify-content-between"
+                >
+                  <div 
+                    class="box"
+                    [ngClass]="{
+                      'pending': detail.status === 'Pending',
+                      'accepted': detail.status === 'Accepted',
+                      'shipped': detail.status === 'Shipped',
+                      'delivered': detail.status === 'Delivered',
+                      'cancelled': detail.status === 'Cancelled'
+                    }"
+                  > </div>
+                  <div>{{detail.status}}</div>
+                  <div>{{detail.first}}</div>
+                  <div>{{detail.second | number : '1.2-2'}}</div>
+                </div>
+              </div>
+            <hr>
+            <a class="more" href="#">More Insights ></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

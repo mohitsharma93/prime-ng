@@ -19,7 +19,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     FormsModule,
     InputTextModule,
-    PasswordModule
+    PasswordModule,
   ]
 })
 export class LoginModule { }
