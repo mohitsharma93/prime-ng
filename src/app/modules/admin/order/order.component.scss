@@ -1,0 +1,18 @@
+.horizontal_dotted_line{
+  border-bottom: 1px dotted black;
+  width: 5px;
+}
+
+.dotted-line {
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+.dotted-line:after {
+  content: "--->--";
+  // letter-spacing: 6px;
+  font-size: 5px;
+  color: black;
+  display: inline-block;
+  // vertical-align: 3px;
+}

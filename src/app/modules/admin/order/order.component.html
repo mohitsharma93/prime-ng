@@ -1,12 +1,12 @@
 <div class="content-wrapper">
-  <div class="d-flex text-align-center justify-content-between">
-    <div>
-      <p-button label="All" class="p-button-rounded order-filter-button"></p-button>
-      <p-button label="Pending" class="p-button-rounded order-filter-button"></p-button>
-      <p-button label="Accepted" class="p-button-rounded  order-filter-button"></p-button>
-      <p-button label="In-transit Shipment" class="p-button-rounded  order-filter-button"></p-button>
-      <p-button label="Delivered Shipment" class="p-button-rounded  order-filter-button"></p-button>
-      <p-button label="Cancelled Order" class="p-button-rounded  order-filter-button"></p-button>
+  <div class="d-flex text-center justify-content-between">
+    <div class="dashboard-status-filter">
+      <button pButton pRipple type="button" label="All" class="p-button-rounded p-button-outlined"></button>
+      <button pButton pRipple type="button" label="Pending" class="p-button-rounded p-button-outlined"></button>
+      <button pButton pRipple type="button" label="Accepted" class="p-button-rounded p-button-outlined "></button>
+      <button pButton pRipple type="button" label="In-transit Shipment" class="p-button-rounded p-button-outlined"></button>
+      <button pButton pRipple type="button" label="Delivered Shipment" class="p-button-rounded p-button-outlined"></button>
+      <button pButton pRipple type="button" label="Cancelled Order" class="p-button-rounded p-button-outlined"></button>
     </div>
     <div>
       <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" inputId="range"
