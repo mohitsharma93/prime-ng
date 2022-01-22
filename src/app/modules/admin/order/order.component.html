@@ -1,7 +1,7 @@
 <div class="content-wrapper">
   <div class="d-flex text-center justify-content-between">
     <div class="dashboard-status-filter">
-      <button pButton pRipple type="button" label="All" class="p-button-rounded p-button-outlined"></button>
+      <button pButton pRipple type="button" label="All" class="p-button-rounded p-button-outlined is_active"></button>
       <button pButton pRipple type="button" label="Pending" class="p-button-rounded p-button-outlined"></button>
       <button pButton pRipple type="button" label="Accepted" class="p-button-rounded p-button-outlined "></button>
       <button pButton pRipple type="button" label="In-transit Shipment" class="p-button-rounded p-button-outlined"></button>
@@ -62,9 +62,16 @@
                 <td>{{product.order_amt}}</td>
                 <td>{{product.order_date}}</td>
                 <td>{{product.status}}</td>
-                <td>
-                  <button pButton pRipple type="button" label="View" class="p-button-outlined p-button-danger"
-                    (click)="redirectToDetail(product.id)"></button>
+                <td class="dashboard-status-filter">
+                  <button 
+                    pButton
+                    pRipple 
+                    type="button"
+                    label="View"
+                    class="p-button-outlined is_active"
+                    (click)="redirectToDetail(product.id)"
+                  >
+                  </button>
                 </td>
               </tr>
             </ng-template>

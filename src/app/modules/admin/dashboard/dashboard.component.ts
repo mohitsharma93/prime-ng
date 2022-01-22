@@ -6,8 +6,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  // how to hilight doughunt chart section on click of button
-  // https://stackoverflow.com/questions/31033248/highlight-area-programmatically-chart-js
+
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
   public rangeDates: Date[];
   public dateFormat: string = 'dd M yy';

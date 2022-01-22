@@ -4,18 +4,18 @@
   border: 1px solid black;
 
   &.accepted {
-    background-color: #21d59b;
+    background-color: $accepted;
   }
   &.pending {
-    background-color: #0058ff;
+    background-color: $pending;
   }
   &.shipped {
-    background-color: #ffc700;
+    background-color: $shipped;
   }
   &.delivered {
-    background-color: #f99600;
+    background-color: $delivered;
   }
   &.cancelled {
-    background-color: #f0142f;
+    background-color: $cancelled;
   }
 }
