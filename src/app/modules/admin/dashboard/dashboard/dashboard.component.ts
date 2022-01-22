@@ -1,4 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { IAppState } from 'src/app/store/app.state';
+
+import { getDashboardAnalyticTypeAction } from '../ngrx/actions/dashboard.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,14 +34,20 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  constructor() {
-    
+  constructor(
+    private store: Store<IAppState>,
+  ) {
+    this.getDashboardAnalytics();
   }
 
   ngOnInit(): void {
     this.rangeDates = [new Date(this.maxDateValue.getFullYear(), this.maxDateValue.getMonth() - 3, 1), new Date()];
     this.setChartData();
     this.setGraphLabelDetail();
+  }
+
+  public getDashboardAnalytics(): void {
+    this.store.dispatch(getDashboardAnalyticTypeAction({ request: { } }))
   }
 
   public dateChange(event: any): void {
