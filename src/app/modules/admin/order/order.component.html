@@ -46,7 +46,7 @@
             [scrollable]="true"
             scrollHeight="700px"
             [paginator]="true"
-            [rows]="5"
+            [rows]="10"
             [showCurrentPageReport]="true"
             [rowsPerPageOptions]="[5, 10, 25, 50]"
             (onPage)="paginate($event)"
@@ -70,8 +70,10 @@
                 <td>{{product.address}}</td>
                 <td>{{product.mobile}}</td>
                 <td>{{product.order_amt}}</td>
-                <td>{{product.order_date}}</td>
-                <td>{{product.status}}</td>
+                <td>{{product.order_date | date : 'MMM. d, y'}}</td>
+                <td >
+                  {{product.status}}
+                </td>
                 <td class="outlined-button">
                   <button 
                     pButton
