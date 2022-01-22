@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-top-bar',
@@ -10,7 +11,9 @@ export class TopBarComponent implements OnInit {
   @Output() sideBarToggle: EventEmitter<boolean> = new EventEmitter();
   public toggleValue = true;
 
-  constructor( ) { }
+  constructor(
+    public router: Router,
+  ) { }
 
   public ngOnInit(): void {
 
