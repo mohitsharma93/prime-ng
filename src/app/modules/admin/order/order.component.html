@@ -1,6 +1,6 @@
 <div class="content-wrapper">
   <div class="d-flex text-center justify-content-between">
-    <div class="dashboard-status-filter">
+    <div class="outlined-button">
       <button pButton pRipple type="button" label="All" class="p-button-rounded p-button-outlined is_active"></button>
       <button pButton pRipple type="button" label="Pending" class="p-button-rounded p-button-outlined"></button>
       <button pButton pRipple type="button" label="Accepted" class="p-button-rounded p-button-outlined "></button>
@@ -40,7 +40,17 @@
     <div class="page-inner-content">
       <div class="mt-3">
         <p-card>
-          <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="700px">
+          <p-table 
+            responsiveLayout="scroll"
+            [value]="products"
+            [scrollable]="true"
+            scrollHeight="700px"
+            [paginator]="true"
+            [rows]="5"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[5, 10, 25, 50]"
+            (onPage)="paginate($event)"
+          >
             <ng-template pTemplate="header" let-columns>
               <tr>
                 <th>ORDER NO</th>
@@ -62,7 +72,7 @@
                 <td>{{product.order_amt}}</td>
                 <td>{{product.order_date}}</td>
                 <td>{{product.status}}</td>
-                <td class="dashboard-status-filter">
+                <td class="outlined-button">
                   <button 
                     pButton
                     pRipple 
@@ -76,9 +86,6 @@
               </tr>
             </ng-template>
           </p-table>
-          <p-paginator *ngIf="products?.length" [showPageLinks]="false" [showJumpToPageDropdown]="true" [rows]="10"
-            [totalRecords]="products.length" (onPageChange)="paginate($event)"></p-paginator>
-          <!-- [rowsPerPageOptions]="[5,10,20,30]" -->
         </p-card>
       </div>
     </div>
