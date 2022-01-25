@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { APP_CONFIG } from 'src/app/app.config';
 import { ActiveUserService } from 'src/app/shared/services/active-user.service';
 import { DataService } from 'src/app/shared/services/data.service';
+import { EncryptionService } from 'src/app/shared/services/encryption.service';
+import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { UserAuthService } from 'src/app/shared/services/user-auth.service';
 import { ONLY_DIGIT } from 'src/app/shared/validators/Regex-validators';
 
@@ -18,21 +20,21 @@ export class OtpLoginComponent implements OnInit {
   loginOtpForm: FormGroup;
   checkform: boolean = false;
   sendCount: number = 0;
+  isTimerOn: boolean = false;
+  remainingTime: any = '00:00';
 
   constructor(
     private fb: FormBuilder,
     private ds: DataService,
-    private userAuthService: UserAuthService,
-    private activeUserService: ActiveUserService,
+    private toasterService: ToasterService,
     private router: Router
   ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
+    localStorage.clear();
   }
-
-
 
   public onlyDigit(e: KeyboardEvent): void {
     const inputChar = String.fromCharCode(e.charCode);
@@ -46,14 +48,18 @@ export class OtpLoginComponent implements OnInit {
       url: APP_CONFIG.API.AUTH.SEND_OTP,
       params: {
         MobileNumber: this.loginOtpForm.value['MobileNumber'],
-        DeviceId: this.loginOtpForm.value['DeviceId'],
       }
     }
     this.ds.post(req).subscribe((res: any) => {
-      console.log('Otp send');
+      this.isTimerOn = true;
+      this.startTimer(30);
+      if (res) {
+        this.toasterService.success('OTP has been sent.');
+      }
     });
     this.sendCount = +1;
   }
+
 
   onSubmit() {
     if (!this.loginOtpForm.valid) {
@@ -65,49 +71,42 @@ export class OtpLoginComponent implements OnInit {
 
       }
       this.ds.post(req).subscribe((res: any) => {
-        if (res.Data && res.Data.Userid) {
-          this.getToken(this.loginOtpForm.value['MobileNumber'], this.loginOtpForm.value['Otp'])
+        if (res && res.Userid) {
+          this.toasterService.success('OTP is Verified Successfully.');
+          const url = `auth/change-password/${res.Userid}`;
+          this.router.navigate([url]);
         }
       });
     }
   }
-
-  getToken(username: string, otp: any) {
-    const paramsString = `
-    grant_type=password&
-    username=${username}&
-    password=${otp}&
-    LOGINTYPE=test&
-    ISOTP=true&
-    `;
-    const req = {
-      url: 'token',
-      params: paramsString
-    }
-    this.userAuthService.loginUser(req).subscribe((res: any) => {
-      if (res && res.access_token) {
-        this.activeUserService.setToken(res.access_token, res.token_type);
-      }
-      if (res && res.AspNetuserId) {
-        const user = {
-          AspNetuserId: res.AspNetuserId,
-          UserId: res.UserId || '',
-          userName: res.userName || '',
-          MobileNumber: res.MobileNumber || ''
-        };
-        this.activeUserService.setUser(user);
-        this.router.navigate(["admin/dashboard"]);
-      }
-    });
-  }
-
   private initializeForm() {
     this.loginOtpForm = this.fb.group(
       {
         MobileNumber: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(10)]),
-        DeviceId: new FormControl('dbsd'),
         Otp: new FormControl('', [Validators.required, Validators.maxLength(4), Validators.minLength(4)]),
+
       }
     )
   }
+
+  startTimer(remaining: number) {
+    let m: any = Math.floor(remaining / 60);
+    let s: any = remaining % 60;
+    m = m < 10 ? '0' + m : m;
+    s = s < 10 ? '0' + s : s;
+    this.remainingTime = m + ':' + s;
+    remaining -= 1;
+
+    if (remaining >= 0 && this.isTimerOn) {
+      setTimeout(() => {
+        this.startTimer(remaining);
+      }, 1000);
+      return;
+    }
+
+    if (!this.isTimerOn) {
+      return;
+    }
+  }
+
 }

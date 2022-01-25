@@ -1,0 +1,21 @@
+.outlined-button {
+  .p-button:enabled:hover {
+    border-color: none !important;
+  }
+  .p-button {
+    padding: 8px 12px 9px 11px !important;
+    margin-right: 10px;
+    color: $black;
+  }
+  .p-button-outlined {
+    &.is_active {
+      background-color: $sazerac;
+      border-color: $orange;
+      color: $orange;
+    }
+  }
+  .outlined-border {
+    border-color: $orange;
+    color: $orange;
+  }
+}

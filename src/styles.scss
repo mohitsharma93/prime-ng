@@ -16,7 +16,7 @@
 @import 'assets/scss/component/_status.scss';
 
 body {
-  background-color:#fff4e4;
+  background-color:#f4f7fc;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -297,7 +297,14 @@ span.otp-login {
 .admin-a-active {
   color: #ff5722 !important;
 }
-
+input#range:focus {
+  box-shadow: none;
+  border-color: #dcdcdc;
+}
+input#range:hover {
+  box-shadow: none;
+  border-color: #dcdcdc;
+}
 // for admin global
 .l-main {
   width: 100%;
@@ -311,16 +318,17 @@ span.otp-login {
   padding-right: 0px;
   padding-bottom: 0px;
     padding-left: 220px;
+    background-color: #f4f7fc;
 }
 
 .content-wrapper {
-  padding: 25px;
+  padding: 25px 25px 25px 0;
   height: 100%;
   overflow: auto;
 }
 
 .page-title {
-  font-weight: 400;
+  font-weight: 600;
   margin-top: 0;
   margin-bottom: 25px;
   display: inline-block;
@@ -339,10 +347,13 @@ span.otp-login {
     font-size: 14px;
     padding: 8px 12px 9px 11px;
     transition: transform 80ms ease-in;
-    margin-right: 10px;
+    margin-right: 0px;
   }
 }
-
+.p-calendar .p-inputtext {
+ font-size: 14px;
+  padding: 8px 0px 9px 11px;
+}
 .btn-color {
   .p-button:enabled:hover {
     border-color: none !important;
@@ -383,4 +394,35 @@ span.otp-login {
 
 a.more {
   color: #0058ff;
+}
+.p-sidebar .p-sidebar-header {
+  padding: 0 !important;
+}
+.p-sidebar-left {
+  margin-top: 70px !important;
+}
+th, td {
+  font-size: 0.875rem;
+}
+.p-dropdown.p-dropdown-clearable .p-dropdown-label {
+  padding-right: 0 !important;
+  padding: 8px 0px 8px 10px;
+  font-size: 14px;
+}
+.p-button-label {
+  font-weight: normal !important;
+}
+.p-button.p-button-danger {
+  background: #ff5722 !important;
+  border: 1px solid #ff5722 !important;
+  padding: 8px !important;
+}
+.ng-tns-c70-3.p-dropdown.p-component.p-dropdown-clearable {
+  border: none;
+}
+.p-dropdown .p-dropdown-label.p-placeholder {
+  color: #ff5722 !important;
+}
+.p-dropdown .p-dropdown-trigger {
+  color: #ff5722 !important;
 }

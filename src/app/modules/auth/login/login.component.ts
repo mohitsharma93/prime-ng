@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormControlDirective } from "@angular/forms";
 import { Router } from '@angular/router';
 import { ActiveUserService } from 'src/app/shared/services/active-user.service';
+import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { UserAuthService } from 'src/app/shared/services/user-auth.service';
 import { MEDIUM_PASSWORD_REGEX, ONLY_DIGIT } from 'src/app/shared/validators/Regex-validators';
 
@@ -16,19 +17,18 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
   public checkform: boolean = false;
 
+
   constructor(
     private fb: FormBuilder,
     private userAuthService: UserAuthService,
     private activeUserService: ActiveUserService,
+    private toasterService: ToasterService,
     private router: Router
   ) {
     this.initializeForm();
   }
 
-  ngOnInit(): void {
-  }
-
-
+  ngOnInit(): void { }
 
   public onlyDigit(e: KeyboardEvent): void {
     const inputChar = String.fromCharCode(e.charCode);
@@ -38,10 +38,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-
-    console.log('innn submit', this.loginForm)
     if (!this.loginForm.valid) {
-      // console.log(this.loginForm.value);
       this.loginForm.markAllAsTouched();
     } else {
 
@@ -51,13 +48,16 @@ export class LoginComponent implements OnInit {
       password=${this.loginForm.value['password']}&
       LOGINTYPE=${this.loginForm.value['loginType']}&
       ISOTP=${this.loginForm.value['isOtp']}&
+      ISSELLER=true
       `;
+
       const req = {
         url: 'token',
         params: paramsString
       }
       this.userAuthService.loginUser(req).subscribe((res: any) => {
         if (res && res.access_token) {
+
           this.activeUserService.setToken(res.access_token, res.token_type);
         }
         if (res && res.AspNetuserId) {
@@ -68,8 +68,10 @@ export class LoginComponent implements OnInit {
             MobileNumber: res.MobileNumber || ''
           };
           this.activeUserService.setUser(user);
+          this.toasterService.success('User logged in successfully.');
           this.router.navigate(["admin/dashboard"]);
-
+        } else {
+          this.toasterService.error('Error');
         }
 
       });

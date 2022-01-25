@@ -8,7 +8,13 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [
-  { path: '', component: ChangePasswordComponent },
+  {
+    path: "",
+    children: [
+      { path: ":id", component: ChangePasswordComponent },
+
+    ],
+  },
 ];
 
 @NgModule({
@@ -18,9 +24,9 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forChild(routes),
     ReactiveFormsModule,
+    FormsModule,
     InputTextModule,
-    PasswordModule
-
+    PasswordModule,
   ]
 })
 

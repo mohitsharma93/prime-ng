@@ -8,6 +8,7 @@ import { throwError, Observable, Subject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ActiveUserService } from './active-user.service';
+import { ToasterService } from './toaster.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class DataService {
 
   constructor(
     private http: HttpClient,
-    private aus: ActiveUserService
+    private aus: ActiveUserService,
+    private toasterService: ToasterService
   ) {
     this.baseUrl = environment.API_ENDPOINT;
   }
@@ -26,8 +28,7 @@ export class DataService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8',
-      'NoEncryption': 'true'
-
+      // 'NoEncryption': 'true'
     })
   };
 
@@ -38,6 +39,7 @@ export class DataService {
         return response;
       }),
       catchError((err) => {
+        this.toasterService.error('Something Went Wrong');
         if (err.status === 500 && err.error && err.error.auth === false) {
           console.log(err);
         }
@@ -54,6 +56,7 @@ export class DataService {
         return response;
       }),
       catchError((err) => {
+        this.toasterService.error('Something Went Wrong');
         if (err.status === 500 && err.error && err.error.auth === false) {
           console.log(err);
         }
@@ -67,10 +70,11 @@ export class DataService {
     return this.http.post(url, req.params, this.httpOptions).pipe(
       map((response: any) => response),
       catchError((err) => {
+        this.toasterService.error('Something Went Wrong');
         if (err.status === 500 && err.error && err.error.auth === false) {
           console.log(err);
         }
-        return throwError(err);
+        return err;
       })
     );
   }

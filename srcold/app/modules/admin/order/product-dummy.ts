@@ -15,7 +15,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Accepted"
 		},
 		{
 			"id": "VSK2203",
@@ -24,7 +24,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Shipped"
 		},
 		{
 			"id": "VSK2204",
@@ -33,7 +33,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Delivered"
 		},
 		{
 			"id": "VSK2205",
@@ -42,7 +42,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Cancelled"
 		},
 		{
 			"id": "VSK2206",
@@ -51,7 +51,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Accepted"
 		},
 		{
 			"id": "VSK2207",
@@ -60,7 +60,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Cancelled"
 		},
 		{
 			"id": "VSK2208",
@@ -69,7 +69,7 @@ export const data = [
 			"mobile": "1236547890",
 			"order_amt": "50,000",
 			"order_date": "04/01/2021",
-			"status": "Pending"
+			"status": "Shipped"
 		},
 		{
 			"id": "VSK2209",

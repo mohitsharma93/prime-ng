@@ -6,6 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
+
+
 const routes: Routes = [
   { path: '', component: LoginComponent },
 ];
@@ -20,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     InputTextModule,
     PasswordModule,
+
   ]
 })
 export class LoginModule { }

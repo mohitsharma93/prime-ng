@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+
 const routes: Routes = [
   { path: "", redirectTo: "auth/login", pathMatch: "full" },
-  //...............Route Added
+
   {
     path: "auth",
     loadChildren: () =>
@@ -13,7 +15,8 @@ const routes: Routes = [
     loadChildren: () =>
       import("./modules/admin/admin.module").then((m) => m.AdminModule),
   },
- ];
+  { path: '**', component: PageNotFoundComponent }
+];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

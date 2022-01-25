@@ -1,4 +1,3 @@
-
 <div class="form-container sign-up-container">
     <div class="signin-content">
         <div class="sign-in content-left">
@@ -49,6 +48,8 @@
         </ng-container>
 
         <a [routerLink]="['/auth', 'otp-login']" class="otp-login">Don't have a password, login with OTP</a>
-        <button class="btn-reg" type="submit">Sign In</button>
+        <button [disabled]="loginForm.invalid" class="btn-reg" type="submit"
+            [class]="loginForm.invalid ? 'btn-disabled' : ''">Sign In</button>
+
     </form>
 </div>

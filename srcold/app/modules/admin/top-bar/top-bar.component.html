@@ -1,7 +1,7 @@
 <div [ngClass]="{'sidebar-is-expanded': !toggleValue}">
   <header class="l-header d-flex flex-column justify-content-center">
     <div class="l-header__inner clearfix">
-      <div class="c-header-icon" (click)="toggleSideBar()">
+      <div class="c-header-icon" (click)="toggleSideBar()" style="display:none">
         <div class="hamburger-toggle" [ngClass]="{'is-opened': !toggleValue}">
           <span class="bar-top"></span>
           <span class="bar-mid"></span>
@@ -9,7 +9,7 @@
         </div>
       </div>
 
-      <div class="c-search">
+      <div class="c-search ml-2" *ngIf="router.url.includes('/admin/dashboard')">
         <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile/Shipment I" type="text" />
       </div>
       <div class="header-icons-group">

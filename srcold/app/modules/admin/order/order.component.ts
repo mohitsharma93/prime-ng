@@ -27,6 +27,9 @@ export class OrderComponent implements OnInit {
   public maxDateValue: Date = new Date();
 
   public products: Product[] = [];
+  public status = [
+    {name: 'Approved', code: 'approved'},
+];
 
   constructor(
     private http: HttpClient,
@@ -35,7 +38,7 @@ export class OrderComponent implements OnInit {
 
   public ngOnInit(): void {
     this.rangeDates = [new Date(), new Date()];
-    this.products = data;
+    this.products = [...data, ...data,  ...data, ...data, ...data, ...data, ...data];
   }
 
   public dateChange(event: any): void {
@@ -56,7 +59,16 @@ export class OrderComponent implements OnInit {
     //event.rows = Number of rows to display in new page
     //event.page = Index of the new page
     //event.pageCount = Total number of pages
-    this.products = [...this.products, ...data]
+    // this.products = [...this.products, ...data]
+    console.log('event', event);
+  }
+
+  public statusChange(event: any): void {
+    console.log('status change', event)
+  }
+
+  public export(): void {
+    console.log('in export')
   }
 
 }

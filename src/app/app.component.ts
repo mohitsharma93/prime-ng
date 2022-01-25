@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+
+  toasterConfig: any = { position: 'bottom-right' };
+
   title = 'b2bDirectSellerDesktop';
 }
