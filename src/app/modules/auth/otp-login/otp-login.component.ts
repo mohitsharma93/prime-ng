@@ -44,6 +44,7 @@ export class OtpLoginComponent implements OnInit {
   }
 
   onSendOtp() {
+    this.loginOtpForm.controls['MobileNumber'].disable();
     const req = {
       url: APP_CONFIG.API.AUTH.SEND_OTP,
       params: {
