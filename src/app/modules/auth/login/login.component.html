@@ -31,7 +31,7 @@
         <label for="pass">Password</label>
         <div style="width: 100%;" class="prim-ng-input">
             <p-password class="mb-2" formControlName="password" placeholder="Your password" mediumRegex
-                [feedback]="false">
+                [feedback]="false" [toggleMask]="true">
             </p-password>
         </div>
         <ng-container *ngIf="loginForm.controls['password']?.touched">
