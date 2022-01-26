@@ -2,6 +2,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminDashboardService } from './dashboard/dashboard.service';
 import { HttpWrapperService } from './httpWrapper';
+import { AdminOrderService } from './dashboard/order.service';
 
 @NgModule({
     imports: [CommonModule],
@@ -12,8 +13,9 @@ export class AdminServiceModule {
         return {
             ngModule: AdminServiceModule,
             providers: [
-              HttpWrapperService,
-              AdminDashboardService
+                HttpWrapperService,
+                AdminDashboardService,
+                AdminOrderService,
             ],
         };
     }

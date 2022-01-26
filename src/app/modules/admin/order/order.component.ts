@@ -1,65 +1,103 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import { PrimeNGConfig } from 'primeng/api';
-import {data} from './product-dummy';
-
-interface Product {
-  id?:string;
-  name?:string;
-  address?:string;
-  mobile?:string;
-  order_amt?:string;
-  order_date?:string;
-  status?:string;
-}
+import { IAppState } from 'src/app/store/app.state';
+import { data } from './product-dummy';
+import * as actions from './ngrx/actions/order.actions';
+import { IOrderRequestModel } from 'src/app/models/admin/order';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, filter, Observable, of, takeUntil } from 'rxjs';
+import { BaseComponent } from '../base.component';
+import { cloneDeep, isEqual } from 'lodash-es';
+import { orders } from './ngrx/selector/order.selector';
 
 @Component({
   selector: 'app-admin-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss']
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent extends BaseComponent implements OnInit {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
-  public rangeDates: Date[];
+  public rangeDates: FormControl = new FormControl('');
   public dateFormat: string = 'dd M yy';
   public maxDateValue: Date = new Date();
 
-  public products: Product[] = [];
+  public products: any[] = [];
   public status = [
-    {name: 'Approved', code: 'approved'},
-];
+    { name: 'Approved', code: 'approved' },
+  ];
+  public orderRequestParam: IOrderRequestModel ;
+  public orders$: Observable<any[]> = of([]);
 
   constructor(
-    private http: HttpClient,
-    private router: Router
-  ) { }
+    private router: Router,
+    private store: Store<IAppState>,
+  ) {
+    super();
+    this.orders$ = this.store.pipe(
+      select(orders),
+      distinctUntilChanged(isEqual),
+      takeUntil(this.destroy$)
+    );
+  }
 
   public ngOnInit(): void {
-    this.rangeDates = [new Date(), new Date()];
-    this.products = [...data, ...data,  ...data, ...data, ...data, ...data, ...data];
+    this.setOrderRequestParam();
+    this.getOrders(this.orderRequestParam);
+
+    this.orders$.subscribe(res => {
+      if (res && res?.length) {
+        this.products = res;
+      }
+    })
+
+    this.rangeDates.valueChanges.pipe(
+      debounceTime(500),
+      filter(date => {
+        return date && date.length === 2 && date[1] !== null
+      }),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(res => {
+      if (this.rangeDates.valid) {
+        this.orderRequestParam = cloneDeep({
+          ...this.orderRequestParam,
+          endPoint: this.dateConvection(res)
+        });
+        this.getOrders(this.orderRequestParam);
+      }
+    })
+  }
+
+  public ngOnDestroy(): void {
+    // super.ngOnDestroy();
+  }
+
+  public setOrderRequestParam() {
+    this.orderRequestParam = {
+      endPoint: 'OverAll',
+      orderStatusId: 0,
+      urlMiddlePoint: 'GetAllOrderDetails'
+    }
   }
 
   public dateChange(event: any): void {
     // console.log('this.rangeDates', this.rangeDates)
-    if (this.rangeDates[1]) { // If second date is selected
-      this.dashboardCalendar.overlayVisible=false;
+    if (this.rangeDates.value[1]) { // If second date is selected
+      this.dashboardCalendar.overlayVisible = false;
     }
   }
 
   public redirectToDetail(id: string): void {
     if (id) {
-      this.router.navigate(['/admin', 'order', 'detail', id])
+      this.router.navigate(['/admin', 'order', 'detail', id]);
     }
   }
 
   public paginate(event: any): void {
-    //event.first = Index of the first record
-    //event.rows = Number of rows to display in new page
-    //event.page = Index of the new page
-    //event.pageCount = Total number of pages
-    // this.products = [...this.products, ...data]
     console.log('event', event);
   }
 
@@ -69,6 +107,23 @@ export class OrderComponent implements OnInit {
 
   public export(): void {
     console.log('in export')
+  }
+
+  public getOrders(requestParam: IOrderRequestModel) {
+    this.store.dispatch(actions.getOrderAction({ request: requestParam }))
+  }
+
+  public orderChange(orderStatusId: number, urlMiddlePoint: string) {
+    this.orderRequestParam = {
+      endPoint: 'OverAll',
+      orderStatusId: orderStatusId,
+      urlMiddlePoint: urlMiddlePoint
+    }
+    this.getOrders(this.orderRequestParam)
+  }
+
+  public dateConvection(date: Array<Date>) {
+    return date[0].getMonth() + 1 + ',' + date[0].getFullYear() + '-' + date[1].getMonth() + 1 + ',' + date[1].getFullYear()
   }
 
 }

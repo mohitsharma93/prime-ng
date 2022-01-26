@@ -13,7 +13,6 @@ export class AdminDashboardService {
 
 
   public getDashboardAnalyticsService(endPoint: string): Observable<any> {
-    console.log('this.adminBaseUrl', AdminDashboardAnalyticsUrls.getDashboardAnalytics(this.adminBaseUrl))
     return this.http
       .get(AdminDashboardAnalyticsUrls.getDashboardAnalytics(this.adminBaseUrl) +''+ endPoint)
       .pipe(

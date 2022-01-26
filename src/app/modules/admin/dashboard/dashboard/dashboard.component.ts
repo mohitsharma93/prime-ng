@@ -117,6 +117,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   public dateConvection(date : Array<Date>): string {
-    return (date[0].getMonth(), date[0].getFullYear() + '-' + date[1].getMonth(), date[1].getFullYear()).toString()
+    return (date[0].getMonth() + 1, date[0].getFullYear() + '-' + date[1].getMonth() + 1, date[1].getFullYear()).toString()
   }
 }
