@@ -76,12 +76,12 @@
             (onPage)="paginate($event)">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th>ORDER NO</th>
+                <th pSortableColumn="OrderID">ORDER NO <p-sortIcon field="OrderID"></p-sortIcon></th>
                 <th>NAME</th>
                 <th>ADDRESS</th>
                 <th>MOBILE</th>
-                <th>ORDER AMT</th>
-                <th>ORDER DATE</th>
+                <th pSortableColumn="OrderAmount">ORDER AMT <p-sortIcon field="OrderAmount"></p-sortIcon></th>
+                <th pSortableColumn="OrderDate">ORDER DATE <p-sortIcon field="OrderDate"></p-sortIcon></th>
                 <th>STATUS</th>
                 <th>ACTION</th>
               </tr>
