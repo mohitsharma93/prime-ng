@@ -7,6 +7,8 @@ import { AdminRoutingModule } from './admin.routing';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 import {SidebarModule} from 'primeng/sidebar';
+import { environment } from 'src/environments/environment';
+import { AdminServiceModule } from '../admin-service';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,11 @@ import {SidebarModule} from 'primeng/sidebar';
     ReactiveFormsModule,
     AdminRoutingModule,
     HttpClientModule,
-    SidebarModule
+    SidebarModule,
+    AdminServiceModule.forRoot(),
+  ],
+  providers: [
+    { provide: 'ADMIN_API_URL', useValue: environment.API_ENDPOINT + '' + environment.API_ENDPOINT_PROXY }
   ]
 })
 export class AdminModule { }

@@ -36,7 +36,7 @@ const _dashboardReducer = createReducer(
   on(actions.getDashboardAnalyticTypeActionComplete, (state, { response }) => {
     return {
       ...state,
-      dashboardAnalytics: response.data,
+      dashboardAnalytics: response.Data,
       dashboardAnalyticsInProcess: false,
       dashboardAnalyticsSuccess: true,
       errors: [],

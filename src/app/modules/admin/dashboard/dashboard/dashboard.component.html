@@ -4,13 +4,29 @@
       <h2 class="page-title">Shop Overview</h2>
     </div>
     <div >
-      <p-button label="Today" class="p-button-outlined dashboard-filter-button"></p-button>
-      <p-button label="Months" class="p-button-outlined dashboard-filter-button"></p-button>
-      <p-button label="Over All" class="p-button-outlined btn-color"></p-button>
+      <p-button 
+        label="Today" 
+        class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('Today')"
+        [ngClass]="{'btn-color': selectedFilter === 'Today'}"
+      ></p-button>
+      <p-button 
+        label="Months"
+        class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('Months')"
+        [ngClass]="{'btn-color': selectedFilter === 'Months'}"
+      >
+      </p-button>
+      <p-button 
+        label="Over All"
+        class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('OverAll')"
+        [ngClass]="{'btn-color': selectedFilter === 'OverAll'}"
+      ></p-button>
     </div>
     <div class="mx-4">
+      <!-- [(ngModel)]="rangeDates" -->
       <p-calendar
-        [(ngModel)]="rangeDates"
         selectionMode="range"
         [readonlyInput]="true"
         inputId="range"
@@ -18,6 +34,7 @@
         (onSelect)="dateChange($event)"
         #dashboardCalendar
         [dateFormat]="dateFormat"
+        [formControl]="rangeDates"
       ></p-calendar>
     </div>
   </div>
@@ -27,25 +44,25 @@
         <div class="card">
           <div class="card-body">
             <p class="">Total Order</p>
-            <h1>$306.20</h1>
+            <h1>{{(dashboardAnalytics$ | async)?.Item1.TotalOrder}}</h1>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
             <p class="">Total Sale</p>
-            <h1>7650</h1>
+            <h1>{{(dashboardAnalytics$ | async)?.Item1.TotalSale}}</h1>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
             <p class="">Pending Orders</p>
-            <h1>3,137</h1>
+            <h1>{{(dashboardAnalytics$ | async)?.Item1.PendingOrdersCount}}</h1>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
             <p class="">In-transit Orders</p>
-            <h1>3,137</h1>
+            <h1>{{(dashboardAnalytics$ | async)?.Item1.IntransitOrders}}</h1>
           </div>
         </div>
       </div>
@@ -80,8 +97,8 @@
                     }"
                   > </div>
                   <div>{{detail.status}}</div>
-                  <div>{{detail.first}}</div>
-                  <div>{{detail.second | number : '1.2-2'}}</div>
+                  <div>{{detail.count}}</div>
+                  <div>{{detail.sum | number : '1.2-2'}}</div>
                 </div>
               </div>
             <hr>
