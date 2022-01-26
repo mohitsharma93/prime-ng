@@ -29,6 +29,8 @@ body {
   margin: 0;
   padding: 0;
   color: #171725;
+  // added by mohit for scroll hide
+  overflow: hidden;
 }
 
 .waperimg {
@@ -324,8 +326,12 @@ input#range:hover {
 
 .content-wrapper {
   padding: 25px 25px 25px 25px;
-  height: 100%;
-  overflow: auto;
+  // height: 100%;
+  // overflow: auto;
+
+  min-height: calc(100vh - 70px);
+  height: calc(100vh - 70px);
+  overflow-y: unset;
 }
 
 .page-title {
