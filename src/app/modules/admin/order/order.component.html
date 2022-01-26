@@ -18,15 +18,40 @@
         </p-calendar>
       </div>
     </div>
-    <div class="d-flex text-center justify-content-between  mt-3">
-      <div class="dashboard-dropdown">
-        Status
-        <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
-          (onChange)="statusChange($event)"></p-dropdown>
-      </div>
-      <div>
-        <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
-          (click)="export()"></button>
+    <div class="mt-4" [ngSwitch]="orderRequestParam?.orderStatusId">
+      <div class="d-flex text-center justify-content-between">
+        <ng-container  *ngSwitchCase="0">
+          <div class="dashboard-dropdown">
+            Status
+            <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
+              (onChange)="statusChange($event)"></p-dropdown>
+          </div>
+          <div>
+            <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
+              (click)="export()"></button>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="1">
+          <div class="outlined-button">
+            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Bulk Accepted Order"
+              (click)="export()"></button>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="4">
+          <div class="outlined-button">
+            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Create Shipment"
+            (click)="export()"></button>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="7">
+          <b>Out for Delivery Orders</b>
+        </ng-container>
+        <ng-container *ngSwitchCase="8">
+          <b>Delivered Shipments</b>
+        </ng-container>
+        <ng-container *ngSwitchCase="5">
+          <b>Cancelled Shipments</b>
+        </ng-container>
       </div>
     </div>
   </div>
