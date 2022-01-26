@@ -50,7 +50,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
     this.orders$.subscribe(res => {
       if (res && res?.length) {
-        this.products = res;
+        this.products = cloneDeep(res);
       }
     })
 

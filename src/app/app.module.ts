@@ -14,10 +14,8 @@ import { environment } from '../environments/environment';
 import { extModules } from './store';
 import {  metaReducers, reducers } from './store/app.state';
 import { EffectModule } from './store/effects/effects.module';
-import { AdminServiceModule } from './shared/admin-service';
 
 const envModule = environment.production ? [] : extModules;
-
 
 @NgModule({
   declarations: [
@@ -32,13 +30,11 @@ const envModule = environment.production ? [] : extModules;
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectModule,
     ...envModule,
-    AdminServiceModule.forRoot(),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true, },
     MessageService,
-    AuthGuardService,
-    { provide: 'ADMIN_API_URL', useValue: environment.API_ENDPOINT + '' + environment.API_ENDPOINT_PROXY }
+    AuthGuardService
   ],
   bootstrap: [AppComponent]
 })
