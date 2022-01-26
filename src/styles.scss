@@ -10,6 +10,7 @@
 @import 'assets/scss/layout/spacing.scss';
 @import 'assets/scss/layout/_display.scss';
 @import 'assets/scss/layout/_text.scss';
+@import 'assets/scss/layout/_positions.scss';
 
 /** component */
 @import 'assets/scss/component/_button.scss';
@@ -322,7 +323,7 @@ input#range:hover {
 }
 
 .content-wrapper {
-  padding: 25px 25px 25px 0;
+  padding: 25px 25px 25px 25px;
   height: 100%;
   overflow: auto;
 }
@@ -426,3 +427,4 @@ th, td {
 .p-dropdown .p-dropdown-trigger {
   color: #ff5722 !important;
 }
+

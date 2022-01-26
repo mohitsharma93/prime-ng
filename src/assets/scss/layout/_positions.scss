@@ -1,0 +1,9 @@
+.sticky-fixed {
+  position: sticky !important;
+  top: 0;
+  z-index: 9999;
+  background-color: inherit;
+  @media only screen and (max-width: 768px) {
+      position: relative !important;
+  }
+}

@@ -1,24 +1,37 @@
-<div class="content-wrapper" style='height: cal(100vh-70px)'>
-  <div class="d-flex text-center justify-content-between">
-    <div class="outlined-button">
-      <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
+<div class="content-wrapper">
+  <div class="d-flex text-center flex-column">
+    <div class="d-flex text-center justify-content-between">
+      <div class="outlined-button">
+        <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
+      </div>
+      <div>
+        <p-calendar
+          #dashboardCalendar 
+          selectionMode="range"
+          [readonlyInput]="true"
+          inputId="range"
+          [maxDate]="maxDateValue"
+          (onSelect)="dateChange($event)" 
+          [dateFormat]="dateFormat"
+          [formControl]="rangeDates"
+        >
+        </p-calendar>
+      </div>
     </div>
-    <div>
-      <p-calendar
-        #dashboardCalendar 
-        selectionMode="range"
-        [readonlyInput]="true"
-        inputId="range"
-        [maxDate]="maxDateValue"
-        (onSelect)="dateChange($event)" 
-        [dateFormat]="dateFormat"
-        [formControl]="rangeDates"
-      >
-      </p-calendar>
+    <div class="d-flex text-center justify-content-between  mt-3">
+      <div class="dashboard-dropdown">
+        Status
+        <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
+          (onChange)="statusChange($event)"></p-dropdown>
+      </div>
+      <div>
+        <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
+          (click)="export()"></button>
+      </div>
     </div>
   </div>
-  <p></p>
-  <div class="d-flex text-center justify-content-between">
+  <!-- <p></p> -->
+  <!-- <div class="d-flex text-center justify-content-between">
     <div class="dashboard-dropdown">
       Status
       <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
@@ -28,12 +41,12 @@
       <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
         (click)="export()"></button>
     </div>
-  </div>
+  </div> -->
   <div class="page-content">
     <div class="page-inner-content">
       <div class="mt-3">
         <p-card>
-          <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
+          <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="700px"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
             (onPage)="paginate($event)">
             <ng-template pTemplate="header" let-columns>
