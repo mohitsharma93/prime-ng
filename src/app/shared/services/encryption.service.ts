@@ -8,7 +8,7 @@ declare var AES256: any;
 export class EncryptionService {
   encrypt() { }
 
-  decrypt(event: any) {
+  decrypt(event: any) {console.log('innnn encryption')
     if (event instanceof HttpResponse && event.status !== 201) {
       if (event.url && event.url.indexOf("/api") > -1) {
         var today = new Date();
