@@ -19,7 +19,6 @@ export class AuthInterceptorService {
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('innn request');
     const token = this.activeUserService.getToken();
     const user: any = this.activeUserService.getUser();
     const isLoggedIn = user && user.AspNetuserId && token;

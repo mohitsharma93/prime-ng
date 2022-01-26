@@ -36,7 +36,6 @@ export class OrderDetailComponent implements OnInit {
   ) {
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
-      console.log('this.routeParam', this.routeParam)
     })
 
   }

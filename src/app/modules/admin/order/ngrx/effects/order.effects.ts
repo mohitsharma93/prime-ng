@@ -4,7 +4,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as actions from '../actions/order.actions';
 import { errorResolver } from 'src/app/shared/utils';
-import { AdminOrderService } from 'src/app/modules/admin-service/dashboard/order.service';
+import { AdminOrderService } from 'src/app/shared/admin-service/dashboard/order.service';
 
 @Injectable()
 export class OrderEffects {

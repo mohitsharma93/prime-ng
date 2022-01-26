@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as actions from '../actions/dashboard.actions';
-import { AdminDashboardService } from 'src/app/modules/admin-service/dashboard/dashboard.service';
+import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
 import { errorResolver } from 'src/app/shared/utils';
 
 @Injectable()

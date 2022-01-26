@@ -69,7 +69,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(res => {
-      console.log('res date change', res)
       if (this.rangeDates.valid) {
         this.getDashboardAnalytics(this.dateConvection(res))
       }

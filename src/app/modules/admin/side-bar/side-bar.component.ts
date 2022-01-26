@@ -19,7 +19,6 @@ export class SideBarComponent implements OnInit, OnChanges {
 
   public ngOnInit(): void {
     this.primengConfig.ripple = true;
-    console.log('router', this.router)
   }
 
   public ngOnChanges(simpleChanges: SimpleChanges): void {
