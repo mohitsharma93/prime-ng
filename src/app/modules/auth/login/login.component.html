@@ -38,13 +38,6 @@
             <small *ngIf="loginForm.controls['password'].errors?.['required']" class="p-error">
                 Password is required.
             </small>
-            <small *ngIf="loginForm.controls['password'].errors?.['pattern']" class="p-error">
-                <ul class="p-pl-2 p-ml-2 p-mt-0" style="line-height: 1.5">
-                    <li>At least one lowercase</li>
-                    <li>At least one uppercase or one number</li>
-                    <li>Minimum 6 characters</li>
-                </ul>
-            </small>
         </ng-container>
 
         <a [routerLink]="['/auth', 'otp-login']" class="otp-login">Don't have a password, login with OTP</a>
