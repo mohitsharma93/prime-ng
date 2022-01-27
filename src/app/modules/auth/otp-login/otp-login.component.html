@@ -19,7 +19,7 @@
             <div class="d-flex justify-content-center">
                 <input type="text" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
                 (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
-                <i class="pi pi-times d-inline" (click)="enableField()"></i>
+                <i class="pi pi-times icon" (click)="enableField()"></i>
             </div>
         </div>
         <ng-container *ngIf="loginOtpForm.controls['MobileNumber']?.touched">
