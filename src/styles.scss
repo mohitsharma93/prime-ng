@@ -277,6 +277,10 @@ span.otp-login {
   .p-password {
     width: 100% !important;
   }
+  i {
+    position: relative !important;
+    top: 10px !important;
+  }
 }
 // overwrite primeng p-sidebar
 .side-bar {

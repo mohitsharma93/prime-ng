@@ -110,4 +110,12 @@ export class OtpLoginComponent implements OnInit {
     }
   }
 
+  public enableField() {
+    this.loginOtpForm.controls['MobileNumber'].enable();
+    this.loginOtpForm.controls['MobileNumber'].setValue('');
+    this.sendCount = 0;
+    this.isTimerOn = false;
+    this.remainingTime = '00:00';
+  }
+
 }

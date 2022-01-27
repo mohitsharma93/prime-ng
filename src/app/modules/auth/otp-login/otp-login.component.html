@@ -15,8 +15,12 @@
     <form action="" [formGroup]="loginOtpForm" (ngSubmit)="onSubmit()">
         <label for="MobileNumber">Mobile No.</label>
         <div class="prim-ng-input">
-            <input type="text" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
+            <!-- pi-times -->
+            <div class="d-flex justify-content-center">
+                <input type="text" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
                 (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
+                <i class="pi pi-times d-inline" (click)="enableField()"></i>
+            </div>
         </div>
         <ng-container *ngIf="loginOtpForm.controls['MobileNumber']?.touched">
             <small *ngIf="loginOtpForm.controls['MobileNumber'].errors?.['required']" class="p-error">
