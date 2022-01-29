@@ -1,88 +1,105 @@
 <div class="content-wrapper">
-  <div class="d-flex text-center justify-content-between">
-    <div class="outlined-button">
-      <button pButton pRipple type="button" label="All" class="p-button-rounded p-button-outlined is_active"></button>
-      <button pButton pRipple type="button" label="Pending" class="p-button-rounded p-button-outlined"></button>
-      <button pButton pRipple type="button" label="Accepted" class="p-button-rounded p-button-outlined "></button>
-      <button pButton pRipple type="button" label="In-transit Shipment" class="p-button-rounded p-button-outlined"></button>
-      <button pButton pRipple type="button" label="Delivered Shipment" class="p-button-rounded p-button-outlined"></button>
-      <button pButton pRipple type="button" label="Cancelled Order" class="p-button-rounded p-button-outlined"></button>
+  <div class="d-flex text-center flex-column">
+    <div class="d-flex text-center justify-content-between">
+      <div class="outlined-button">
+        <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
+      </div>
+      <div>
+        <p-calendar
+          #dashboardCalendar 
+          selectionMode="range"
+          [readonlyInput]="true"
+          inputId="range"
+          [maxDate]="maxDateValue"
+          (onSelect)="dateChange($event)" 
+          [dateFormat]="dateFormat"
+          [formControl]="rangeDates"
+        >
+        </p-calendar>
+      </div>
     </div>
-    <div>
-      <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" inputId="range"
-        [maxDate]="maxDateValue" (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat">
-      </p-calendar>
+    <div class="mt-4" [ngSwitch]="orderRequestParam?.orderStatusId">
+      <div class="d-flex text-center justify-content-between">
+        <ng-container  *ngSwitchCase="0">
+          <div class="dashboard-dropdown">
+            Status
+            <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
+              (onChange)="statusChange($event)"></p-dropdown>
+          </div>
+          <div>
+            <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
+              (click)="export()"></button>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="1">
+          <div class="outlined-button">
+            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Bulk Accepted Order"
+              (click)="export()"></button>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="4">
+          <div class="outlined-button">
+            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Create Shipment"
+            (click)="export()"></button>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="7">
+          <b>Out for Delivery Orders</b>
+        </ng-container>
+        <ng-container *ngSwitchCase="8">
+          <b>Delivered Shipments</b>
+        </ng-container>
+        <ng-container *ngSwitchCase="5">
+          <b>Cancelled Shipments</b>
+        </ng-container>
+      </div>
     </div>
   </div>
-  <div class="d-flex text-center justify-content-between">
+  <!-- <p></p> -->
+  <!-- <div class="d-flex text-center justify-content-between">
     <div class="dashboard-dropdown">
-      Status 
-      <p-dropdown 
-        [options]="status"
-        placeholder="Select Status"
-        optionLabel="name"
-	      [showClear]="true"
-        (onChange)="statusChange($event)"
-      ></p-dropdown>
+      Status
+      <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
+        (onChange)="statusChange($event)"></p-dropdown>
     </div>
     <div>
-      <button
-        class="p-button-danger p-button-sm"
-        pButton
-        pRipple
-        label="Export"
-        icon="pi pi-trash"
-        (click)="export()"
-      ></button>
+      <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
+        (click)="export()"></button>
     </div>
-  </div>
+  </div> -->
   <div class="page-content">
     <div class="page-inner-content">
       <div class="mt-3">
         <p-card>
-          <p-table 
-            responsiveLayout="scroll"
-            [value]="products"
-            [scrollable]="true"
-            scrollHeight="700px"
-            [paginator]="true"
-            [rows]="10"
-            [showCurrentPageReport]="true"
-            [rowsPerPageOptions]="[5, 10, 25, 50]"
-            (onPage)="paginate($event)"
-          >
+          <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
+            [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
+            (onPage)="paginate($event)">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th>ORDER NO</th>
+                <th pSortableColumn="OrderID">ORDER NO <p-sortIcon field="OrderID"></p-sortIcon></th>
                 <th>NAME</th>
                 <th>ADDRESS</th>
                 <th>MOBILE</th>
-                <th>ORDER AMT</th>
-                <th>ORDER DATE</th>
+                <th pSortableColumn="OrderAmount">ORDER AMT <p-sortIcon field="OrderAmount"></p-sortIcon></th>
+                <th pSortableColumn="OrderDate">ORDER DATE <p-sortIcon field="OrderDate"></p-sortIcon></th>
                 <th>STATUS</th>
                 <th>ACTION</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product let-columns="columns">
               <tr>
-                <td>{{product.id}}</td>
-                <td>{{product.name}}</td>
-                <td>{{product.address}}</td>
-                <td>{{product.mobile}}</td>
-                <td>{{product.order_amt}}</td>
-                <td>{{product.order_date | date : 'MMM. d, y'}}</td>
-                <td >
-                  {{product.status}}
+                <td>{{product.OrderID}}</td>
+                <td>{{product.ShopName}}</td>
+                <td>{{product.ShopAddressOne}}</td>
+                <td>{{product.Mobile}}</td>
+                <td>{{product.OrderAmount}}</td>
+                <td>{{product.OrderDate | date : 'MMM. d, y'}}</td>
+                <td>
+                  {{product.Status}}
                 </td>
                 <td class="outlined-button">
-                  <button 
-                    pButton
-                    pRipple 
-                    type="button"
-                    label="View"
-                    class="p-button-outlined is_active"
-                    (click)="redirectToDetail(product.id)"
-                  >
+                  <button pButton pRipple type="button" label="View" class="p-button-outlined is_active"
+                    (click)="redirectToDetail(product?.OrderID)">
                   </button>
                 </td>
               </tr>
@@ -93,3 +110,60 @@
     </div>
   </div>
 </div>
+
+<ng-template #orderStatusButton>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="All"
+    class="p-button-rounded p-button-outlined is_active"
+    (click)="orderChange(0, 'GetAllOrderDetails')"
+    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 0}"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Pending"
+    class="p-button-rounded p-button-outlined"
+    (click)="orderChange(1, 'GetAllOrderDetails')"
+    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 1}"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Accepted"
+    class="p-button-rounded p-button-outlined "
+    (click)="orderChange(4, 'GetAllOrderDetails')"
+    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 4}"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="In-transit Shipment"
+    class="p-button-rounded p-button-outlined"
+    (click)="orderChange(7, 'GetInTransitOrderDetails')"
+    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 7}"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Delivered Shipment"
+    class="p-button-rounded p-button-outlined"
+    (click)="orderChange(8, 'GetDeliveredOrderDetails')"
+    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 8}"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Cancelled Order"
+    class="p-button-rounded p-button-outlined"
+    (click)="orderChange(5, 'GetAllOrderDetails')"
+    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 5}"
+  ></button>
+</ng-template>

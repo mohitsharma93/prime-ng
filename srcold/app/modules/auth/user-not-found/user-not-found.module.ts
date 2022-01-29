@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { UserNotFoundComponent } from './user-not-found.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { SharedModule } from 'src/app/shared/shared.module';
-
 const routes: Routes = [
   { path: '', component: UserNotFoundComponent },
 ];
@@ -17,9 +15,6 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
-<<<<<<< .mine    ReactiveFormsModule,
-    // SharedModule,
-=======    ReactiveFormsModule
->>>>>>> .theirs  ]
+    ReactiveFormsModule]
 })
 export class UserNotFoundModule { }

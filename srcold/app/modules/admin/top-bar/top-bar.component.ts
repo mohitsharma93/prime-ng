@@ -24,4 +24,11 @@ export class TopBarComponent implements OnInit {
     this.sideBarToggle.emit(this.toggleValue);
   }
 
+  logout(){
+   
+      localStorage.removeItem("admin_token");
+      this.router.navigate(["/"]);
+    
+  }
+
 }

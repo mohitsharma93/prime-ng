@@ -1,3 +1,6 @@
+.waperimg {
+  background-image: none !important;
+}
 .page-inner-content {
   width: 100%;
   display: flex;
@@ -9,7 +12,7 @@
   .card {
     background: #fff;
     border-radius: 3px;
-    padding: 10px;
+    padding: 0 10px;
     width: 46%;
     text-align: center;
     float: left;

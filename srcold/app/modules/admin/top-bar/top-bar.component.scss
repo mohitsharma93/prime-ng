@@ -16,7 +16,7 @@
   -o-transition: padding 0.5s ease-in-out;
   transition: padding 0.5s ease-in-out;
   box-shadow: 0 1px 4px 0 rgb(21 34 50 / 8%);
-  padding-left: 220px;
+  // padding-left: 220px;
 }
 .l-header__inner {
   height: 100%;
@@ -149,7 +149,10 @@
   background-color: inherit;
   line-height: 35px;
 }
-
+.dropdown {
+  right: 40px;
+  position: relative;
+}
 .dropdown-content {
   display: none;
   position: absolute;
@@ -184,4 +187,13 @@
 .dropdown .dropbtn img {
   vertical-align: middle;
   padding-right: 10px;
+}
+.logo {
+  font-size: 25px;
+  font-weight: 500;
+  width: 220px;
+  text-align: center;
+}
+.logo img {
+  vertical-align: middle;
 }
