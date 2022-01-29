@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div class="c-search ml-2" >
+      <div class="c-search ml-2" *ngIf="router.url === '/admin/order'">
         <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile/Shipment I" type="text" />
       </div>
       <div class="header-icons-group">
