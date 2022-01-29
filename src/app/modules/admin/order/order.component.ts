@@ -31,12 +31,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
   ];
   public orderRequestParam: IOrderRequestModel ;
   public orders$: Observable<any[]> = of([]);
+  public columns: any[] = []
 
   constructor(
     private router: Router,
     private store: Store<IAppState>,
   ) {
     super();
+    this.setColumById(0);
     this.orders$ = this.store.pipe(
       select(orders),
       distinctUntilChanged(isEqual),
@@ -49,7 +51,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.getOrders(this.orderRequestParam);
 
     this.orders$.subscribe(res => {
-      console.log(res)
       if (res && res?.length) {
         this.products = cloneDeep(res);
       }
@@ -74,7 +75,36 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public ngOnDestroy(): void {
-    // super.ngOnDestroy();
+    super.ngOnDestroy();
+  }
+
+  public setColumById(id: number) {
+    if (id === 3) {
+      this.columns = [
+        { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
+        { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
+        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
+        { field: 'OrderDate', header: 'CREATED Date', sort: true }
+      ]
+    } else if (id === 4) {
+      this.columns = [
+        { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
+        { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
+        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
+        { field: 'OrderDate', header: 'CREATED DATE', sort: true },
+        { field: 'CloseDate', header: 'CLOSED DATE', sort: true }
+      ]
+    } else {
+      this.columns = [
+        { field: 'OrderID', header: 'ORDER ID', sort: true },
+        { field: 'ShopName', header: 'NAME', sort: false },
+        { field: 'ShopAddressOne', header: 'ADDRESS', sort: false },
+        { field: 'Mobile', header: 'MOBILE', sort: false },
+        { field: 'OrderAmount', header: 'ORDER AMT', sort: true },
+        { field: 'OrderDate', header: 'ORDER DATE', sort: true },
+        { field: 'Status', header: 'STATUS', sort: false },
+      ]
+    }
   }
 
   public setOrderRequestParam() {
@@ -114,6 +144,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
+    this.setColumById(orderStatusId)
     this.orderRequestParam = {
       endPoint: 'OverAll',
       orderStatusId: orderStatusId,

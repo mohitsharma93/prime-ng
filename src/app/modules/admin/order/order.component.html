@@ -37,19 +37,19 @@
               (click)="export()"></button>
           </div>
         </ng-container>
-        <ng-container *ngSwitchCase="4">
+        <ng-container *ngSwitchCase="2">
           <div class="outlined-button">
             <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Create Shipment"
             (click)="export()"></button>
           </div>
         </ng-container>
-        <ng-container *ngSwitchCase="7">
+        <ng-container *ngSwitchCase="3">
           <b>Out for Delivery Orders</b>
         </ng-container>
-        <ng-container *ngSwitchCase="8">
+        <ng-container *ngSwitchCase="4">
           <b>Delivered Shipments</b>
         </ng-container>
-        <ng-container *ngSwitchCase="5">
+        <ng-container *ngSwitchCase="6">
           <b>Cancelled Shipments</b>
         </ng-container>
       </div>
@@ -73,8 +73,8 @@
         <p-card>
           <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
-            (onPage)="paginate($event)">
-            <ng-template pTemplate="header" let-columns  let-product>
+            (onPage)="paginate($event)" [columns]="columns">
+            <!-- <ng-template pTemplate="header" let-columns  let-product>
               <tr>
                 <th pSortableColumn="OrderID">ORDER NO <p-sortIcon field="OrderID"></p-sortIcon></th>
                 <th>NAME</th>
@@ -103,6 +103,21 @@
                   </button>
                 </td>
               </tr>
+            </ng-template> -->
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
+                      {{col.header}} 
+                        <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+                  </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns">
+                        {{rowData[col.field]}}
+                    </td>
+                </tr>
             </ng-template>
           </p-table>
         </p-card>

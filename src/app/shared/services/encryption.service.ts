@@ -23,17 +23,14 @@ export class EncryptionService {
         var passphras = "201907221201";
         passphras = today.getFullYear() + "" + month + "" + day + "1201";
         console.log(passphras)
-        var data = JSON.parse(AES256.decrypt(event.body.Data, passphras));
-        event.body.Data = data;
-        // event = event.clone({ body: event.body.Data });
-        // event = event.clone({ body: event.body });
+        // var data = JSON.parse(AES256.decrypt(event.body.Data, passphras));
+        // event.body.Data = data;
         if (event.url.includes('ShopOverview')) {
           event = event.clone({ body: event.body })
         }
         else {
           event = event.clone({ body: event.body.Data })
         }
-        console.log('event',event)
       }
     }
     return event;
