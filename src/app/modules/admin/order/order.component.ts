@@ -31,7 +31,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   ];
   public orderRequestParam: IOrderRequestModel ;
   public orders$: Observable<any[]> = of([]);
-  public columns: any[] = []
+  public columns: any[] = [];
+  public showPrint = false;
 
   constructor(
     private router: Router,
@@ -150,7 +151,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
       orderStatusId: orderStatusId,
       urlMiddlePoint: urlMiddlePoint
     }
-    this.getOrders(this.orderRequestParam)
+    this.getOrders(this.orderRequestParam);
+    if (orderStatusId === 3) {
+      this.showPrint = true;
+    } else {
+      this.showPrint = false;
+    }
   }
 
   public dateConvection(date: Array<Date>) {
