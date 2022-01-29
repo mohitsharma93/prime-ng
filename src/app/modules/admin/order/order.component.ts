@@ -22,7 +22,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
   public rangeDates: FormControl = new FormControl('');
-  public dateFormat: string = 'dd M yy';
+  public dateFormat: string = 'M, yy';
   public maxDateValue: Date = new Date();
 
   public products: any[] = [];
@@ -85,7 +85,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
         { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
         { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
-        { field: 'OrderDate', header: 'CREATED Date', sort: true }
+        { field: 'OrderDate', header: 'CREATED DATE', sort: true }
       ]
     } else if (id === 4) {
       this.columns = [

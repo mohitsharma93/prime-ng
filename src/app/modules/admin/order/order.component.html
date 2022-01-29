@@ -5,6 +5,17 @@
         <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
       </div>
       <div>
+        <!-- <p-calendar
+          #dashboardCalendar 
+          selectionMode="range"
+          [readonlyInput]="true"
+          inputId="range"
+          [maxDate]="maxDateValue"
+          (onSelect)="dateChange($event)" 
+          [dateFormat]="dateFormat"
+          [formControl]="rangeDates"
+        >
+        </p-calendar> -->
         <p-calendar
           #dashboardCalendar 
           selectionMode="range"
@@ -14,6 +25,7 @@
           (onSelect)="dateChange($event)" 
           [dateFormat]="dateFormat"
           [formControl]="rangeDates"
+          view="month"
         >
         </p-calendar>
       </div>
@@ -115,8 +127,13 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
+                  <!-- 'MMM. d, y' -->
                     <td *ngFor="let col of columns">
-                        {{rowData[col.field]}}
+                        {{
+                          (col.field === 'OrderDate' || col.field === 'CloseDate') ?
+                            (rowData[col.field] | date : 'MMM. d, y') :
+                            rowData[col.field]
+                        }}
                     </td>
                     <td class="outlined-button">
                       <ng-container *ngTemplateOutlet="actionButton; context:{ $implicit: rowData?.OrderID }"></ng-container>
