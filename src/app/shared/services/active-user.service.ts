@@ -26,4 +26,8 @@ export class ActiveUserService {
     }
   }
 
+  removeToken() {
+    localStorage.clear();
+  }
+
 }

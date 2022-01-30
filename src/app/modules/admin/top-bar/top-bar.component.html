@@ -17,14 +17,14 @@
       <div class="c-search ml-2" *ngIf="router.url === '/admin/order'">
         <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile/Shipment I" type="text" />
       </div>
-      <div class="header-icons-group">
+      <div class="header-icons-group" *ngIf="userDetail">
         <div class="dropdown">
           <button class="dropbtn">
-            <img src="assets/img/user.png"> Ronnie Woodkin
+            <img src="assets/img/user.png"> {{userDetail?.userName}}
             <i class="fa fa-caret-down"></i>
           </button>
           <div class="dropdown-content">
-            <a href="#">Logout</a>
+            <a href="#" (click)="logout()">Logout</a>
           </div>
         </div>
       </div>
