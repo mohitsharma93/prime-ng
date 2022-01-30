@@ -8,7 +8,7 @@ import { data } from './product-dummy';
 import * as actions from './ngrx/actions/order.actions';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, Observable, of, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
 import { BaseComponent } from '../base.component';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { orders } from './ngrx/selector/order.selector';
@@ -138,8 +138,19 @@ export class OrderComponent extends BaseComponent implements OnInit {
     console.log('status change', event)
   }
 
-  public export(): void {
-    console.log('in export')
+  public export(tableId: string): void {
+    const data = this.getOrdersLocal();
+    if (data && data.length) {
+      this.exportExcel(data);
+    }
+  }
+
+  public getOrdersLocal(): any {
+    let data = null;
+    this.orders$.pipe(take(1)).subscribe(res => {
+      data = res
+    })
+    return data;
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
