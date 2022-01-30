@@ -25,7 +25,7 @@
       ></p-button>
     </div>
     <div class="mx-4">
-      <p-calendar
+      <!-- <p-calendar
         selectionMode="range"
         [readonlyInput]="true"
         inputId="range"
@@ -34,7 +34,19 @@
         #dashboardCalendar
         [dateFormat]="dateFormat"
         [formControl]="rangeDates"
-      ></p-calendar>
+      ></p-calendar> -->
+      <p-calendar
+        #dashboardCalendar 
+        selectionMode="range"
+        [readonlyInput]="true"
+        inputId="range"
+        [maxDate]="maxDateValue"
+        (onSelect)="dateChange($event)" 
+        [dateFormat]="dateFormat"
+        [formControl]="rangeDates"
+        view="month"
+      >
+      </p-calendar>
     </div>
   </div>
   <div class="page-content">

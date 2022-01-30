@@ -21,7 +21,9 @@ import { orders } from './ngrx/selector/order.selector';
 export class OrderComponent extends BaseComponent implements OnInit {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
-  public rangeDates: FormControl = new FormControl('');
+  public rangeDates: FormControl = new FormControl(
+    [new Date(), new Date()]
+  );
   public dateFormat: string = 'M, yy';
   public maxDateValue: Date = new Date();
 

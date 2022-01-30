@@ -18,8 +18,10 @@ import { FormControl } from '@angular/forms';
 export class DashboardComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
-  public rangeDates: FormControl = new FormControl();
-  public dateFormat: string = 'dd M yy';
+  public rangeDates: FormControl = new FormControl(
+    [new Date(), new Date()]
+  );
+  public dateFormat: string = 'M, yy';
   public maxDateValue: Date = new Date();
   public chartData: any;
   public graphLabelDetail: any[] = []
