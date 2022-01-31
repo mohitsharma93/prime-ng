@@ -83,7 +83,8 @@
         <p-card>
           <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
-            (onPage)="paginate($event)" [columns]="columns">
+            (onPage)="paginate($event)" [columns]="columns" [(selection)]="selectedData"
+          >
             <!-- <ng-template pTemplate="header" let-columns  let-product>
               <tr>
                 <th pSortableColumn="OrderID">ORDER NO <p-sortIcon field="OrderID"></p-sortIcon></th>
@@ -116,6 +117,9 @@
             </ng-template> -->
             <ng-template pTemplate="header" let-columns>
               <tr>
+                  <th *ngIf="orderRequestParam?.orderStatusId === 2">
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
                   <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
                       {{col.header}} 
                         <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -125,7 +129,9 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
-                  <!-- 'MMM. d, y' -->
+                    <td *ngIf="orderRequestParam?.orderStatusId === 2">
+                      <p-tableCheckbox [value]="rowData" ></p-tableCheckbox>
+                    </td>
                     <td *ngFor="let col of columns">
                         {{
                           (col.field === 'OrderDate' || col.field === 'CloseDate') ?

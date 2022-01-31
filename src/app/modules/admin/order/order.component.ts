@@ -31,10 +31,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public status = [
     { name: 'Approved', code: 'approved' },
   ];
-  public orderRequestParam: IOrderRequestModel ;
+  public orderRequestParam: IOrderRequestModel;
   public orders$: Observable<any[]> = of([]);
   public columns: any[] = [];
   public showPrint = false;
+  public selectedData: any[] = [];
 
   constructor(
     private router: Router,
@@ -181,7 +182,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public dateConvection(date: Array<Date>) {
-    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1 ) + ',' + date[1].getFullYear()
+    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1) + ',' + date[1].getFullYear()
   }
 
 }
