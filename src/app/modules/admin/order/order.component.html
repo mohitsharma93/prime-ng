@@ -211,9 +211,9 @@
 </ng-template>
 
 <ng-template #actionButton let-id>
-  <button pButton pRipple type="button" class="p-button-outlined is_active" icon="pi pi-print" *ngIf="showPrint">
+  <button pButton pRipple type="button" class="p-button-outlined is_active" icon="pi pi-print" *ngIf="showPrint" style="width: 36px;">
   </button>
   <button pButton pRipple type="button" label="View" class="p-button-outlined is_active"
-  (click)="redirectToDetail(id)">
+  (click)="redirectToDetail(id)" style="width: 85px;">
 </button>
 </ng-template>
