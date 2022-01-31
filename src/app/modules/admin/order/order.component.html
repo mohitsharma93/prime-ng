@@ -130,7 +130,9 @@
                         {{
                           (col.field === 'OrderDate' || col.field === 'CloseDate') ?
                             (rowData[col.field] | date : 'MMM. d, y') :
-                            rowData[col.field]
+                            (col.field === 'ShopAddressOne')  ?
+                              rowData['newAddress'] :
+                              rowData[col.field]
                         }}
                     </td>
                     <td class="outlined-button">

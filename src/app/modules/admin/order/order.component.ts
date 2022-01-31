@@ -55,7 +55,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
     this.orders$.subscribe(res => {
       if (res && res?.length) {
-        this.products = cloneDeep(res);
+        const newProduct = cloneDeep(res)
+        newProduct.map(p => {
+          let newAddress = ''
+          if (p.ShopAddressOne) newAddress += ' ' + p.ShopAddressOne;
+          if (p.ShopAddressTwo) newAddress += ' ' + p.ShopAddressTwo;
+          if (p.ShopAddressThree) newAddress += ' ' + p.ShopAddressThree;
+          p['newAddress'] = newAddress
+        })
+        this.products = newProduct;
       }
     })
 
