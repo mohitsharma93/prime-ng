@@ -1,0 +1,122 @@
+<div class="content-wrapper">
+  <div class="d-flex column-direction text-align-center">
+    <div>
+      <h2 class="page-title">Shop Overview</h2>
+    </div>
+    <div >
+      <p-button 
+        label="Today" 
+        class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('Today')"
+        [ngClass]="{'btn-color': selectedFilter === 'Today'}"
+      ></p-button>
+      <p-button 
+        label="Months"
+        class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('Month')"
+        [ngClass]="{'btn-color': selectedFilter === 'Months'}"
+      >
+      </p-button>
+      <p-button 
+        label="Over All"
+        class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('OverAll')"
+        [ngClass]="{'btn-color': selectedFilter === 'OverAll'}"
+      ></p-button>
+    </div>
+    <div class="mx-4">
+      <!-- <p-calendar
+        selectionMode="range"
+        [readonlyInput]="true"
+        inputId="range"
+        [maxDate]="maxDateValue"
+        (onSelect)="dateChange($event)"
+        #dashboardCalendar
+        [dateFormat]="dateFormat"
+        [formControl]="rangeDates"
+      ></p-calendar> -->
+      <p-calendar
+        #dashboardCalendar 
+        selectionMode="range"
+        [readonlyInput]="true"
+        inputId="range"
+        [maxDate]="maxDateValue"
+        (onSelect)="dateChange($event)" 
+        [dateFormat]="dateFormat"
+        [formControl]="rangeDates"
+        view="month"
+      >
+      </p-calendar>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="box-content">
+        <div class="card">
+          <div class="card-body">
+            <p class="">Total Order</p>
+            <h1>{{(dashboardAnalytics$ | async)?.TotalOrder}}</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">Total Sale</p>
+            <h1>{{(dashboardAnalytics$ | async)?.TotalSale}}</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">Pending Orders</p>
+            <h1>{{(dashboardAnalytics$ | async)?.PendingOrdersCount}}</h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p class="">In-transit Orders</p>
+            <h1>{{(dashboardAnalytics$ | async)?.IntransitOrders}}</h1>
+          </div>
+        </div>
+      </div>
+      <div class="order-report">
+        <div class="card">
+          <div class="card-body">
+            <p style="font-weight: 600;" class="">Order Processing Report</p>
+            <!-- <canvas id="myChart" style="width:100%; max-width:600px"></canvas> -->
+            <p-chart
+              type="doughnut"
+              [data]="chartData"
+              [options]="chartOptions"
+              height="140"
+              ></p-chart>
+              <!-- [style]="{'width': '50px !important'}" -->
+              <div 
+                *ngIf="graphLabelDetail?.length"
+                class="d-flex text-center flex-column mt-3"
+              >
+                <div 
+                  *ngFor="let detail of graphLabelDetail"
+                  class="mb-2 d-flex text-center justify-content-between"
+                >
+                  <div 
+                    class="status"
+                    [ngClass]="{
+                      'pending': detail.status === 'Pending',
+                      'accepted': detail.status === 'Accepted',
+                      'shipped': detail.status === 'Shipped',
+                      'delivered': detail.status === 'Delivered',
+                      'cancelled': detail.status === 'Cancelled'
+                    }"
+                  > </div>
+                  <div>{{detail.status}}</div>
+                  <div>{{detail.count}}</div>
+                  <div>{{detail.sum | number : '1.2-2'}}</div>
+                </div>
+              </div>
+            <hr>
+            <a class="more" href="#">More Insights ></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
