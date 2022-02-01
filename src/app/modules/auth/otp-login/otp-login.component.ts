@@ -2,11 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { APP_CONFIG } from 'src/app/app.config';
-import { ActiveUserService } from 'src/app/shared/services/active-user.service';
 import { DataService } from 'src/app/shared/services/data.service';
-import { EncryptionService } from 'src/app/shared/services/encryption.service';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
-import { UserAuthService } from 'src/app/shared/services/user-auth.service';
 import { ONLY_DIGIT } from 'src/app/shared/validators/Regex-validators';
 
 
@@ -33,7 +30,10 @@ export class OtpLoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.clear();
+    const username = localStorage.getItem("username");
+    if (username) {
+      this.MobileNumber?.setValue(username);
+    }
   }
 
   public onlyDigit(e: KeyboardEvent): void {
@@ -44,7 +44,7 @@ export class OtpLoginComponent implements OnInit {
   }
 
   onSendOtp() {
-    this.loginOtpForm.controls['MobileNumber'].disable();
+    // this.loginOtpForm.controls['MobileNumber'].disable();
     const req = {
       url: APP_CONFIG.API.AUTH.SEND_OTP,
       params: {
@@ -67,7 +67,6 @@ export class OtpLoginComponent implements OnInit {
       const req = {
         url: APP_CONFIG.API.AUTH.VERIFY_OTP,
         params: this.loginOtpForm.getRawValue()
-
       }
       this.ds.post(req).subscribe((res: any) => {
         if (res && res.Userid && res.IsUserExist === "True") {
@@ -81,25 +80,9 @@ export class OtpLoginComponent implements OnInit {
       });
     }
   }
+  get MobileNumber() { return this.loginOtpForm.get('MobileNumber') }
 
-  // onSubmit() {
-  //   if (!this.loginOtpForm.valid) {
-  //     this.loginOtpForm.markAllAsTouched();
-  //   } else {
-  //     const req = {
-  //       url: APP_CONFIG.API.AUTH.VERIFY_OTP,
-  //       params: this.loginOtpForm.value
-
-  //     }
-  //     this.ds.post(req).subscribe((res: any) => {
-  //       if (res && res.Userid) {
-  //         this.toasterService.success('OTP is Verified Successfully.');
-  //         const url = `auth/change-password/${res.Userid}`;
-  //         this.router.navigate([url]);
-  //       }
-  //     });
-  //   }
-  // }
+  
   private initializeForm() {
     this.loginOtpForm = this.fb.group(
       {
@@ -111,9 +94,9 @@ export class OtpLoginComponent implements OnInit {
   }
 
   startTimer(remaining: number) {
-    if (remaining === 0) {
-      this.isTimerOn = false;
-   }
+    if (!this.isTimerOn) {
+      return;
+    }
     let m: any = Math.floor(remaining / 60);
     let s: any = remaining % 60;
     m = m < 10 ? '0' + m : m;
@@ -128,16 +111,14 @@ export class OtpLoginComponent implements OnInit {
       return;
     }
 
-    if (!this.isTimerOn) {
-      return;
-    }
   }
   public enableField() {
+    console.log('enableField called');
+    this.remainingTime = '00:00';
+    this.isTimerOn = false;
     this.loginOtpForm.controls['MobileNumber'].enable();
     this.loginOtpForm.controls['MobileNumber'].setValue('');
     this.sendCount = 0;
-    this.isTimerOn = false;
-    this.remainingTime = '00:00';
   }
 
 }

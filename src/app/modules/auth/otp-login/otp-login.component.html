@@ -17,10 +17,14 @@
         <div class="prim-ng-input">
             <!-- {{loginOtpForm.controls['MobileNumber'].disabled}} -->
             <div class="d-flex justify-content-center">
-                <input type="text" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
+                <!-- <input type="text" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
                     (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
                 <i class="pi pi-times icon" [ngClass]="{'disabled': !loginOtpForm.controls['MobileNumber'].disabled}"
-                    (click)="enableField()"></i>
+                    (click)="enableField()"></i> -->
+                    <input type="search" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
+                    (search)="enableField()" (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
+                <!-- <i class="pi pi-times icon" [ngClass]="{'disabled': !loginOtpForm.controls['MobileNumber'].disabled}"
+                    (click)="enableField()"></i> -->
             </div>
         </div>
         <ng-container *ngIf="loginOtpForm.controls['MobileNumber']?.touched">
@@ -52,7 +56,7 @@
         <div>
             <a href="javascript:void(0)" (click)="onSendOtp()"
                 [class]="loginOtpForm.controls['MobileNumber'].valid && remainingTime == '00:00' ? 'otp-login' : 'otp-login-disabled' "
-                [ngClass]="{'disabled': isTimerOn}">
+                >
                 <span>{{ sendCount === 0 ? 'Send OTP': 'Resend OTP'}} </span>
             </a>
             <span class="otp-login" *ngIf="remainingTime !== '00:00'">&nbsp;&nbsp;&nbsp;&nbsp;{{remainingTime}}</span>

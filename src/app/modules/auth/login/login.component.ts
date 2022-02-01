@@ -31,8 +31,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     if (this.activeUserService.getToken()) {
       this.router.navigate(["admin/dashboard"])
-   }
-   }
+    }
+  }
 
   public onlyDigit(e: KeyboardEvent): void {
     const inputChar = String.fromCharCode(e.charCode);
@@ -80,6 +80,18 @@ export class LoginComponent implements OnInit {
 
       });
     }
+  }
+
+  navigateToOtpPage() {
+    localStorage.removeItem("username");
+    if (this.username?.valid) {
+      localStorage.setItem("username", this.username.value);
+    }
+    this.router.navigateByUrl('/auth/otp-login');
+  }
+
+  get username() {
+    return this.loginForm.get('username')
   }
 
   private initializeForm() {
