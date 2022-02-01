@@ -12,7 +12,7 @@ import { debounceTime, distinctUntilChanged, filter, Observable, of, skip, take,
 import { BaseComponent } from '../base.component';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { orders } from './ngrx/selector/order.selector';
-import { selectOrderStatusId } from 'src/app/store/selector';
+import { selectOrderStatusId, selectTopBarSearchString } from 'src/app/store/selector';
 import { setGetOrderStatusId } from 'src/app/store/actions/root.actions';
 
 @Component({
@@ -39,6 +39,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public showPrint = false;
   public selectedData: any[] = [];
   public selectOrderStatusId$: Observable<number | null>;
+  public selectTopBarSearchString$: Observable<string>;
 
   constructor(
     private router: Router,
@@ -54,6 +55,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
     );
     this.selectOrderStatusId$ = this.store.pipe(
       select(selectOrderStatusId),
+      distinctUntilChanged(isEqual),
+      takeUntil(this.destroy$)
+    );
+    this.selectTopBarSearchString$ = this.store.pipe(
+      select(selectTopBarSearchString),
       distinctUntilChanged(isEqual),
       takeUntil(this.destroy$)
     );
@@ -78,15 +84,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
     this.orders$.subscribe(res => {
       if (res && res?.length) {
-        const newProduct = cloneDeep(res)
-        newProduct.map(p => {
-          let newAddress = ''
-          if (p.ShopAddressOne) newAddress += ' ' + p.ShopAddressOne;
-          if (p.ShopAddressTwo) newAddress += ' ' + p.ShopAddressTwo;
-          if (p.ShopAddressThree) newAddress += ' ' + p.ShopAddressThree;
-          p['newAddress'] = newAddress
-        })
-        this.products = newProduct;
+        this.setProduct(res);
       }
     })
 
@@ -105,11 +103,42 @@ export class OrderComponent extends BaseComponent implements OnInit {
         });
         this.getOrders(this.orderRequestParam);
       }
+    });
+
+    this.selectTopBarSearchString$.subscribe((res: string) => {
+      if (res || res?.length === 0) {
+        this.orders$.pipe(take(1), takeUntil(this.destroy$)).subscribe(orders => {
+          if (res.length === 0) {
+            this.products = orders;
+          }
+          if (+res) {
+            this.products = orders.filter(f => {
+              return f?.OrderID?.toString()?.includes(res) || f?.Mobile?.toString()?.includes(res);
+            });
+          } else {
+            this.products = orders.filter(f => {
+              return f?.ShopName?.toLowerCase()?.includes(res.toLowerCase());
+            });
+          }
+        })
+      }
     })
   }
 
   public ngOnDestroy(): void {
     super.ngOnDestroy();
+  }
+
+  public setProduct(res: any) : void {
+    const newProduct = cloneDeep(res)
+    newProduct.map((p: any) => {
+      let newAddress = ''
+      if (p.ShopAddressOne) newAddress += ' ' + p.ShopAddressOne;
+      if (p.ShopAddressTwo) newAddress += ' ' + p.ShopAddressTwo;
+      if (p.ShopAddressThree) newAddress += ' ' + p.ShopAddressThree;
+      if (newAddress?.length) p['newAddress'] = newAddress
+    })
+    this.products = newProduct;
   }
 
   public setColumById(id: number) {

@@ -15,7 +15,13 @@
       </div>
 
       <div class="c-search ml-2" *ngIf="router.url === '/admin/order'">
-        <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile/Shipment I" type="text" />
+        <input
+          class="c-search__input u-input"
+          placeholder="Search Name/ Order ID/Mobile/Shipment" 
+          type="text"
+          [formControl]="searchControl"
+        />
+        <i class="pi pi-times" (click)="resetSearch()"></i>
       </div>
       <div class="header-icons-group" *ngIf="userDetail">
         <div class="dropdown">
