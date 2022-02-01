@@ -39,8 +39,10 @@
               (onChange)="statusChange($event)"></p-dropdown>
           </div>
           <div>
+            <!-- <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
+              (click)="export('logTable')"></button> -->
             <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
-              (click)="export('logTable')"></button>
+            (click)="dt.exportCSV()"></button>
           </div>
         </ng-container>
         <ng-container *ngSwitchCase="1">
@@ -83,7 +85,7 @@
         <p-card>
           <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
-            (onPage)="paginate($event)" [columns]="columns" [(selection)]="selectedData"
+            (onPage)="paginate($event)" [columns]="columns" [(selection)]="selectedData" #dt
           >
             <!-- <ng-template pTemplate="header" let-columns  let-product>
               <tr>
