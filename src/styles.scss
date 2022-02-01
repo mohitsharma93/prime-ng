@@ -17,7 +17,7 @@
 
 body {
   background-color: #fff4e4;
-  display: flex;
+  // display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -169,6 +169,9 @@ span.otp-login {
   width: 825px;
   max-width: 100%;
   padding: 50px;
+  margin: auto;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .form-container {
@@ -325,8 +328,11 @@ input#range:hover {
   padding-top: 70px;
   padding-right: 0px;
   padding-bottom: 0px;
-  padding-left: 220px;
-  background-color: #f4f7fc;
+    padding-left: 220px;
+    background-color: #f4f7fc;
+    margin-right: 665px;
+    // margin-left: 15px;
+
 }
 
 .content-wrapper {
@@ -445,4 +451,8 @@ th, td {
 .disabled{
   pointer-events: none  !important;
 cursor: default  !important
+}
+
+.bold {
+  font-weight: bold;
 }

@@ -45,14 +45,12 @@
         </ng-container>
         <ng-container *ngSwitchCase="1">
           <div class="outlined-button">
-            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Bulk Accepted Order"
-              (click)="export('logTable')"></button>
+            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Bulk Accepted Order"></button>
           </div>
         </ng-container>
         <ng-container *ngSwitchCase="2">
           <div class="outlined-button">
-            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Create Shipment"
-            (click)="export('logTable')"></button>
+            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Create Shipment"></button>
           </div>
         </ng-container>
         <ng-container *ngSwitchCase="3">
@@ -85,7 +83,8 @@
         <p-card>
           <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
-            (onPage)="paginate($event)" [columns]="columns">
+            (onPage)="paginate($event)" [columns]="columns" [(selection)]="selectedData"
+          >
             <!-- <ng-template pTemplate="header" let-columns  let-product>
               <tr>
                 <th pSortableColumn="OrderID">ORDER NO <p-sortIcon field="OrderID"></p-sortIcon></th>
@@ -118,6 +117,9 @@
             </ng-template> -->
             <ng-template pTemplate="header" let-columns>
               <tr>
+                  <th *ngIf="orderRequestParam?.orderStatusId === 2">
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
                   <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
                       {{col.header}} 
                         <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -127,12 +129,16 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
-                  <!-- 'MMM. d, y' -->
+                    <td *ngIf="orderRequestParam?.orderStatusId === 2">
+                      <p-tableCheckbox [value]="rowData" ></p-tableCheckbox>
+                    </td>
                     <td *ngFor="let col of columns">
                         {{
                           (col.field === 'OrderDate' || col.field === 'CloseDate') ?
                             (rowData[col.field] | date : 'MMM. d, y') :
-                            rowData[col.field]
+                            (col.field === 'ShopAddressOne')  ?
+                              rowData['newAddress'] :
+                              rowData[col.field]
                         }}
                     </td>
                     <td class="outlined-button">
@@ -205,9 +211,9 @@
 </ng-template>
 
 <ng-template #actionButton let-id>
-  <button pButton pRipple type="button" class="p-button-outlined is_active" icon="pi pi-print" *ngIf="showPrint">
+  <button pButton pRipple type="button" class="p-button-outlined is_active" icon="pi pi-print" *ngIf="showPrint" style="width: 36px;">
   </button>
   <button pButton pRipple type="button" label="View" class="p-button-outlined is_active"
-  (click)="redirectToDetail(id)">
+  (click)="redirectToDetail(id)" style="width: 85px;">
 </button>
 </ng-template>

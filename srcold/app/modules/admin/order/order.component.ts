@@ -31,10 +31,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public status = [
     { name: 'Approved', code: 'approved' },
   ];
-  public orderRequestParam: IOrderRequestModel ;
+  public orderRequestParam: IOrderRequestModel;
   public orders$: Observable<any[]> = of([]);
   public columns: any[] = [];
   public showPrint = false;
+  public selectedData: any[] = [];
 
   constructor(
     private router: Router,
@@ -55,7 +56,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
     this.orders$.subscribe(res => {
       if (res && res?.length) {
-        this.products = cloneDeep(res);
+        const newProduct = cloneDeep(res)
+        newProduct.map(p => {
+          let newAddress = ''
+          if (p.ShopAddressOne) newAddress += ' ' + p.ShopAddressOne;
+          if (p.ShopAddressTwo) newAddress += ' ' + p.ShopAddressTwo;
+          if (p.ShopAddressThree) newAddress += ' ' + p.ShopAddressThree;
+          p['newAddress'] = newAddress
+        })
+        this.products = newProduct;
       }
     })
 
@@ -84,14 +93,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public setColumById(id: number) {
     if (id === 3) {
       this.columns = [
-        { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
+        { field: 'ShipmentID', header: 'SHIPMENT ID', sort: true },
         { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
         { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
         { field: 'OrderDate', header: 'CREATED DATE', sort: true }
       ]
     } else if (id === 4) {
       this.columns = [
-        { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
+        { field: 'ShipmentID', header: 'SHIPMENT ID', sort: true },
         { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
         { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
         { field: 'OrderDate', header: 'CREATED DATE', sort: true },
@@ -173,7 +182,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public dateConvection(date: Array<Date>) {
-    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1 ) + ',' + date[1].getFullYear()
+    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1) + ',' + date[1].getFullYear()
   }
 
 }

@@ -19,3 +19,12 @@
     color: $orange;
   }
 }
+
+.p-button:focus {
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+.p-button:hover {
+  background-color: inherit !important;
+}
