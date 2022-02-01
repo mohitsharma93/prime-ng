@@ -10,8 +10,7 @@ export interface IOrderState {
 
   orderDetail: any;
   orderDetailInProcess: boolean;
-  orderDetailSuccess: boolean;
-
+  orderDetailSuccess: boolean
 }
 
 export const initialState: IOrderState = {

@@ -107,7 +107,7 @@
                       'cancelled': detail.status === 'Cancelled'
                     }"
                   > </div>
-                  <div>{{detail.status}}</div>
+                  <div (click)="redirectToOrder(detail.statusId)" class="cursor-pointer">{{detail.status}}</div>
                   <div class="bold">{{detail.count}}</div>
                   <div class="bold">{{detail.sum | number : '1.2-2'}}</div>
                 </div>

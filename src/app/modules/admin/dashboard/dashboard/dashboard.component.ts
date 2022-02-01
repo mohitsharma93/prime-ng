@@ -9,6 +9,8 @@ import { BaseComponent } from '../../base.component';
 import { getDashboardAnalyticTypeAction } from '../ngrx/actions/dashboard.actions';
 import { dashboardAnalytics } from '../ngrx/selector/dashboard.selector';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { setGetOrderStatusId } from '../../../../store/actions/root.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -46,6 +48,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   constructor(
     private store: Store<IAppState>,
+    private router: Router
   ) {
     super()
     this.getDashboardAnalytics(this.selectedFilter);
@@ -107,11 +110,11 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   public setGraphLabelDetail(data: { [key: string]: string }) {
     this.graphLabelDetail = [
-      { status: 'Pending', count: data['PendingOrdersCount'], sum: data['PendingOrdersSum'] },
-      { status: 'Accepted', count: data['AcceptedOrdersCount'], sum: data['AcceptedOrdersSum'] },
-      { status: 'Shipped', count: data['ShippedOrdersCount'], sum: data['ShippedOrdersSum'] },
-      { status: 'Delivered', count: data['DeliveredOrdersCount'], sum: data['DeliveredOrdersSum'] },
-      { status: 'Cancelled', count: data['CancelledOrdersCount'], sum: data['CancelledOrdersSum'] },
+      { status: 'Pending', count: data['PendingOrdersCount'], sum: data['PendingOrdersSum'], statusId: 1},
+      { status: 'Accepted', count: data['AcceptedOrdersCount'], sum: data['AcceptedOrdersSum'], statusId: 2 },
+      { status: 'Shipped', count: data['ShippedOrdersCount'], sum: data['ShippedOrdersSum'], statusId: 3 },
+      { status: 'Delivered', count: data['DeliveredOrdersCount'], sum: data['DeliveredOrdersSum'], statusId: 4 },
+      { status: 'Cancelled', count: data['CancelledOrdersCount'], sum: data['CancelledOrdersSum'], statusId: 6 },
       
     ];
     const d = pick(data, ['AcceptedOrdersCount', 'PendingOrdersCount', 'CancelledOrdersCount', 'DeliveredOrdersCount', 'ShippedOrdersCount'])
@@ -121,5 +124,10 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   public dateConvection(date : Array<Date>): string {
     return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1 ) + ',' + date[1].getFullYear()
+  }
+
+  public redirectToOrder(statusId: number): void {
+    this.store.dispatch(setGetOrderStatusId({ response: statusId }))
+    this.router.navigate(['/admin', 'order']);
   }
 }

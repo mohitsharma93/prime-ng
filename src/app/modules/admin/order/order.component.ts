@@ -8,10 +8,12 @@ import { data } from './product-dummy';
 import * as actions from './ngrx/actions/order.actions';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Observable, of, skip, take, takeUntil } from 'rxjs';
 import { BaseComponent } from '../base.component';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { orders } from './ngrx/selector/order.selector';
+import { selectOrderStatusId } from 'src/app/store/selector';
+import { setGetOrderStatusId } from 'src/app/store/actions/root.actions';
 
 @Component({
   selector: 'app-admin-order',
@@ -36,23 +38,43 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public columns: any[] = [];
   public showPrint = false;
   public selectedData: any[] = [];
+  public selectOrderStatusId$: Observable<number | null>;
 
   constructor(
     private router: Router,
-    private store: Store<IAppState>,
+    private store: Store<IAppState>
   ) {
     super();
     this.setColumById(0);
+    this.setOrderRequestParam();
     this.orders$ = this.store.pipe(
       select(orders),
+      distinctUntilChanged(isEqual),
+      takeUntil(this.destroy$)
+    );
+    this.selectOrderStatusId$ = this.store.pipe(
+      select(selectOrderStatusId),
       distinctUntilChanged(isEqual),
       takeUntil(this.destroy$)
     );
   }
 
   public ngOnInit(): void {
-    this.setOrderRequestParam();
     this.getOrders(this.orderRequestParam);
+    this.selectOrderStatusId$.subscribe(res => {
+      if (res) {
+        if (res === 3 || res === 4) {
+          this.setColumById(res);
+        }
+        this.orderRequestParam = {
+          ...this.orderRequestParam,
+          orderStatusId: res,
+          urlMiddlePoint: this.getApiCallStatusWise(res)
+        }
+        this.getOrders(this.orderRequestParam);
+        this.store.dispatch(setGetOrderStatusId({ response: null }))
+      }
+    })
 
     this.orders$.subscribe(res => {
       if (res && res?.length) {
@@ -183,6 +205,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public dateConvection(date: Array<Date>) {
     return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1) + ',' + date[1].getFullYear()
+  }
+
+  public getApiCallStatusWise(key: number): string {
+    switch (key) {
+      case 3:
+        return 'GetInTransitOrderDetails';
+      case 4:
+        return 'GetDeliveredOrderDetails';
+      default:
+        return 'GetAllOrderDetails';
+    }
   }
 
 }

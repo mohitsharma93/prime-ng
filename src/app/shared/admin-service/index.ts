@@ -15,7 +15,7 @@ export class AdminServiceModule {
             providers: [
                 HttpWrapperService,
                 AdminDashboardService,
-                AdminOrderService,
+                AdminOrderService
             ],
         };
     }

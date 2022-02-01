@@ -20,13 +20,12 @@ export class DashboardEffects {
       switchMap((req) => {
         return this.dashboardService.getDashboardAnalyticsService(req.request).pipe(
           map((res: any) => { 
-            console.log('response',res)
               if (res.Status !== 'OK') {
                   return actions.getDashboardAnalyticTypeActionError({ errors: errorResolver(res.ErrorMessage) });
               }
               return actions.getDashboardAnalyticTypeActionComplete({ response: res });
           }),
-          catchError((err) => {
+          catchError((err) => {console.log('err', err);
               return of(actions.getDashboardAnalyticTypeActionError({ errors: errorResolver(err.errors) }));
           })
       );
