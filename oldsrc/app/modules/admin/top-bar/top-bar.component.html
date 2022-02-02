@@ -1,0 +1,39 @@
+<div [ngClass]="{'sidebar-is-expanded': !toggleValue}">
+  <header class="l-header d-flex flex-column justify-content-center">
+    <div class="l-header__inner clearfix">
+      <div class="c-header-icon" (click)="toggleSideBar()" style="display:none">
+        <div class="hamburger-toggle" [ngClass]="{'is-opened': !toggleValue}">
+          <span class="bar-top"></span>
+          <span class="bar-mid"></span>
+          <span class="bar-bot"></span>
+        </div>
+      </div>
+      <div class="logo">
+        <div class="logo__txt">
+        <img src="./assets/img/direct_sign.png" width="19">  DIRECT
+        </div>
+      </div>
+
+      <div class="c-search ml-2" *ngIf="router.url === '/admin/order'">
+        <input
+          class="c-search__input u-input"
+          placeholder="Search Name/ Order ID/Mobile/Shipment" 
+          type="text"
+          [formControl]="searchControl"
+        />
+        <i class="pi pi-times" (click)="resetSearch()"></i>
+      </div>
+      <div class="header-icons-group" *ngIf="userDetail">
+        <div class="dropdown">
+          <button class="dropbtn">
+            <img src="assets/img/user.png"> {{userDetail?.userName}}
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="#" (click)="logout()">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
