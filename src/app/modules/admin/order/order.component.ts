@@ -14,6 +14,8 @@ import { cloneDeep, isEqual } from 'lodash-es';
 import { orders } from './ngrx/selector/order.selector';
 import { selectOrderStatusId, selectTopBarSearchString } from 'src/app/store/selector';
 import { setGetOrderStatusId } from 'src/app/store/actions/root.actions';
+import { AdminOrderService } from 'src/app/shared/admin-service/dashboard/order.service';
+import { ToasterService } from 'src/app/shared/services/toaster.service';
 
 @Component({
   selector: 'app-admin-order',
@@ -43,16 +45,18 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private store: Store<IAppState>
+    private store: Store<IAppState>,
+    private adminOrderService: AdminOrderService,
+    private toasterService: ToasterService
   ) {
     super();
     this.setColumById(0);
     this.setOrderRequestParam();
-    this.orders$ = this.store.pipe(
-      select(orders),
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$)
-    );
+    // this.orders$ = this.store.pipe(
+    //   select(orders),
+    //   distinctUntilChanged(isEqual),
+    //   takeUntil(this.destroy$)
+    // );
     this.selectOrderStatusId$ = this.store.pipe(
       select(selectOrderStatusId),
       distinctUntilChanged(isEqual),
@@ -83,6 +87,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     })
 
     this.orders$.subscribe(res => {
+      console.log('inn orders', res)
       if (res && res?.length) {
         this.setProduct(res);
       }
@@ -214,7 +219,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
-    this.store.dispatch(actions.getOrderAction({ request: requestParam }))
+    // this.store.dispatch(actions.getOrderAction({ request: requestParam }))
+    this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
+      console.log('res', res)
+      if (res && res.Status == 'OK') {
+        this.orders$ = of(res?.Data);
+        this.setProduct(res?.Data);
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    })
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
