@@ -6,10 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {ButtonModule} from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import {ChartModule} from 'primeng/chart';
-import { DashboardEffectsModule } from './ngrx/effects/dashboard-effects.module';
-import { dashboardsReducer } from './ngrx/store/dashboard.state';
-import { StoreModule } from '@ngrx/store';
-import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -27,8 +23,6 @@ const routes: Routes = [
     ButtonModule,
     CalendarModule,
     ChartModule,
-    StoreModule.forFeature('dashboard', dashboardsReducer),
-    DashboardEffectsModule
   ]
 })
 export class DashboardModule { }
