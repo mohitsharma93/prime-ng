@@ -8,18 +8,7 @@ import { AuthInterceptorService } from './shared/interceptor/auth-interceptor.se
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthGuardService } from './shared/guards/auth-guard.service';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../environments/environment';
-import { extModules } from './store';
-import {  metaReducers, reducers } from './store/app.state';
-import { EffectModule } from './store/effects/effects.module';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-
-
-
-const envModule = environment.production ? [] : extModules;
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,9 +19,6 @@ const envModule = environment.production ? [] : extModules;
     AppRoutingModule,
     HttpClientModule,
     ToastModule,
-    StoreModule.forRoot(reducers, { metaReducers }),
-    EffectModule,
-    ...envModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true, },
