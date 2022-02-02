@@ -1,16 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { select, Store } from '@ngrx/store';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, takeUntil } from 'rxjs';
-import { isEqual, pick } from 'lodash-es';
+import { pick } from 'lodash-es';
 
-import { IAppState } from 'src/app/store/app.state';
 import { BaseComponent } from '../../base.component';
 
-import { getDashboardAnalyticTypeAction } from '../ngrx/actions/dashboard.actions';
-import { dashboardAnalytics } from '../ngrx/selector/dashboard.selector';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { setGetOrderStatusId } from '../../../../store/actions/root.actions';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
@@ -50,7 +45,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   public dashboardAnalytics$: Observable<any>;
 
   constructor(
-    private store: Store<IAppState>,
     private router: Router,
     private adminDashboardService: AdminDashboardService,
     private toasterService: ToasterService,
