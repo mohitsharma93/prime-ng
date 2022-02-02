@@ -9,6 +9,7 @@ import {ChartModule} from 'primeng/chart';
 import { DashboardEffectsModule } from './ngrx/effects/dashboard-effects.module';
 import { dashboardsReducer } from './ngrx/store/dashboard.state';
 import { StoreModule } from '@ngrx/store';
+import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -27,7 +28,7 @@ const routes: Routes = [
     CalendarModule,
     ChartModule,
     StoreModule.forFeature('dashboard', dashboardsReducer),
-    DashboardEffectsModule,
+    DashboardEffectsModule
   ]
 })
 export class DashboardModule { }

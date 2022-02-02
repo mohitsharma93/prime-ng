@@ -1,14 +1,19 @@
 import { Inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
+import { ToasterService } from '../../services/toaster.service';
 import { HttpWrapperService } from '../httpWrapper';
 import { AdminDashboardAnalyticsUrls } from '../urls/dashboard';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AdminDashboardService {
 
   constructor(
     @Inject('ADMIN_API_URL') private adminBaseUrl: string,
-    private http: HttpWrapperService
+    private http: HttpWrapperService,
+    private toasterService: ToasterService,
+    
   ) { }
 
 
