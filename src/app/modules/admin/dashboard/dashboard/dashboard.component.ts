@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { setGetOrderStatusId } from '../../../../store/actions/root.actions';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
+import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -53,6 +54,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     private router: Router,
     private adminDashboardService: AdminDashboardService,
     private toasterService: ToasterService,
+    private subjectService: SubjectService
   ) {
     super()
     this.getDashboardAnalytics(this.selectedFilter);
@@ -130,7 +132,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   public redirectToOrder(statusId: number): void {
-    this.store.dispatch(setGetOrderStatusId({ response: statusId }))
     this.router.navigate(['/admin', 'order']);
+    this.subjectService.setApiCallStatusWise({ statusId: statusId});
   }
 }

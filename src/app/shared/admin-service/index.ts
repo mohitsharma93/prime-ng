@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminDashboardService } from './dashboard/dashboard.service';
 import { HttpWrapperService } from './httpWrapper';
 import { AdminOrderService } from './dashboard/order.service';
+import { SubjectService } from './subject.service';
 
 @NgModule({
     imports: [CommonModule],
@@ -15,7 +16,8 @@ export class AdminServiceModule {
             providers: [
                 HttpWrapperService,
                 AdminDashboardService,
-                AdminOrderService
+                AdminOrderService,
+                SubjectService,
             ],
         };
     }

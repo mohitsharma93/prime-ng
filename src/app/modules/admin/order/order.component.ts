@@ -16,6 +16,7 @@ import { selectOrderStatusId, selectTopBarSearchString } from 'src/app/store/sel
 import { setGetOrderStatusId } from 'src/app/store/actions/root.actions';
 import { AdminOrderService } from 'src/app/shared/admin-service/dashboard/order.service';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
+import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 
 @Component({
   selector: 'app-admin-order',
@@ -47,16 +48,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
     private router: Router,
     private store: Store<IAppState>,
     private adminOrderService: AdminOrderService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private subjectService: SubjectService
   ) {
     super();
     this.setColumById(0);
     this.setOrderRequestParam();
-    this.selectOrderStatusId$ = this.store.pipe(
-      select(selectOrderStatusId),
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$)
-    );
     this.selectTopBarSearchString$ = this.store.pipe(
       select(selectTopBarSearchString),
       distinctUntilChanged(isEqual),
@@ -66,20 +63,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getOrders(this.orderRequestParam);
-    this.selectOrderStatusId$.subscribe(res => {
-      if (res) {
-        if (res === 3 || res === 4) {
-          this.setColumById(res);
-        }
-        this.orderRequestParam = {
-          ...this.orderRequestParam,
-          orderStatusId: res,
-          urlMiddlePoint: this.getApiCallStatusWise(res)
-        }
-        this.getOrders(this.orderRequestParam);
-        this.store.dispatch(setGetOrderStatusId({ response: null }))
-      }
-    })
 
     this.rangeDates.valueChanges.pipe(
       debounceTime(500),
@@ -114,6 +97,21 @@ export class OrderComponent extends BaseComponent implements OnInit {
             });
           }
         })
+      }
+    })
+
+    this.subjectService.apiCallStatusWise$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res && res?.statusId) {
+        if (res?.statusId === 3 || res?.statusId === 4) {
+          this.setColumById(res?.statusId);
+        }
+        this.orderRequestParam = {
+          ...this.orderRequestParam,
+          orderStatusId: res?.statusId,
+          urlMiddlePoint: this.getApiCallStatusWise(res?.statusId)
+        }
+        this.getOrders(this.orderRequestParam);
+        this.subjectService.setApiCallStatusWise(null);
       }
     })
   }
