@@ -52,11 +52,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
     super();
     this.setColumById(0);
     this.setOrderRequestParam();
-    // this.orders$ = this.store.pipe(
-    //   select(orders),
-    //   distinctUntilChanged(isEqual),
-    //   takeUntil(this.destroy$)
-    // );
     this.selectOrderStatusId$ = this.store.pipe(
       select(selectOrderStatusId),
       distinctUntilChanged(isEqual),
@@ -83,13 +78,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
         }
         this.getOrders(this.orderRequestParam);
         this.store.dispatch(setGetOrderStatusId({ response: null }))
-      }
-    })
-
-    this.orders$.subscribe(res => {
-      console.log('inn orders', res)
-      if (res && res?.length) {
-        this.setProduct(res);
       }
     })
 
@@ -219,9 +207,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
-    // this.store.dispatch(actions.getOrderAction({ request: requestParam }))
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
-      console.log('res', res)
       if (res && res.Status == 'OK') {
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
