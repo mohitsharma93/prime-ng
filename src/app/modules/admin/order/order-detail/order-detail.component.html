@@ -10,39 +10,87 @@
             <div>
               <div class="tab_sec_left">
                 <p>
-                  ID: <span><b>SK12520</b></span>
+                  ID:
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.OrderID }}</b></span
+                  >
                 </p>
                 <p>
-                  Store Name: <span><b>Kirana Store</b></span>
+                  Store Name:
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.ShopName }}</b></span
+                  >
                 </p>
                 <p>
-                  Mobile No: <span><b>+1236547890</b></span>
+                  Mobile No.:
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.Mobile }}</b></span
+                  >
                 </p>
                 <br />
                 <p>
                   Address:
-                  <span
-                    >201, SP 365 Building, Janjeerwala Square, Indore, Madhya
-                    Pradesh 452001</span
-                  >
+                  <span>{{ (selectedOrderDetail | async)?.newAddress }}</span>
                 </p>
                 <br /><br />
-                <p>Status: <span>Pending</span></p>
+                <p>
+                  Status
+                  <span class="ml-2">{{
+                    (selectedOrderDetail | async)?.Status
+                  }}</span>
+                </p>
                 <br /><br />
-                <p>Order Date: <span>Jan. 5, 2022 : 4:00 PM</span></p>
+                <p>
+                  Order Date:
+                  <span>{{
+                    (selectedOrderDetail | async)?.OrderDate
+                      | date: "MMM. d, y : h:mm a"
+                  }}</span>
+                </p>
               </div>
               <div class="tab_sec_right">
-                <p>Order Value: <span>12052</span></p>
-                <p>Delevery Charges: <span>500</span></p>
-                <h2>
-                  Grant Total: <span><b>12552</b></span>
+                <p class="d-flex justify-content-end">
+                  Order Value:
+                  <span>{{ (selectedOrderDetail | async)?.OrderAmount }}</span>
+                </p>
+                <p class="d-flex justify-content-end">
+                  Delivery Charges:
+                  <span>{{
+                    (selectedOrderDetail | async)?.DeliveryCharges
+                  }}</span>
+                </p>
+                <h2 class="d-flex justify-content-end">
+                  Grant Total:
+                  <span
+                    ><b>{{
+                      (selectedOrderDetail | async)?.OrderAmount +
+                        (selectedOrderDetail | async)?.DeliveryCharges
+                    }}</b></span
+                  >
                 </h2>
+                <p
+                  class="outlined-button d-flex justify-content-end"
+                  *ngIf="
+                    (selectedOrderDetail | async)?.Status === 'Shipped' ||
+                    (selectedOrderDetail | async)?.Status === 'Cancelled'
+                  "
+                >
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Print Invoice"
+                    class="p-button-outlined outlined-border"
+                    style="width: 150px"
+                    icon="pi pi-print"
+                  ></button>
+                </p>
               </div>
             </div>
             <div>
               <p-table
                 responsiveLayout="scroll"
-                [value]="products"
+                [value]="(orders$ | async) || []"
                 [scrollable]="true"
                 scrollHeight="700px"
                 [paginator]="true"
@@ -50,48 +98,76 @@
                 [showCurrentPageReport]="true"
                 [rowsPerPageOptions]="[5, 10, 25, 50]"
                 (onPage)="paginate($event)"
+                [columns]="columns"
               >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
-                    <th>ITEM NAME</th>
-                    <th>CATEGORY</th>
-                    <th>QUANTITY</th>
-                    <th>MOQ</th>
-                    <th>MRP</th>
-                    <th>SELLING PRICE</th>
-                    <th>NET AMOUNT</th>
-                    <th>Action</th>
+                    <th
+                      *ngFor="let col of columns"
+                      [pSortableColumn]="col.sort ? col.field : ''"
+                    >
+                      {{ col.header }}
+                      <p-sortIcon
+                        *ngIf="col.sort"
+                        [field]="col.field"
+                      ></p-sortIcon>
+                    </th>
+                    <th *ngIf="showAction">ACTION</th>
                   </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-product let-columns="columns">
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
                   <tr>
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.address }}</td>
-                    <td>{{ product.mobile }}</td>
-                    <td>{{ product.order_amt }}</td>
-                    <td>{{ product.order_date }}</td>
-                    <td>{{ product.status }}</td>
-                    <td class="outlined-button">
-                      <button
-                        pButton
-                        pRipple
-                        type="button"
-                        label="Edit"
-                        class="p-button-outlined is_active"
-                      ></button>
+                    <td *ngFor="let col of columns">
+                      <ng-container
+                        *ngIf="
+                          (selectedOrderDetail | async)?.Status === 'Pending' &&
+                            col.field === 'Quantity';
+                          else showString
+                        "
+                      >
+                        <div class="inc-dec-button">
+                          <p-inputNumber
+                            inputId="integerOnly"
+                            [(ngModel)]="rowData[col.field]"
+                            [showButtons]="true"
+                            buttonLayout="horizontal"
+                            [step]="1"
+                            incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus"
+                          >
+                          </p-inputNumber>
+                        </div>
+                      </ng-container>
+                      <ng-template #showString>
+                        {{ rowData[col.field] }}
+                      </ng-template>
+                    </td>
+                    <td class="outlined-button" *ngIf="showAction">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          actionButton;
+                          context: { $implicit: rowData }
+                        "
+                      ></ng-container>
                     </td>
                   </tr>
                 </ng-template>
               </p-table>
             </div>
-            <!--  -->
             <div class="d-flex justify-content-center mt-3">
               <button
                 pButton
                 pRipple
                 type="button"
                 label="Accept Order"
+                class="p-button-raised p-button-success"
+              ></button>
+              <button
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+                pButton
+                pRipple
+                type="button"
+                label="Delivered"
                 class="p-button-raised p-button-success"
               ></button>
               <button
@@ -129,8 +205,17 @@
             pInputText
             class="mb-2"
             id="float-input"
+            [formControl]="cancelReasonControl"
           />
           <label for="float-input">Reason</label>
+          <ng-container *ngIf="cancelReasonControl?.touched">
+            <small
+              *ngIf="cancelReasonControl.errors?.['required']"
+              class="p-error"
+            >
+              Reason field is required.
+            </small>
+          </ng-container>
         </span>
       </div>
     </div>
@@ -142,7 +227,7 @@
         label="No"
         class="p-button-outlined outlined-border"
         style="width: 150px"
-        (click)="cancelOrder(false)"
+        (click)="cancelOrder(false); cancelReasonControl.setValue('')"
       ></button>
       <button
         pButton
@@ -151,8 +236,45 @@
         label="Yes"
         class="p-button-outlined is_active ml-2"
         style="width: 150px"
-        (click)="cancelOrder(false)"
+        (click)="hitCancelOrderApi(false)"
       ></button>
     </div>
   </p-dialog>
 </div>
+<ng-template #actionButton let-order>
+  <button
+    pButton
+    pRipple
+    type="button"
+    class="p-button-outlined order-detail-action"
+    icon="pi pi-print"
+    *ngIf="showPrint"
+    style="width: 36px"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="View"
+    class="p-button-outlined order-detail-action"
+    (click)="redirectToDetail(order)"
+    style="width: 85px"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Edit"
+    class="p-button-outlined order-detail-action"
+    style="width: 85px"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Save"
+    class="p-button-outlined order-detail-action"
+    (click)="redirectToDetail(order)"
+    style="width: 85px"
+  ></button>
+</ng-template>

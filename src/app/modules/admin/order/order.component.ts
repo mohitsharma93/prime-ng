@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
 import { BaseComponent } from '../base.component';
 import { cloneDeep } from 'lodash-es';
-import { AdminOrderService } from 'src/app/shared/admin-service/dashboard/order.service';
+import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 
@@ -160,9 +160,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
   }
 
-  public redirectToDetail(id: string): void {
-    if (id) {
-      this.router.navigate(['/admin', 'order', 'detail', id]);
+  public redirectToDetail(orderDetail: any): void {
+    if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+      this.subjectService.setOrderDetail(orderDetail);
+      this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentID)]);
     }
   }
 

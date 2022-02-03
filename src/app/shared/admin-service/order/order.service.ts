@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
 import { HttpWrapperService } from '../httpWrapper';
 import { AdminOrderUrls } from '../urls/order';
 
@@ -25,9 +26,31 @@ export class AdminOrderService {
       );
   }
 
-  public getOrderDetailService(endPoint: string): Observable<any> {
+  public getOrderDetailRecordService(orderId: number): Observable<any> {
     return this.http
-      .get(AdminOrderUrls.getOrders(this.adminBaseUrl) + '' + endPoint)
+      .get(AdminOrderUrls.getOrderDetailRecord(this.adminBaseUrl).replace(':orderId', orderId.toString()))
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public cancelOrderService(request: IOrderCancelModel): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.cancelOrder(this.adminBaseUrl), request)
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public updateQuantityService(request: IOrderQuantityUpdateModel): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.updateQuantity(this.adminBaseUrl), request)
       .pipe(
         map((res) => {
           const data: any = res;

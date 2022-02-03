@@ -1,8 +1,8 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminDashboardService } from './dashboard/dashboard.service';
 import { HttpWrapperService } from './httpWrapper';
-import { AdminOrderService } from './dashboard/order.service';
+import { AdminDashboardService } from './dashboard/dashboard.service';
+import { AdminOrderService } from './order/order.service';
 import { SubjectService } from './subject.service';
 
 @NgModule({

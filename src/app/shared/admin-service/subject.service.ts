@@ -8,6 +8,9 @@ export class SubjectService {
 
     public searchStringFromTobBar = new BehaviorSubject<string | null>(null);
     public searchStringFromTobBar$ = this.searchStringFromTobBar.asObservable();
+
+    public orderDetail = new BehaviorSubject<any>(null);
+    public orderDetail$ = this.orderDetail.asObservable();
   
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
@@ -15,5 +18,9 @@ export class SubjectService {
 
     public setSearchStringFromTobBar(response: string| null): void {
         this.searchStringFromTobBar.next(response);
+    }
+
+    public setOrderDetail(response: any): void {
+        this.orderDetail.next(response);
     }
 }

@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
 import { BaseComponent } from '../base.component';
 import { cloneDeep } from 'lodash-es';
-import { AdminOrderService } from 'src/app/shared/admin-service/dashboard/order.service';
+import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 
