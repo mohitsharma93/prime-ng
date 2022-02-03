@@ -91,14 +91,14 @@
               <!-- [style]="{'width': '50px !important'}" -->
               <div 
                 *ngIf="graphLabelDetail?.length"
-                class="d-flex text-center flex-column mt-3"
+                class="mt-3"
               >
                 <div 
                   *ngFor="let detail of graphLabelDetail"
-                  class="mb-2 d-flex text-center justify-content-between"
+                  class="mb-2 oprdetails"
                 >
                   <div 
-                    class="status"
+                    class="status opr1"
                     [ngClass]="{
                       'pending': detail.status === 'Pending',
                       'accepted': detail.status === 'Accepted',
@@ -107,9 +107,9 @@
                       'cancelled': detail.status === 'Cancelled'
                     }"
                   > </div>
-                  <div (click)="redirectToOrder(detail.statusId)" class="cursor-pointer">{{detail.status}}</div>
-                  <div class="bold">{{detail.count}}</div>
-                  <div class="bold">{{detail.sum | number : '1.2-2'}}</div>
+                  <div (click)="redirectToOrder(detail.statusId)" class="cursor-pointer oprstatus">{{detail.status}}</div>
+                  <div class="bold opr2">{{detail.count}}</div>
+                  <div class="bold opr3">{{detail.sum | number : '1.2-2'}}</div>
                 </div>
               </div>
             <hr>

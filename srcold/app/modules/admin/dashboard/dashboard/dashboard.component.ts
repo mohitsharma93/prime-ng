@@ -1,16 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { debounceTime, distinctUntilChanged, filter, Observable, takeUntil } from 'rxjs';
-import { isEqual, pick } from 'lodash-es';
+import { debounceTime, distinctUntilChanged, filter, Observable, of, takeUntil } from 'rxjs';
+import { pick } from 'lodash-es';
 
-import { IAppState } from 'src/app/store/app.state';
 import { BaseComponent } from '../../base.component';
 
-import { getDashboardAnalyticTypeAction } from '../ngrx/actions/dashboard.actions';
-import { dashboardAnalytics } from '../ngrx/selector/dashboard.selector';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { setGetOrderStatusId } from '../../../../store/actions/root.actions';
+import { ToasterService } from 'src/app/shared/services/toaster.service';
+import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
+import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -47,25 +45,17 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   public dashboardAnalytics$: Observable<any>;
 
   constructor(
-    private store: Store<IAppState>,
-    private router: Router
+    private router: Router,
+    private adminDashboardService: AdminDashboardService,
+    private toasterService: ToasterService,
+    private subjectService: SubjectService
   ) {
     super()
     this.getDashboardAnalytics(this.selectedFilter);
-    this.dashboardAnalytics$ = this.store.pipe(
-      select(dashboardAnalytics),
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$)
-    );
   }
 
   ngOnInit(): void {
     // this.rangeDates = [new Date(this.maxDateValue.getFullYear(), this.maxDateValue.getMonth() - 3, 1), new Date()];
-    this.dashboardAnalytics$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      if (res && Object.keys(res).length) {
-        this.setGraphLabelDetail(res);
-      }
-    });
     this.rangeDates.valueChanges.pipe(
       debounceTime(500),
       filter(date => {
@@ -86,7 +76,16 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   public getDashboardAnalytics(filter: string): void {
     this.selectedFilter = filter;
-    this.store.dispatch(getDashboardAnalyticTypeAction({ request: filter }))
+    this.adminDashboardService.getDashboardAnalyticsService(filter).subscribe(res => {
+      if (res && res.Status == 'OK') {
+        this.dashboardAnalytics$ = of(res?.Data);
+        if (Object.keys(res?.Data).length) {
+          this.setGraphLabelDetail(res?.Data);
+        }
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    })
   }
 
   public dateChange(event: any): void {
@@ -127,7 +126,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   public redirectToOrder(statusId: number): void {
-    this.store.dispatch(setGetOrderStatusId({ response: statusId }))
     this.router.navigate(['/admin', 'order']);
+    this.subjectService.setApiCallStatusWise({ statusId: statusId});
   }
 }

@@ -452,11 +452,24 @@ th, td {
   pointer-events: none  !important;
 cursor: default  !important
 }
+// Opder Processing report csss
 
 .bold {
   font-weight: bold;
 }
-
-.cursor-pointer {
-  cursor: pointer !important;
+.oprdetails div {
+  display: inline-block;
 }
+.opr2 {
+  width: 20%;
+  text-align: right;
+}
+.opr3 {
+  width: 47%;
+  text-align: right;
+}
+.oprstatus {
+  width: 30%;
+  padding-left: 15px;
+}
+// End Opder Processing report csss

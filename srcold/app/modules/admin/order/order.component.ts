@@ -1,19 +1,13 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { PrimeNGConfig } from 'primeng/api';
-import { IAppState } from 'src/app/store/app.state';
-import { data } from './product-dummy';
-import * as actions from './ngrx/actions/order.actions';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, Observable, of, skip, take, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
 import { BaseComponent } from '../base.component';
-import { cloneDeep, isEqual } from 'lodash-es';
-import { orders } from './ngrx/selector/order.selector';
-import { selectOrderStatusId, selectTopBarSearchString } from 'src/app/store/selector';
-import { setGetOrderStatusId } from 'src/app/store/actions/root.actions';
+import { cloneDeep } from 'lodash-es';
+import { AdminOrderService } from 'src/app/shared/admin-service/dashboard/order.service';
+import { ToasterService } from 'src/app/shared/services/toaster.service';
+import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 
 @Component({
   selector: 'app-admin-order',
@@ -43,50 +37,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private store: Store<IAppState>
+    private adminOrderService: AdminOrderService,
+    private toasterService: ToasterService,
+    private subjectService: SubjectService
   ) {
     super();
     this.setColumById(0);
     this.setOrderRequestParam();
-    this.orders$ = this.store.pipe(
-      select(orders),
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$)
-    );
-    this.selectOrderStatusId$ = this.store.pipe(
-      select(selectOrderStatusId),
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$)
-    );
-    this.selectTopBarSearchString$ = this.store.pipe(
-      select(selectTopBarSearchString),
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$)
-    );
   }
 
   public ngOnInit(): void {
     this.getOrders(this.orderRequestParam);
-    this.selectOrderStatusId$.subscribe(res => {
-      if (res) {
-        if (res === 3 || res === 4) {
-          this.setColumById(res);
-        }
-        this.orderRequestParam = {
-          ...this.orderRequestParam,
-          orderStatusId: res,
-          urlMiddlePoint: this.getApiCallStatusWise(res)
-        }
-        this.getOrders(this.orderRequestParam);
-        this.store.dispatch(setGetOrderStatusId({ response: null }))
-      }
-    })
-
-    this.orders$.subscribe(res => {
-      if (res && res?.length) {
-        this.setProduct(res);
-      }
-    })
 
     this.rangeDates.valueChanges.pipe(
       debounceTime(500),
@@ -105,7 +66,22 @@ export class OrderComponent extends BaseComponent implements OnInit {
       }
     });
 
-    this.selectTopBarSearchString$.subscribe((res: string) => {
+    this.subjectService.apiCallStatusWise$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res && res?.statusId) {
+        if (res?.statusId === 3 || res?.statusId === 4) {
+          this.setColumById(res?.statusId);
+        }
+        this.orderRequestParam = {
+          ...this.orderRequestParam,
+          orderStatusId: res?.statusId,
+          urlMiddlePoint: this.getApiCallStatusWise(res?.statusId)
+        }
+        this.getOrders(this.orderRequestParam);
+        this.subjectService.setApiCallStatusWise(null);
+      }
+    });
+
+    this.subjectService.searchStringFromTobBar$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res || res?.length === 0) {
         this.orders$.pipe(take(1), takeUntil(this.destroy$)).subscribe(orders => {
           if (res.length === 0) {
@@ -214,7 +190,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
-    this.store.dispatch(actions.getOrderAction({ request: requestParam }))
+    this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
+      if (res && res.Status == 'OK') {
+        this.orders$ = of(res?.Data);
+        this.setProduct(res?.Data);
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    })
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {

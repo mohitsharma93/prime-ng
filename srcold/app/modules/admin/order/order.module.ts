@@ -8,9 +8,6 @@ import { CalendarModule } from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
-import { OrderEffectsModule } from './ngrx/effects/order-effects.module';
-import { ordersReducer } from './ngrx/store/order.state';
-import { StoreModule } from '@ngrx/store';
 
 const routes: Routes = [
   { 
@@ -37,8 +34,6 @@ const routes: Routes = [
     CardModule,
     TableModule,
     DropdownModule,
-    StoreModule.forFeature('order', ordersReducer),
-    OrderEffectsModule,
   ]
 })
 export class OrderModule { }
