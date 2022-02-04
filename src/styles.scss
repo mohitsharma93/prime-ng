@@ -16,7 +16,7 @@
 @import 'assets/scss/component/_status.scss';
 
 body {
-  background-color: #fff4e4;
+  background-color: #fff4e4 !important;
   // display: flex;
   justify-content: center;
   align-items: center;
@@ -34,6 +34,7 @@ body {
     background-image: url(./assets/img/loginbg.png) !important;
     background-size: cover;
     background-position: center;
+    background-color: red !important;
 }
 
 * {
@@ -329,6 +330,7 @@ input#range:hover {
   padding-right: 0px;
   padding-bottom: 0px;
     padding-left: 220px;
+    padding-top: 75px;
     background-color: #f4f7fc;
     margin-right: 665px;
     // margin-left: 15px;
@@ -480,4 +482,8 @@ cursor: default  !important
 .card-body .svg-inline--fa {
   font-size: 23px;
   font-weight: 300;
+}
+.p-datatable .p-datatable-thead > tr > th, td {
+  font-size: 12px !important;
+  padding: 1rem 0.3rem !important;
 }
