@@ -38,7 +38,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public selectedOrderDetail: Observable<any>;
   public showPrint: boolean = false;
   public showAction: boolean = false;
-  public statusWhereToShowActionColumn = ['Pending', 'Accepted', 'Delivered'];
+  public statusWhereToShowActionColumn = ['Pending'];
 
   constructor(
     private router: Router,
@@ -118,6 +118,17 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         { field: 'SellingPrice', header: 'NET AMOUNT' },
       ]
     }
+  }
+
+  public getStatusIdByString(key: string) {
+    // switch (key) {
+    //   case 3:
+    //     return 'GetInTransitOrderDetails';
+    //   case 4:
+    //     return 'GetDeliveredOrderDetails';
+    //   default:
+    //     return 'GetAllOrderDetails';
+    // }
   }
 
   public getOrderDetailRecord(orderId: number): void {
