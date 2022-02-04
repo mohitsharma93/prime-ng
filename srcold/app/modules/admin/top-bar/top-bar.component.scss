@@ -1,4 +1,10 @@
 
+nav.navbar {
+  box-shadow: 0 1px 4px 0 rgb(21 34 50 / 8%);
+  background-color: #ffffff;
+  padding: 0;
+}
+
 .sidebar-is-expanded .l-header {
   padding-left: 70px !important;
 }
@@ -150,7 +156,7 @@
   line-height: 35px;
 }
 .dropdown {
-  right: 46px;
+  right: 15px;
   position: relative;
 }
 .dropdown-content {

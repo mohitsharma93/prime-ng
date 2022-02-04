@@ -160,9 +160,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
   }
 
-  public redirectToDetail(id: string): void {
-    if (id) {
-      this.router.navigate(['/admin', 'order', 'detail', id]);
+  public redirectToDetail(orderDetail: any): void {
+    if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+      this.subjectService.setOrderDetail(orderDetail);
+      this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentID)]);
     }
   }
 

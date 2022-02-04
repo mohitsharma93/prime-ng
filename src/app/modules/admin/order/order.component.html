@@ -1,48 +1,58 @@
 <div class="content-wrapper">
-  <div class="d-flex text-center flex-column">
-    <div class="d-flex text-center justify-content-between">
+  <div class=" text-center">
+    <div class="text-center justify-content-between">
       <div class="outlined-button">
         <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
-      </div>
-      <div>
-        <!-- <p-calendar
-          #dashboardCalendar 
-          selectionMode="range"
-          [readonlyInput]="true"
-          inputId="range"
-          [maxDate]="maxDateValue"
-          (onSelect)="dateChange($event)" 
-          [dateFormat]="dateFormat"
-          [formControl]="rangeDates"
-        >
-        </p-calendar> -->
-        <p-calendar
-          #dashboardCalendar 
-          selectionMode="range"
-          [readonlyInput]="true"
-          inputId="range"
-          [maxDate]="maxDateValue"
-          (onSelect)="dateChange($event)" 
-          [dateFormat]="dateFormat"
-          [formControl]="rangeDates"
-          view="month"
-        >
-        </p-calendar>
       </div>
     </div>
     <div class="mt-4" [ngSwitch]="orderRequestParam?.orderStatusId">
       <div class="d-flex text-center justify-content-between">
         <ng-container  *ngSwitchCase="0">
-          <div class="dashboard-dropdown">
+          <!-- <div class="dashboard-dropdown">
             Status
             <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
               (onChange)="statusChange($event)"></p-dropdown>
+          </div> -->
+          <!-- <div class="c-search ml-2" *ngIf="router.url === '/admin/order'">
+            <input
+              class="c-search__input u-input"
+              placeholder="Search Name/ Order ID/Mobile/Shipment" 
+              type="text"
+              [formControl]="searchControl"
+            />
+            <i class="pi pi-times" (click)="resetSearch()"></i>
+          </div> -->
+          <div>
+            <!-- <p-calendar
+              #dashboardCalendar 
+              selectionMode="range"
+              [readonlyInput]="true"
+              inputId="range"
+              [maxDate]="maxDateValue"
+              (onSelect)="dateChange($event)" 
+              [dateFormat]="dateFormat"
+              [formControl]="rangeDates"
+            >
+            </p-calendar> -->
+            <p-calendar
+              #dashboardCalendar 
+              selectionMode="range"
+              [readonlyInput]="true"
+              inputId="range"
+              [maxDate]="maxDateValue"
+              (onSelect)="dateChange($event)" 
+              [dateFormat]="dateFormat"
+              [formControl]="rangeDates"
+              view="month"
+            >
+            </p-calendar>
           </div>
           <div>
+            <button type="button" class="btn p-component btn-outline-primary">Bulk Accepted Order</button>
             <!-- <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
               (click)="export('logTable')"></button> -->
-            <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
-            (click)="dt.exportCSV()"></button>
+            <!-- <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-trash"
+            (click)="dt.exportCSV()"></button> -->
           </div>
         </ng-container>
         <ng-container *ngSwitchCase="1">
