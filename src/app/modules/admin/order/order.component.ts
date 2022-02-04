@@ -34,6 +34,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public selectedData: any[] = [];
   public selectOrderStatusId$: Observable<number | null>;
   public selectTopBarSearchString$: Observable<string>;
+  public searchControl: FormControl = new FormControl('');
 
   constructor(
     private router: Router,
@@ -81,7 +82,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       }
     });
 
-    this.subjectService.searchStringFromTobBar$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.searchControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res || res?.length === 0) {
         this.orders$.pipe(take(1), takeUntil(this.destroy$)).subscribe(orders => {
           if (res.length === 0) {
@@ -89,7 +90,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           }
           if (+res) {
             this.products = orders.filter(f => {
-              return f?.OrderID?.toString()?.includes(res) || f?.Mobile?.toString()?.includes(res);
+              return f?.OrderID?.toString()?.includes(res) || f?.Mobile?.toString()?.includes(res) || f?.ShipmentID?.toString()?.includes(res);
             });
           } else {
             this.products = orders.filter(f => {
@@ -229,6 +230,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
       default:
         return 'GetAllOrderDetails';
     }
+  }
+
+  public resetSearch(): void {
+    this.searchControl.setValue('')
   }
 
 }
