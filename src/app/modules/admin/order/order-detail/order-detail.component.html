@@ -134,6 +134,7 @@
                             [step]="1"
                             incrementButtonIcon="pi pi-plus"
                             decrementButtonIcon="pi pi-minus"
+                            (onInput)="rowData.showEdit = false;changeAmountAsPerQuantity($event.value, rowData)"
                           >
                           </p-inputNumber>
                         </div>
@@ -259,6 +260,7 @@
     class="p-button-outlined order-detail-action"
     (click)="redirectToDetail(order)"
     style="width: 85px"
+    *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"
   ></button>
   <button
     pButton
@@ -267,6 +269,7 @@
     label="Edit"
     class="p-button-outlined order-detail-action"
     style="width: 85px"
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit"
   ></button>
   <button
     pButton
@@ -274,7 +277,8 @@
     type="button"
     label="Save"
     class="p-button-outlined order-detail-action"
-    (click)="redirectToDetail(order)"
     style="width: 85px"
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit"
+    (click)="saveQuantity(order)"
   ></button>
 </ng-template>

@@ -8,7 +8,7 @@ import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
-import { IOrderCancelModel } from 'src/app/models/admin/order';
+import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
 
 interface Product {
   id?:string;
@@ -123,7 +123,13 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public getOrderDetailRecord(orderId: number): void {
     this.adminOrderService.getOrderDetailRecordService(orderId).subscribe(res => {
       if (res && res.Status == 'OK') {
-        this.orders$ = of(res?.Data);
+        const changeRes = res?.Data;
+        if (this.getCurrentOrder()?.Status === 'Pending') {
+          changeRes.map((order: any) => {
+            order['showEdit'] = true;
+          })
+        }
+        this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -131,20 +137,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public getCurrentOrder() {
-    let order: IOrderCancelModel = {} as IOrderCancelModel;
+    let order = {} as any | null ;
     this.selectedOrderDetail.pipe(take(1)).subscribe(res => {
-      order = {
-        OrderID: res?.OrderID,
-        DetailID: null,
-        Remark: this.cancelReasonControl.value
-      };
+      order = res;
     })
     return order;
   }
 
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
-      const obj = this.getCurrentOrder();
+      const obj: IOrderCancelModel = {
+        OrderID: this.getCurrentOrder()?.OrderID,
+        DetailID: null,
+        Remark: this.cancelReasonControl.value
+      }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
         } else {
@@ -156,5 +162,27 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     } else {
       this.cancelReasonControl.markAllAsTouched();
     }
+  }
+
+  public changeAmountAsPerQuantity(quantity: number, order: any) {
+    if (quantity) {
+      // order.NetAmount = order.SellingPrice * quantity;
+    }
+  }
+
+  public saveQuantity(order: any) {
+    console.log('order', order);
+    const obj: IOrderQuantityUpdateModel = {
+      OrderID: order?.OrderId,
+      DetailID: order?.DetailId,
+      Quantity: order.Quantity
+    }
+    this.adminOrderService.updateQuantityService(obj).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+        order['showEdit'] = true;
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
   }
 }
