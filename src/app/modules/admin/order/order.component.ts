@@ -163,6 +163,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(orderDetail: any): void {
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+      if (this.orderRequestParam?.orderStatusId === 3 || this.orderRequestParam?.orderStatusId === 4) {
+        orderDetail['showElse'] = true;
+      } else {
+        orderDetail['showElse'] = false;
+      }
+      orderDetail['orderStatusId'] = this.orderRequestParam?.orderStatusId 
       this.subjectService.setOrderDetail(orderDetail);
       this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentID)]);
     }

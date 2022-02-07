@@ -196,4 +196,22 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       }
     });
   }
+
+  public acceptOrder() {
+    this.adminOrderService.acceptOrderService(this.getCurrentOrder()?.OrderID).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
+  }
+
+  public addToShipment() {
+    this.adminOrderService.addToShipmentService(this.getCurrentOrder()?.OrderID).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
+  }
 }

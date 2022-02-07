@@ -7,7 +7,7 @@
       <div class="">
         <p-card>
           <div class="d-flex flex-column">
-            <div *ngIf="(selectedOrderDetail | async)?.Status !== 'Delivered' else orderDetail">
+            <div *ngIf="!(selectedOrderDetail | async)?.showElse else orderDetail">
               <div class="tab_sec_left">
                 <p>
                   ID:
@@ -89,7 +89,7 @@
             </div>
             <ng-template #orderDetail>
               <div class="d-flex justify-content-between">
-                <div class="tab_sec_left">
+                <div class="tab_sec_left d-flex flex-column">
                   <p>
                     Shipment ID : {{ (selectedOrderDetail | async)?.ShipmentID}}
                   </p>
@@ -97,10 +97,30 @@
                     Total Shipment Value: {{ (selectedOrderDetail | async)?.OrderAmount }}
                   </p>
                 </div>
-                <div class="tab_sec_right">
+                <div class="tab_sec_right d-flex flex-column">
                   <p>
                     Created Date: {{ (selectedOrderDetail | async)?.OrderAmount | date : 'MMM. d, y'}}
                   </p>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end mb-2">
+                <div class="outlined-button">
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Print Shipment Details"
+                    class="p-button-outlined p-button-sm order-detail-action"
+                    icon="pi pi-print"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Print Invoice"
+                    class="p-button-outlined p-button-sm order-detail-action"
+                    icon="pi pi-print"
+                  ></button>
                 </div>
               </div>
             </ng-template>
@@ -110,7 +130,7 @@
                 [value]="(orders$ | async) || []"
                 [scrollable]="true"
                 scrollHeight="700px"
-                [paginator]="true"
+                [paginator]="false"
                 [rows]="5"
                 [showCurrentPageReport]="true"
                 [rowsPerPageOptions]="[5, 10, 25, 50]"
@@ -177,8 +197,19 @@
                 pButton
                 pRipple
                 type="button"
+                label="Add to shipment"
+                class="p-button-raised p-button-success"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted'"
+                (click)="addToShipment()"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
                 label="Accept Order"
                 class="p-button-raised p-button-success"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'"
+                (click)="acceptOrder()"
               ></button>
               <button
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
@@ -190,10 +221,19 @@
               ></button>
               <button
                 pButton
+                pRipple
+                type="button"
+                label="Delivered Selected"
+                class="p-button-raised p-button-success"
+                *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
+              ></button>
+              <button
+                pButton
                 type="button"
                 label="Cancel Order"
                 class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)"
+                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4"
               ></button>
             </div>
           </div>

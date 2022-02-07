@@ -7,68 +7,90 @@
     </div>
     <div class="mt-4" [ngSwitch]="orderRequestParam?.orderStatusId">
       <div class="row">
-        <ng-container >
+        <ng-container>
           <div class="c-search col-md-4">
             <div>
               <input
-              class="c-search__input u-input"
-              placeholder="Search Name/ Order ID/Mobile/Shipment" 
-              type="text"
-              [formControl]="searchControl"
-            />
-            <!-- <i class="pi pi-times" (click)="resetSearch()"></i> -->
+                class="c-search__input u-input"
+                placeholder="Search Name/ Order ID/Mobile/Shipment"
+                type="text"
+                [formControl]="searchControl"
+              />
+              <!-- <i class="pi pi-times" (click)="resetSearch()"></i> -->
             </div>
-           
           </div>
           <div class="col-md-3">
             <p-calendar
-              #dashboardCalendar 
+              #dashboardCalendar
               selectionMode="range"
               [readonlyInput]="true"
               inputId="range"
               [maxDate]="maxDateValue"
-              (onSelect)="dateChange($event)" 
+              (onSelect)="dateChange($event)"
               [dateFormat]="dateFormat"
               [formControl]="rangeDates"
             >
             </p-calendar>
-
-            </div>
+          </div>
         </ng-container>
         <div class="col-md-3">
-        <div class="dashboard-dropdown">
-          Status
-          <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name" [showClear]="true"
-            (onChange)="statusChange($event)"></p-dropdown>
+          <div class="dashboard-dropdown"  *ngIf="orderRequestParam?.orderStatusId === 0">
+            Status
+            <p-dropdown
+              [options]="status"
+              placeholder="Select Status"
+              optionLabel="name"
+              [showClear]="true"
+              (onChange)="statusChange($event)"
+            ></p-dropdown>
+          </div>
         </div>
-      </div>
-        <div class="col-md-2" style="text-align: right;">
-        <ng-container  *ngSwitchCase="0">
-          
-        
-            <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-file-excel"
-              (click)="export('logTable')"></button>
+        <div class="col-md-2" style="text-align: right">
+          <ng-container *ngSwitchCase="0">
+            <button
+              class="p-button-danger p-button-sm"
+              pButton
+              pRipple
+              label="Export"
+              icon="pi pi-file-excel"
+              (click)="export('logTable')"
+            ></button>
             <!-- <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-file-excel"
             (click)="dt.exportCSV()"></button> -->
-         
-        </ng-container>
-        <ng-container  *ngSwitchCase="6">
-          <div>
-            <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-file-excel"
-              (click)="export('logTable')"></button>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="1">
-          <div class="outlined-button">
-            <button class="p-button-outlined p-button-sm is_active status-wise-button bulkbtn" pButton pRipple label="Bulk Accepted Order"></button>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="2">
-          <div class="outlined-button">
-            <button class="p-button-outlined p-button-sm is_active status-wise-button" pButton pRipple label="Create Shipment"></button>
-          </div>
-        </ng-container>
-         <!-- <ng-container *ngSwitchCase="3">
+          </ng-container>
+          <ng-container *ngSwitchCase="6">
+            <div>
+              <button
+                class="p-button-danger p-button-sm"
+                pButton
+                pRipple
+                label="Export"
+                icon="pi pi-file-excel"
+                (click)="export('logTable')"
+              ></button>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="1">
+            <div class="outlined-button">
+              <button
+                class="p-button-outlined p-button-sm bulkbtn order-detail-action"
+                pButton
+                pRipple
+                label="Bulk Accepted Order"
+              ></button>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="2">
+            <div class="outlined-button">
+              <button
+                class="p-button-outlined p-button-sm is_active "
+                pButton
+                pRipple
+                label="Create Shipment"
+              ></button>
+            </div>
+          </ng-container>
+          <!-- <ng-container *ngSwitchCase="3">
           <b>Out for Delivery Orders</b>
         </ng-container>
         <ng-container *ngSwitchCase="4">
@@ -77,50 +99,67 @@
         <ng-container *ngSwitchCase="6">
           <b>Cancelled Shipments</b>
         </ng-container>  -->
-      </div>
+        </div>
       </div>
     </div>
   </div>
   <div class="page-content">
     <div class="page-inner-content">
-     
       <div class="mt-3">
         <p-card>
-          <h5 style="margin-bottom: 0.9rem;">Out Of Deleviry Orders</h5>
-          <p-table responsiveLayout="scroll" [value]="products" [scrollable]="true" scrollHeight="600px"
-            [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 25, 50]"
-            (onPage)="paginate($event)" [columns]="columns" [(selection)]="selectedData" #dt
+          <!-- <h5 style="margin-bottom: 0.9rem">Out Of Deleviry Orders</h5> -->
+          <p-table
+            responsiveLayout="scroll"
+            [value]="products"
+            [scrollable]="true"
+            scrollHeight="600px"
+            [paginator]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[5, 10, 25, 50]"
+            (onPage)="paginate($event)"
+            [columns]="columns"
+            [(selection)]="selectedData"
+            #dt
           >
             <ng-template pTemplate="header" let-columns>
               <tr>
-                  <th *ngIf="orderRequestParam?.orderStatusId === 2">
-                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                  </th>
-                  <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
-                      {{col.header}} 
-                        <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
-                  </th>
-                  <th >ACTION</th>
+                <th *ngIf="orderRequestParam?.orderStatusId === 2">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th
+                  *ngFor="let col of columns"
+                  [pSortableColumn]="col.sort ? col.field : ''"
+                >
+                  {{ col.header }}
+                  <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+                </th>
+                <th>ACTION</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr>
-                    <td *ngIf="orderRequestParam?.orderStatusId === 2">
-                      <p-tableCheckbox [value]="rowData" ></p-tableCheckbox>
-                    </td>
-                    <td *ngFor="let col of columns">
-                        {{
-                          (col.field === 'OrderDate' || col.field === 'CloseDate') ?
-                            (rowData[col.field] | date : 'MMM. d, y') :
-                            (col.field === 'ShopAddressOne')  ?
-                              rowData['newAddress'] :
-                              rowData[col.field]
-                        }}
-                    </td>
-                    <td class="outlined-button">
-                      <ng-container *ngTemplateOutlet="actionButton; context:{ $implicit: rowData }"></ng-container>
-                    </td>
-                </tr>
+              <tr>
+                <td *ngIf="orderRequestParam?.orderStatusId === 2">
+                  <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns">
+                  {{
+                    col.field === "OrderDate" || col.field === "CloseDate"
+                      ? (rowData[col.field] | date: "MMM. d, y")
+                      : col.field === "ShopAddressOne"
+                      ? rowData["newAddress"]
+                      : rowData[col.field]
+                  }}
+                </td>
+                <td class="outlined-button">
+                  <ng-container
+                    *ngTemplateOutlet="
+                      actionButton;
+                      context: { $implicit: rowData }
+                    "
+                  ></ng-container>
+                </td>
+              </tr>
             </ng-template>
           </p-table>
         </p-card>
@@ -137,7 +176,7 @@
     label="All"
     class="p-button-rounded p-button-outlined is_active"
     (click)="orderChange(0, 'GetAllOrderDetails')"
-    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 0}"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 0 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -147,7 +186,7 @@
     label="Pending"
     class="p-button-rounded p-button-outlined"
     (click)="orderChange(1, 'GetAllOrderDetails')"
-    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 1}"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 1 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -155,9 +194,9 @@
     pRipple
     type="button"
     label="Accepted"
-    class="p-button-rounded p-button-outlined "
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(2, 'GetAllOrderDetails')"
-    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 2}"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 2 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -167,7 +206,7 @@
     label="In-transit Shipment"
     class="p-button-rounded p-button-outlined"
     (click)="orderChange(3, 'GetInTransitOrderDetails')"
-    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 3}"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 3 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -177,7 +216,7 @@
     label="Delivered Shipment"
     class="p-button-rounded p-button-outlined"
     (click)="orderChange(4, 'GetDeliveredOrderDetails')"
-    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 4}"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 4 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -187,14 +226,27 @@
     label="Cancelled Order"
     class="p-button-rounded p-button-outlined"
     (click)="orderChange(6, 'GetAllOrderDetails')"
-    [ngClass]="{'is_active': orderRequestParam?.orderStatusId === 6}"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 6 }"
   ></button>
 </ng-template>
 
 <ng-template #actionButton let-orderDetail>
-  <button pButton pRipple type="button" class="p-button-outlined is_active" icon="pi pi-print" *ngIf="showPrint" style="width: 36px;">
-  </button>
-  <button pButton pRipple type="button" label="View" class="p-button-outlined is_active"
-  (click)="redirectToDetail(orderDetail)" style="width: 85px;">
-</button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    class="p-button-outlined is_active"
+    icon="pi pi-print"
+    *ngIf="showPrint"
+    style="width: 36px"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="View"
+    class="p-button-outlined is_active"
+    (click)="redirectToDetail(orderDetail)"
+    style="width: 85px"
+  ></button>
 </ng-template>
