@@ -3,7 +3,7 @@
     border-color: none !important;
   }
   .p-button {
-    padding: 8px 12px 9px 11px !important;
+    padding: 8px 12px 9px 11px;
     margin-right: 10px;
     color: $black;
   }
@@ -66,4 +66,7 @@
       color: black !important;
     }
   }
+}
+.bulkbtn {
+  padding: 8px 10px 9px 10px !important;
 }

@@ -8,6 +8,7 @@ import {TableModule} from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { OrderDetailComponent } from './order-detail.component';
 import {InputTextModule} from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 const routes: Routes = [
   { 
@@ -29,7 +30,8 @@ const routes: Routes = [
     CardModule,
     TableModule,
     DialogModule,
-    InputTextModule
+    InputTextModule,
+    InputNumberModule
   ]
 })
 export class OrderDetailModule { }

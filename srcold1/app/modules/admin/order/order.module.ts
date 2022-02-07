@@ -33,7 +33,7 @@ const routes: Routes = [
     CalendarModule,
     CardModule,
     TableModule,
-    DropdownModule,
+    DropdownModule
   ]
 })
 export class OrderModule { }

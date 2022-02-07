@@ -34,7 +34,7 @@ body {
     background-image: url(./assets/img/loginbg.png) !important;
     background-size: cover;
     background-position: center;
-    background-color: red !important;
+    background-color:  #fff4e4 !important;
 }
 
 * {
@@ -142,6 +142,12 @@ form {
   height: 100%;
 }
 
+input.c-search__input {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  padding: 8px 0px 9px 11px;
+  border-radius: 6px;
+}
 input {
   background-color: #fff;
   border: none;
@@ -153,15 +159,15 @@ input {
   color: #7e84a3;
 }
 span.otp-login {
-  color: #ff5722;
+  color: #ff5722!important;
   font-weight: bold;
 }
 .otp-login{
-  color: #ff5722;
+  color: #ff5722!important;
   font-weight: bold;
 }
 
-.container {
+.logincontainer {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 8px 2px rgb(0 0 0 / 1%), 0 1px 20px rgb(0 0 0 / 15%);
@@ -210,7 +216,7 @@ span.otp-login {
 }
 
 @media only screen and (max-width: 600px) {
-  .container {
+  .logincontainer {
     width: 100%;
     padding: 15px;
   }
@@ -430,8 +436,8 @@ th, td {
   font-weight: normal !important;
 }
 .p-button.p-button-danger {
-  background: #ff5722 !important;
-  border: 1px solid #ff5722 !important;
+  background: red !important;
+  border: 1px solid red !important;
   padding: 8px !important;
 }
 .ng-tns-c70-3.p-dropdown.p-component.p-dropdown-clearable {
@@ -486,4 +492,8 @@ cursor: default  !important
 .p-datatable .p-datatable-thead > tr > th, td {
   font-size: 12px !important;
   padding: 1rem 0.3rem !important;
+  justify-content: center;
+}
+.p-card .p-card-content {
+  padding: 0 !important;
 }
