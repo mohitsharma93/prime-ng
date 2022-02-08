@@ -49,6 +49,21 @@
                       | date: "MMM. d, y : h:mm a"
                   }}</span>
                 </p>
+                <p>
+                  Cancelled Date:
+                  <span>{{
+                    (selectedOrderDetail | async)?.CancelationDate
+                      | date: "MMM. d, y : h:mm a"
+                  }}</span>
+                </p>
+                <div class="d-flex flex-column cancel-reason">
+                  <p>
+                    Cancelled by : <span>{{(selectedOrderDetail | async)?.CancelBy}}</span>
+                  </p>
+                  <p>
+                    Reason for cancellation : <span>{{(selectedOrderDetail | async)?.CancellationRemark}}</span>
+                  </p>
+                </div>
               </div>
               <div class="tab_sec_right">
                 <p class="d-flex justify-content-end">
