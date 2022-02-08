@@ -23,3 +23,42 @@
 .p-button.p-button-rounded {
   border-color: #ced4da;
 }
+.btn-outline-primary {
+  color: #ff5722 !important;
+  border-color: #ff5722 !important;
+}
+.btn-outline-primary:hover {
+  color: #ffffff !important;
+  border-color: #ff5722 !important;
+  background-color: #ff5722 !important;
+}
+
+// dotted line css
+.arrow {
+  position: relative;
+}
+.arrow:after {
+  position: absolute;
+  content: "  ";
+  display: inline-block;
+  left: 15px;
+  top: -5px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #ced4da;
+  border-right: 5px solid transparent;
+}
+.dotted {
+    width: 30px;
+    border: 1px dotted #ced4da;
+    border-radius: 0;
+    padding: 0;
+    vertical-align: text-top;
+}
+// End dotted line
+.outlined-button .p-button {
+  margin-right: 1 !important;
+}
+

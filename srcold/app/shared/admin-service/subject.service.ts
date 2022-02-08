@@ -11,6 +11,9 @@ export class SubjectService {
 
     public orderDetail = new BehaviorSubject<any>(null);
     public orderDetail$ = this.orderDetail.asObservable();
+
+    public saveFilterOnRedirection = new BehaviorSubject<any>(null);
+    public saveFilterOnRedirection$ = this.saveFilterOnRedirection.asObservable();
   
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
@@ -22,5 +25,9 @@ export class SubjectService {
 
     public setOrderDetail(response: any): void {
         this.orderDetail.next(response);
+    }
+
+    public setSaveFilterOnRedirection(response: any): void {
+        this.saveFilterOnRedirection.next(response);
     }
 }

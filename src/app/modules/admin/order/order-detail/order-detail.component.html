@@ -49,14 +49,14 @@
                       | date: "MMM. d, y : h:mm a"
                   }}</span>
                 </p>
-                <p>
+                <p *ngIf="(selectedOrderDetail | async)?.orderStatusId === 6">
                   Cancelled Date:
                   <span>{{
                     (selectedOrderDetail | async)?.CancelationDate
                       | date: "MMM. d, y : h:mm a"
                   }}</span>
                 </p>
-                <div class="d-flex flex-column cancel-reason">
+                <div class="d-flex flex-column cancel-reason" *ngIf="(selectedOrderDetail | async)?.orderStatusId === 6">
                   <p>
                     Cancelled by : <span>{{(selectedOrderDetail | async)?.CancelBy}}</span>
                   </p>
@@ -259,7 +259,10 @@
                 label="Cancel Order"
                 class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4 && (selectedOrderDetail | async)?.orderStatusId !== 3"
+                *ngIf="
+                (selectedOrderDetail | async)?.orderStatusId !== 4 &&
+                (selectedOrderDetail | async)?.orderStatusId !== 3 &&
+                (selectedOrderDetail | async)?.orderStatusId !== 6" 
               ></button>
               <button
                 pButton

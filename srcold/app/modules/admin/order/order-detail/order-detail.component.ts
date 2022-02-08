@@ -8,7 +8,8 @@ import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
-import { IOrderCancelModel } from 'src/app/models/admin/order';
+import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
+import {MenuItem} from 'primeng/api';
 
 interface Product {
   id?:string;
@@ -38,7 +39,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public selectedOrderDetail: Observable<any>;
   public showPrint: boolean = false;
   public showAction: boolean = false;
-  public statusWhereToShowActionColumn = ['Pending', 'Accepted', 'Delivered'];
+  public statusWhereToShowActionColumn = [1, 3, 4];
+  public menuItems: MenuItem[] = [
+    {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
+    {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
+  ];
+  public selectedData: any[] = [];
 
   constructor(
     private router: Router,
@@ -55,6 +61,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.getOrderDetailRecord(res['orderId']);
       }
     })
+    // this.setMenuItem();
   }
 
   public ngOnInit(): void {
@@ -62,9 +69,15 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       console.log('res', res);
       if (res && (res?.OrderID || res?.ShipmentID)) {
         this.selectedOrderDetail = of(res);
-        this.setColumById(0);
-        if (this.statusWhereToShowActionColumn.includes(res?.Status)) {
+        this.setColumById(res?.orderStatusId);
+        if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
           this.showAction = true;
+          if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
+            this.showPrint = true;
+            // if (res.orderStatusId === 3) {
+            //   this.setMenuItem();
+            // }
+          }
         }
       }
     })
@@ -84,28 +97,27 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.cancelModelShow = showHideModel
   }
 
-  public paginate(event: any): void {
-    //event.first = Index of the first record
-    //event.rows = Number of rows to display in new page
-    //event.page = Index of the new page
-    //event.pageCount = Total number of pages
-  }
-
   public setColumById(id: number) {
     if (id === 3) {
       this.columns = [
-        { field: 'ShipmentID', header: 'SHIPMENT ID' },
-        { field: 'ShipmentCount', header: 'ORDERS COUNT' },
-        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT' },
-        { field: 'OrderDate', header: 'CREATED DATE' }
+        { field: 'OrderId', header: 'ORDER ID' },
+        { field: 'Name', header: 'NAME' },
+        { field: 'Address', header: 'ADDRESS' },
+        { field: 'Mobile', header: 'MOBILE' },
+        { field: 'OrdersAmount', header: 'ORDERS AMOUNT' },
+        { field: 'OrderDate', header: 'ORDERS DATE' },
+        { field: 'Status', header: 'STATUS' },
       ]
     } else if (id === 4) {
       this.columns = [
-        { field: 'ShipmentID', header: 'SHIPMENT ID' },
-        { field: 'ShipmentCount', header: 'ORDERS COUNT' },
-        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT' },
-        { field: 'OrderDate', header: 'CREATED DATE' },
-        { field: 'CloseDate', header: 'CLOSED DATE' }
+        { field: 'OrderId', header: 'ORDER ID' },
+        { field: 'Name', header: 'NAME' },
+        { field: 'Address', header: 'ADDRESS' },
+        { field: 'Mobile', header: 'MOBILE' },
+        { field: 'OrdersAmount', header: 'ORDERS AMOUNT' },
+        { field: 'OrderDate', header: 'ORDERS DATE' },
+        { field: 'Delivery Date', header: 'DELIVERY DATE' },
+        { field: 'Status', header: 'STATUS' },
       ]
     } else {
       this.columns = [
@@ -120,10 +132,27 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     }
   }
 
+  public setMenuItem() {
+    this.menuItems = [
+      {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
+      {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
+    ]
+  }
+
+  public hitApiOnMenuItemClick() {
+
+  }
+
   public getOrderDetailRecord(orderId: number): void {
     this.adminOrderService.getOrderDetailRecordService(orderId).subscribe(res => {
       if (res && res.Status == 'OK') {
-        this.orders$ = of(res?.Data);
+        const changeRes = res?.Data;
+        if (this.getCurrentOrder()?.Status === 'Pending') {
+          changeRes.map((order: any) => {
+            order['showEdit'] = true;
+          })
+        }
+        this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -131,20 +160,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public getCurrentOrder() {
-    let order: IOrderCancelModel = {} as IOrderCancelModel;
+    let order = {} as any | null ;
     this.selectedOrderDetail.pipe(take(1)).subscribe(res => {
-      order = {
-        OrderID: res?.OrderID,
-        DetailID: null,
-        Remark: this.cancelReasonControl.value
-      };
+      order = res;
     })
     return order;
   }
 
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
-      const obj = this.getCurrentOrder();
+      const obj: IOrderCancelModel = {
+        OrderID: this.getCurrentOrder()?.OrderID,
+        DetailID: null,
+        Remark: this.cancelReasonControl.value
+      }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
         } else {
@@ -156,5 +185,53 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     } else {
       this.cancelReasonControl.markAllAsTouched();
     }
+  }
+
+  public changeAmountAsPerQuantity(quantity: number, order: any) {
+    if (quantity) {
+      // order.NetAmount = order.SellingPrice * quantity;
+    }
+  }
+
+  public saveQuantity(order: any) {
+    console.log('order', order);
+    const obj: IOrderQuantityUpdateModel = {
+      OrderID: order?.OrderId,
+      DetailID: order?.DetailId,
+      Quantity: order.Quantity
+    }
+    this.adminOrderService.updateQuantityService(obj).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+        order['showEdit'] = true;
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
+  }
+
+  public acceptOrder() {
+    this.adminOrderService.acceptOrderService(this.getCurrentOrder()?.OrderID).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
+  }
+
+  public addToShipment() {
+    this.adminOrderService.addToShipmentService(this.getCurrentOrder()?.OrderID).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
+  }
+
+  public deliveredSelected() {
+    console.log('this.selected', this.selectedData);
+  }
+
+  public cancelSelected() {
+    console.log('this.selected', this.selectedData)
   }
 }

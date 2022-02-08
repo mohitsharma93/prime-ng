@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
-import { OrderDetailComponent } from './order-detail.component';
+import { OrderDetailShipmentComponent } from './order-detail-shipment.component';
 import {InputTextModule} from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MenuModule } from 'primeng/menu';
@@ -14,13 +14,13 @@ import { MenuModule } from 'primeng/menu';
 const routes: Routes = [
   { 
     path: '', 
-    component: OrderDetailComponent,
+    component: OrderDetailShipmentComponent,
   }
 ];
 
 @NgModule({
   declarations: [
-    OrderDetailComponent
+    OrderDetailShipmentComponent
   ],
   imports: [
     CommonModule,

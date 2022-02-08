@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
@@ -17,6 +17,7 @@ import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 export class OrderComponent extends BaseComponent implements OnInit {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
+  @ViewChild('dt') dt: any;
   public rangeDates: FormControl = new FormControl(
     [new Date(), new Date()]
   );
@@ -34,6 +35,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public selectedData: any[] = [];
   public selectOrderStatusId$: Observable<number | null>;
   public selectTopBarSearchString$: Observable<string>;
+  public searchControl: FormControl = new FormControl('');
 
   constructor(
     private router: Router,
@@ -81,7 +83,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       }
     });
 
-    this.subjectService.searchStringFromTobBar$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.searchControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res || res?.length === 0) {
         this.orders$.pipe(take(1), takeUntil(this.destroy$)).subscribe(orders => {
           if (res.length === 0) {
@@ -89,7 +91,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           }
           if (+res) {
             this.products = orders.filter(f => {
-              return f?.OrderID?.toString()?.includes(res) || f?.Mobile?.toString()?.includes(res);
+              return f?.OrderID?.toString()?.includes(res) || f?.Mobile?.toString()?.includes(res) || f?.ShipmentID?.toString()?.includes(res);
             });
           } else {
             this.products = orders.filter(f => {
@@ -98,7 +100,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
           }
         })
       }
-    })
+    });
+
+    this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
+      console.log('filter save', res);
+      if (res?.topFilter) {
+        this.orderRequestParam = res.topFilter;
+        this.setColumById(this.orderRequestParam.orderStatusId)
+        this.getOrders(this.orderRequestParam);
+      }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -123,7 +134,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         { field: 'ShipmentID', header: 'SHIPMENT ID', sort: true },
         { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
         { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
-        { field: 'OrderDate', header: 'CREATED DATE', sort: true }
+        { field: 'OrderDate', header: 'ORDER DATE', sort: true }
       ]
     } else if (id === 4) {
       this.columns = [
@@ -162,7 +173,19 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(orderDetail: any): void {
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+      if (this.orderRequestParam?.orderStatusId === 3 || this.orderRequestParam?.orderStatusId === 4) {
+        orderDetail['showElse'] = true;
+      } else {
+        orderDetail['showElse'] = false;
+      }
+      orderDetail['orderStatusId'] = this.orderRequestParam?.orderStatusId 
       this.subjectService.setOrderDetail(orderDetail);
+      this.subjectService.setSaveFilterOnRedirection({
+        topFilter: this.orderRequestParam,
+        ...(this.searchControl.value && {
+          searchString: this.searchControl.value
+        })
+      });
       this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentID)]);
     }
   }
@@ -202,6 +225,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
+    this.dt.first = 0;
     this.setColumById(orderStatusId)
     this.orderRequestParam = {
       endPoint: 'OverAll',
@@ -229,6 +253,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
       default:
         return 'GetAllOrderDetails';
     }
+  }
+
+  public resetSearch(): void {
+    this.searchControl.setValue('')
   }
 
 }

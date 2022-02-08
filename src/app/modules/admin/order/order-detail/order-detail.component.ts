@@ -152,6 +152,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
             order['showEdit'] = true;
           })
         }
+        console.log("changeRes",changeRes)
         this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);

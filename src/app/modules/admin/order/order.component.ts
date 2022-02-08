@@ -172,7 +172,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToDetail(orderDetail: any): void {
+    console.log("orderDetail",orderDetail)
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+     
       if (this.orderRequestParam?.orderStatusId === 3 || this.orderRequestParam?.orderStatusId === 4) {
         orderDetail['showElse'] = true;
       } else {
@@ -216,6 +218,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public getOrders(requestParam: IOrderRequestModel) {
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
       if (res && res.Status == 'OK') {
+        console.log("res.Data",res.Data)
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
       } else {

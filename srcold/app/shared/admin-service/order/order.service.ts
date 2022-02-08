@@ -58,4 +58,37 @@ export class AdminOrderService {
         })
       );
   }
+
+  public acceptOrderService(orderId: any): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.acceptOrder(this.adminBaseUrl).replace(':orderId', orderId), {})
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public addToShipmentService(orderId: any): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.addToShipmentOrder(this.adminBaseUrl).replace(':orderId', orderId), {})
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public addToDeliveredService(orderId: any): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.addToDeliveredOrder(this.adminBaseUrl).replace(':orderId', orderId), {})
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
 }
