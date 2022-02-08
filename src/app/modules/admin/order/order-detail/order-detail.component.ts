@@ -9,6 +9,7 @@ import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
+import {MenuItem} from 'primeng/api';
 
 interface Product {
   id?:string;
@@ -39,6 +40,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public showPrint: boolean = false;
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
+  public menuItems: MenuItem[] = [
+    {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
+    {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
+  ];
 
   constructor(
     private router: Router,
@@ -55,6 +60,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.getOrderDetailRecord(res['orderId']);
       }
     })
+    // this.setMenuItem();
   }
 
   public ngOnInit(): void {
@@ -62,11 +68,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       console.log('res', res);
       if (res && (res?.OrderID || res?.ShipmentID)) {
         this.selectedOrderDetail = of(res);
-        this.setColumById(0);
+        this.setColumById(res?.orderStatusId);
         if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
           this.showAction = true;
           if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
             this.showPrint = true;
+            // if (res.orderStatusId === 3) {
+            //   this.setMenuItem();
+            // }
           }
         }
       }
@@ -97,18 +106,24 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public setColumById(id: number) {
     if (id === 3) {
       this.columns = [
-        { field: 'ShipmentID', header: 'SHIPMENT ID' },
-        { field: 'ShipmentCount', header: 'ORDERS COUNT' },
-        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT' },
-        { field: 'OrderDate', header: 'CREATED DATE' }
+        { field: 'OrderId', header: 'ORDER ID' },
+        { field: 'Name', header: 'NAME' },
+        { field: 'Address', header: 'ADDRESS' },
+        { field: 'Mobile', header: 'MOBILE' },
+        { field: 'OrdersAmount', header: 'ORDERS AMOUNT' },
+        { field: 'OrderDate', header: 'ORDERS DATE' },
+        { field: 'Status', header: 'STATUS' },
       ]
     } else if (id === 4) {
       this.columns = [
-        { field: 'ShipmentID', header: 'SHIPMENT ID' },
-        { field: 'ShipmentCount', header: 'ORDERS COUNT' },
-        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT' },
-        { field: 'OrderDate', header: 'CREATED DATE' },
-        { field: 'CloseDate', header: 'CLOSED DATE' }
+        { field: 'OrderId', header: 'ORDER ID' },
+        { field: 'Name', header: 'NAME' },
+        { field: 'Address', header: 'ADDRESS' },
+        { field: 'Mobile', header: 'MOBILE' },
+        { field: 'OrdersAmount', header: 'ORDERS AMOUNT' },
+        { field: 'OrderDate', header: 'ORDERS DATE' },
+        { field: 'Delivery Date', header: 'DELIVERY DATE' },
+        { field: 'Status', header: 'STATUS' },
       ]
     } else {
       this.columns = [
@@ -123,15 +138,15 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     }
   }
 
-  public getStatusIdByString(key: string) {
-    // switch (key) {
-    //   case 3:
-    //     return 'GetInTransitOrderDetails';
-    //   case 4:
-    //     return 'GetDeliveredOrderDetails';
-    //   default:
-    //     return 'GetAllOrderDetails';
-    // }
+  public setMenuItem() {
+    this.menuItems = [
+      {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
+      {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
+    ]
+  }
+
+  public hitApiOnMenuItemClick() {
+
   }
 
   public getOrderDetailRecord(orderId: number): void {

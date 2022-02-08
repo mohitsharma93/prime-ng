@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { OrderDetailComponent } from './order-detail.component';
 import {InputTextModule} from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { MenuModule } from 'primeng/menu';
 
 const routes: Routes = [
   { 
@@ -31,7 +32,8 @@ const routes: Routes = [
     TableModule,
     DialogModule,
     InputTextModule,
-    InputNumberModule
+    InputNumberModule,
+    MenuModule,
   ]
 })
 export class OrderDetailModule { }

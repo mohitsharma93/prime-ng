@@ -7,7 +7,9 @@
       <div class="">
         <p-card>
           <div class="d-flex flex-column">
-            <div *ngIf="!(selectedOrderDetail | async)?.showElse else orderDetail">
+            <div
+              *ngIf="!(selectedOrderDetail | async)?.showElse; else orderDetail"
+            >
               <div class="tab_sec_left">
                 <p>
                   ID:
@@ -81,7 +83,7 @@
                     type="button"
                     label="Print Invoice"
                     class="p-button-outlined outlined-border"
-                    style="padding: 4px 5px; font-size: 14px; margin-top: 8px;"
+                    style="padding: 4px 5px; font-size: 14px; margin-top: 8px"
                     icon="pi pi-print"
                   ></button>
                 </p>
@@ -91,15 +93,28 @@
               <div class="d-flex justify-content-between">
                 <div class="tab_sec_left d-flex flex-column">
                   <p>
-                    Shipment ID : {{ (selectedOrderDetail | async)?.ShipmentID}}
+                    Shipment ID :
+                    {{ (selectedOrderDetail | async)?.ShipmentID }}
                   </p>
                   <p>
-                    Total Shipment Value: {{ (selectedOrderDetail | async)?.OrderAmount }}
+                    Total Shipment Value:
+                    {{ (selectedOrderDetail | async)?.OrderAmount }}
                   </p>
                 </div>
                 <div class="tab_sec_right d-flex flex-column">
-                  <p>
-                    Created Date: {{ (selectedOrderDetail | async)?.OrderAmount | date : 'MMM. d, y'}}
+                  <p class="p-inline">
+                    Created Date:
+                    {{
+                      (selectedOrderDetail | async)?.OrderAmount
+                        | date: "MMM. d, y"
+                    }}
+                  </p>
+                  <p *ngIf="(selectedOrderDetail | async)?.orderStatusId === 4">
+                    Closed Date:
+                    {{
+                      (selectedOrderDetail | async)?.CloseDate
+                        | date: "MMM. d, y"
+                    }}
                   </p>
                 </div>
               </div>
@@ -171,7 +186,10 @@
                             [step]="1"
                             incrementButtonIcon="pi pi-plus"
                             decrementButtonIcon="pi pi-minus"
-                            (onInput)="rowData.showEdit = false;changeAmountAsPerQuantity($event.value, rowData)"
+                            (onInput)="
+                              rowData.showEdit = false;
+                              changeAmountAsPerQuantity($event.value, rowData)
+                            "
                           >
                           </p-inputNumber>
                         </div>
@@ -233,7 +251,14 @@
                 label="Cancel Order"
                 class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4"
+                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4 || (selectedOrderDetail | async)?.orderStatusId !== 3"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Cancel Selected"
+                class="p-button-raised p-button-danger ml-2"
+                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4 || (selectedOrderDetail | async)?.orderStatusId !== 3"
               ></button>
             </div>
           </div>
@@ -307,7 +332,7 @@
     class="p-button-outlined order-detail-action"
     icon="pi pi-print"
     *ngIf="showPrint"
-    style="width: 36px; height: 41px;"
+    style="width: 36px; height: 41px"
   ></button>
   <button
     pButton
@@ -326,7 +351,9 @@
     label="Edit"
     class="p-button-outlined order-detail-action"
     style="width: 85px"
-    *ngIf="(selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit"
+    *ngIf="
+      (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
+    "
   ></button>
   <button
     pButton
@@ -335,8 +362,15 @@
     label="Save"
     class="p-button-outlined order-detail-action"
     style="width: 85px"
-    *ngIf="(selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit"
+    *ngIf="
+      (selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit
+    "
     (click)="saveQuantity(order)"
   ></button>
-  <i class="pi pi-ellipsis-h" *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3" style="font-size: 2rem"></i>
+  <i
+    class="pi pi-ellipsis-h"
+    style="font-size: 2rem"
+    *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
+  ></i>
+  <div></div>
 </ng-template>
