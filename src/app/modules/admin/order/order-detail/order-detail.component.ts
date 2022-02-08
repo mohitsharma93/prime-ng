@@ -44,6 +44,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
     {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
   ];
+  public selectedData: any[] = [];
 
   constructor(
     private router: Router,
@@ -94,13 +95,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public cancelOrder(showHideModel: boolean): void {
     this.cancelModelShow = showHideModel
-  }
-
-  public paginate(event: any): void {
-    //event.first = Index of the first record
-    //event.rows = Number of rows to display in new page
-    //event.page = Index of the new page
-    //event.pageCount = Total number of pages
   }
 
   public setColumById(id: number) {
@@ -231,5 +225,13 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.toasterService.error(res?.ErrorMessage);
       }
     });
+  }
+
+  public deliveredSelected() {
+    console.log('this.selected', this.selectedData);
+  }
+
+  public cancelSelected() {
+    console.log('this.selected', this.selectedData)
   }
 }

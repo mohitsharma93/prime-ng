@@ -144,15 +144,13 @@
                 [value]="(orders$ | async) || []"
                 [scrollable]="true"
                 scrollHeight="700px"
-                [paginator]="false"
-                [rows]="5"
-                [showCurrentPageReport]="true"
-                [rowsPerPageOptions]="[5, 10, 25, 50]"
-                (onPage)="paginate($event)"
                 [columns]="columns"
+                [(selection)]="selectedData"
               >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
+                    <th *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3">
+                    </th>
                     <th
                       *ngFor="let col of columns"
                       [pSortableColumn]="col.sort ? col.field : ''"
@@ -168,6 +166,9 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                   <tr>
+                    <td *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3">
+                      <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
+                    </td>
                     <td *ngFor="let col of columns">
                       <ng-container
                         *ngIf="
@@ -235,6 +236,7 @@
                 label="Delivered Selected"
                 class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
+                (click)="deliveredSelected()"
               ></button>
               <button
                 pButton
@@ -249,7 +251,8 @@
                 type="button"
                 label="Cancel Selected"
                 class="p-button-raised p-button-danger ml-2"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4 || (selectedOrderDetail | async)?.orderStatusId !== 3"
+                *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
+                (click)="cancelSelected()"
               ></button>
             </div>
           </div>
