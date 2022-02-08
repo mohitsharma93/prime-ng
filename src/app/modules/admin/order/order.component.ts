@@ -17,6 +17,7 @@ import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 export class OrderComponent extends BaseComponent implements OnInit {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
+  @ViewChild('dt') dt: any;
   public rangeDates: FormControl = new FormControl(
     [new Date(), new Date()]
   );
@@ -224,6 +225,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
+    this.dt.first = 0;
     this.setColumById(orderStatusId)
     this.orderRequestParam = {
       endPoint: 'OverAll',
