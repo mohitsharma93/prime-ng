@@ -38,7 +38,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public selectedOrderDetail: Observable<any>;
   public showPrint: boolean = false;
   public showAction: boolean = false;
-  public statusWhereToShowActionColumn = ['Pending'];
+  public statusWhereToShowActionColumn = [1, 3, 4];
 
   constructor(
     private router: Router,
@@ -63,8 +63,11 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       if (res && (res?.OrderID || res?.ShipmentID)) {
         this.selectedOrderDetail = of(res);
         this.setColumById(0);
-        if (this.statusWhereToShowActionColumn.includes(res?.Status)) {
+        if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
           this.showAction = true;
+          if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
+            this.showPrint = true;
+          }
         }
       }
     })

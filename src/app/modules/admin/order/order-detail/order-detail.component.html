@@ -307,7 +307,7 @@
     class="p-button-outlined order-detail-action"
     icon="pi pi-print"
     *ngIf="showPrint"
-    style="width: 36px"
+    style="width: 36px; height: 41px;"
   ></button>
   <button
     pButton
@@ -338,4 +338,5 @@
     *ngIf="(selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit"
     (click)="saveQuantity(order)"
   ></button>
+  <i class="pi pi-ellipsis-h" *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3" style="font-size: 2rem"></i>
 </ng-template>

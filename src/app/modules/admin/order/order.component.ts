@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
@@ -108,7 +108,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         this.setColumById(this.orderRequestParam.orderStatusId)
         this.getOrders(this.orderRequestParam);
       }
-    })
+    });
   }
 
   public ngOnDestroy(): void {
