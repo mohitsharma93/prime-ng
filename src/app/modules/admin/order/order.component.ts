@@ -99,6 +99,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
           }
         })
       }
+    });
+
+    this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
+      console.log('filter save', res);
+      if (res?.topFilter) {
+        this.orderRequestParam = res.topFilter;
+        this.setColumById(this.orderRequestParam.orderStatusId)
+        this.getOrders(this.orderRequestParam);
+      }
     })
   }
 
@@ -170,6 +179,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
       }
       orderDetail['orderStatusId'] = this.orderRequestParam?.orderStatusId 
       this.subjectService.setOrderDetail(orderDetail);
+      this.subjectService.setSaveFilterOnRedirection({
+        topFilter: this.orderRequestParam,
+        ...(this.searchControl.value && {
+          searchString: this.searchControl.value
+        })
+      });
       this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentID)]);
     }
   }
