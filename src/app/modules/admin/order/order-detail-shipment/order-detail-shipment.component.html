@@ -7,10 +7,14 @@
       <div class="">
         <p-card>
           <div class="d-flex flex-column">
-            <div
-              *ngIf="!(selectedOrderDetail | async)?.showElse; else orderDetail"
-            >
+            <div>
               <div class="tab_sec_left">
+                <p>
+                  Shipment ID:
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.ShipmentID }}</b></span
+                  >
+                </p>
                 <p>
                   ID:
                   <span
@@ -73,6 +77,7 @@
                 <p
                   class="outlined-button d-flex justify-content-end"
                   *ngIf="
+                    (selectedOrderDetail | async)?.Status === 'Shipped' ||
                     (selectedOrderDetail | async)?.Status === 'Cancelled'
                   "
                 >
@@ -88,67 +93,12 @@
                 </p>
               </div>
             </div>
-            <ng-template #orderDetail>
-              <div class="d-flex justify-content-between">
-                <div class="tab_sec_left d-flex flex-column">
-                  <p>
-                    Shipment ID :
-                    {{ (selectedOrderDetail | async)?.ShipmentID }}
-                  </p>
-                  <p>
-                    Total Shipment Value:
-                    {{ (selectedOrderDetail | async)?.OrderAmount }}
-                  </p>
-                </div>
-                <div class="tab_sec_right d-flex flex-column">
-                  <p class="p-inline">
-                    Created Date:
-                    {{
-                      (selectedOrderDetail | async)?.OrderAmount
-                        | date: "MMM. d, y"
-                    }}
-                  </p>
-                  <p *ngIf="(selectedOrderDetail | async)?.orderStatusId === 4">
-                    Closed Date:
-                    {{
-                      (selectedOrderDetail | async)?.CloseDate
-                        | date: "MMM. d, y"
-                    }}
-                  </p>
-                </div>
-              </div>
-              <div class="d-flex justify-content-end mb-2">
-                <div class="outlined-button">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Print Shipment Details"
-                    class="p-button-outlined p-button-sm order-detail-action"
-                    icon="pi pi-print"
-                  ></button>
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Print Invoice"
-                    class="p-button-outlined p-button-sm order-detail-action"
-                    icon="pi pi-print"
-                  ></button>
-                </div>
-              </div>
-            </ng-template>
             <div>
               <p-table
                 responsiveLayout="scroll"
                 [value]="(orders$ | async) || []"
                 [scrollable]="true"
                 scrollHeight="700px"
-                [paginator]="false"
-                [rows]="5"
-                [showCurrentPageReport]="true"
-                [rowsPerPageOptions]="[5, 10, 25, 50]"
-                (onPage)="paginate($event)"
                 [columns]="columns"
               >
                 <ng-template pTemplate="header" let-columns>
@@ -163,47 +113,12 @@
                         [field]="col.field"
                       ></p-sortIcon>
                     </th>
-                    <th *ngIf="showAction">ACTION</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                   <tr>
                     <td *ngFor="let col of columns">
-                      <ng-container
-                        *ngIf="
-                          (selectedOrderDetail | async)?.Status === 'Pending' &&
-                            col.field === 'Quantity';
-                          else showString
-                        "
-                      >
-                        <div class="inc-dec-button">
-                          <p-inputNumber
-                            inputId="integerOnly"
-                            [(ngModel)]="rowData[col.field]"
-                            [showButtons]="true"
-                            buttonLayout="horizontal"
-                            [step]="1"
-                            incrementButtonIcon="pi pi-plus"
-                            decrementButtonIcon="pi pi-minus"
-                            (onInput)="
-                              rowData.showEdit = false;
-                              changeAmountAsPerQuantity($event.value, rowData)
-                            "
-                          >
-                          </p-inputNumber>
-                        </div>
-                      </ng-container>
-                      <ng-template #showString>
                         {{ rowData[col.field] }}
-                      </ng-template>
-                    </td>
-                    <td class="outlined-button" *ngIf="showAction">
-                      <ng-container
-                        *ngTemplateOutlet="
-                          actionButton;
-                          context: { $implicit: rowData }
-                        "
-                      ></ng-container>
                     </td>
                   </tr>
                 </ng-template>
@@ -211,45 +126,20 @@
             </div>
             <div class="d-flex justify-content-center mt-3">
               <button
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
                 pButton
                 pRipple
                 type="button"
-                label="Add to shipment"
+                label="Delivered"
                 class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted'"
-                (click)="addToShipment()"
               ></button>
               <button
-                pButton
-                pRipple
-                type="button"
-                label="Accept Order"
-                class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'"
-                (click)="acceptOrder()"
-              ></button>
-              <button
-                pButton
-                pRipple
-                type="button"
-                label="Delivered Selected"
-                class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
-              ></button>
-              <button
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
                 pButton
                 type="button"
                 label="Cancel Order"
                 class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4 && (selectedOrderDetail | async)?.orderStatusId !== 3"
-              ></button>
-              <button
-                pButton
-                type="button"
-                label="Cancel Selected"
-                class="p-button-raised p-button-danger ml-2"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId !== 4 || (selectedOrderDetail | async)?.orderStatusId !== 3"
               ></button>
             </div>
           </div>
@@ -315,53 +205,3 @@
     </div>
   </p-dialog>
 </div>
-<ng-template #actionButton let-order>
-  <button
-    pButton
-    pRipple
-    type="button"
-    class="p-button-outlined order-detail-action"
-    icon="pi pi-print"
-    *ngIf="showPrint"
-    style="width: 36px; height: 41px"
-  ></button>
-  <button
-    pButton
-    pRipple
-    type="button"
-    label="View"
-    class="p-button-outlined order-detail-action"
-    (click)="redirectToDetail(order)"
-    style="width: 85px"
-    *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"
-  ></button>
-  <button
-    pButton
-    pRipple
-    type="button"
-    label="Edit"
-    class="p-button-outlined order-detail-action"
-    style="width: 85px"
-    *ngIf="
-      (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
-    "
-  ></button>
-  <button
-    pButton
-    pRipple
-    type="button"
-    label="Save"
-    class="p-button-outlined order-detail-action"
-    style="width: 85px"
-    *ngIf="
-      (selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit
-    "
-    (click)="saveQuantity(order)"
-  ></button>
-  <i
-    class="pi pi-ellipsis-h"
-    style="font-size: 2rem"
-    *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
-  ></i>
-  <div></div>
-</ng-template>
