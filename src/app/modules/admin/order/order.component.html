@@ -88,6 +88,7 @@
                 pButton
                 pRipple
                 label="Create Shipment"
+                (click)="createShipment()"
               ></button>
             </div>
           </ng-container>
@@ -126,7 +127,7 @@
             <ng-template pTemplate="header" let-columns>
               <tr>
                 <th *ngIf="orderRequestParam?.orderStatusId === 2">
-                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  <p-tableHeaderCheckbox ></p-tableHeaderCheckbox>
                 </th>
                 <th
                   *ngFor="let col of columns"

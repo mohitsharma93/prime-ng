@@ -266,4 +266,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/admin', 'order', 'bulk-accept'])
   }
 
+  public createShipment() {
+    if (this.selectedData && this.selectedData.length) {
+      const allId = this.selectedData.map(p => p.OrderID);
+      console.log('allId', allId);
+    }
+  }
+
 }
