@@ -37,6 +37,7 @@ export class AdminComponent extends BaseComponent implements OnInit {
           } else {
             this.addPadding = false;
           }
+          
         }
       });
   }

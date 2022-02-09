@@ -1,14 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, takeUntil } from 'rxjs';
 import { pick } from 'lodash-es';
-
 import { BaseComponent } from '../../base.component';
-
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { AdminDashboardService } from 'src/app/shared/admin-service/dashboard/dashboard.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
+import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +20,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   public rangeDates: FormControl = new FormControl(
     [new Date(), new Date()]
   );
-  public dateFormat: string = 'M, yy';
+  public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
   public chartData: any;
   public graphLabelDetail: any[] = []
@@ -43,15 +42,19 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   };
   public selectedFilter: string = 'Today'
   public dashboardAnalytics$: Observable<any>;
+  totalPreviousOrder: number;
+  totalPreviousSale: number;
 
   constructor(
     private router: Router,
     private adminDashboardService: AdminDashboardService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private ds: DataService
   ) {
     super()
     this.getDashboardAnalytics(this.selectedFilter);
+    this.getChartData();
   }
 
   ngOnInit(): void {
@@ -78,14 +81,27 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     this.selectedFilter = filter;
     this.adminDashboardService.getDashboardAnalyticsService(filter).subscribe(res => {
       if (res && res.Status == 'OK') {
+        console.log(res.Data)
+        // this.setGraphLabelDetail(res?.Data);
         this.dashboardAnalytics$ = of(res?.Data);
-        if (Object.keys(res?.Data).length) {
-          this.setGraphLabelDetail(res?.Data);
-        }
+        this.totalPreviousSale = res?.Data['TotalPreviousSale'] || 0;
+        this.totalPreviousOrder = res?.Data['TotalPreviousOrder'] || 0;
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
     })
+  }
+
+  getChartData() {
+    const req = {
+      url: '/api/sellerDashboard/ShopOverview/GetSellerDashboardPieChartInfo',
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        this.setGraphLabelDetail(res?.Data);
+      }
+    });
   }
 
   public dateChange(event: any): void {
@@ -109,24 +125,25 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   public setGraphLabelDetail(data: { [key: string]: string }) {
     this.graphLabelDetail = [
-      { status: 'Pending', count: data['PendingOrdersCount'], sum: data['PendingOrdersSum'], statusId: 1},
+      { status: 'Pending', count: data['PendingOrdersCount'], sum: data['PendingOrdersSum'], statusId: 1 },
       { status: 'Accepted', count: data['AcceptedOrdersCount'], sum: data['AcceptedOrdersSum'], statusId: 2 },
       { status: 'Shipped', count: data['ShippedOrdersCount'], sum: data['ShippedOrdersSum'], statusId: 3 },
       { status: 'Delivered', count: data['DeliveredOrdersCount'], sum: data['DeliveredOrdersSum'], statusId: 4 },
       { status: 'Cancelled', count: data['CancelledOrdersCount'], sum: data['CancelledOrdersSum'], statusId: 6 },
-      
+
     ];
     const d = pick(data, ['AcceptedOrdersCount', 'PendingOrdersCount', 'CancelledOrdersCount', 'DeliveredOrdersCount', 'ShippedOrdersCount'])
 
     this.setChartData(Object.values(d))
   }
 
-  public dateConvection(date : Array<Date>): string {
-    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1 ) + ',' + date[1].getFullYear()
+  public dateConvection(date: Array<Date>): string {
+    return date[0].getDate() + ',' + (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + date[1].getDate() + ',' + (date[1].getMonth() + 1) + ',' + date[1].getFullYear()
   }
 
   public redirectToOrder(statusId: number): void {
     this.router.navigate(['/admin', 'order']);
-    this.subjectService.setApiCallStatusWise({ statusId: statusId});
+    this.subjectService.setApiCallStatusWise({ statusId: statusId });
   }
 }
+

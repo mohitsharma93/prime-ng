@@ -172,7 +172,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToDetail(orderDetail: any): void {
+    console.log("orderDetail",orderDetail)
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+     
       if (this.orderRequestParam?.orderStatusId === 3 || this.orderRequestParam?.orderStatusId === 4) {
         orderDetail['showElse'] = true;
       } else {
@@ -216,6 +218,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public getOrders(requestParam: IOrderRequestModel) {
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
       if (res && res.Status == 'OK') {
+        console.log("res.Data",res.Data)
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
       } else {
@@ -257,6 +260,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public resetSearch(): void {
     this.searchControl.setValue('')
+  }
+
+  public redirectToBulkAccept() {
+    this.router.navigate(['/admin', 'order', 'bulk-accept'])
+  }
+
+  public createShipment() {
+    if (this.selectedData && this.selectedData.length) {
+      const allId = this.selectedData.map(p => p.OrderID);
+      console.log('allId', allId);
+    }
   }
 
 }
