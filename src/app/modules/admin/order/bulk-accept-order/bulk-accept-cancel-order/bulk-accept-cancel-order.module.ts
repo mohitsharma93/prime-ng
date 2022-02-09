@@ -6,27 +6,19 @@ import { ButtonModule } from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
-import { BulkAcceptOrderComponent } from './bulk-accept-order.component';
+import { BulkAcceptCancelOrderComponent } from './bulk-accept-cancel-order.component';
 import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   { 
     path: '', 
-    component: BulkAcceptOrderComponent,
+    component: BulkAcceptCancelOrderComponent,
   },
-  {
-    path: 'cancel',
-    loadChildren: () => import('./bulk-accept-cancel-order/bulk-accept-cancel-order.module').then((m) => m.BulkAcceptCancelOrderModule)
-  },
-  {
-    path: 'confirm',
-    loadChildren: () => import('./confirmation-bulk-accept/confirmation-bulk-accept.module').then((m) => m.ConfirmationBulkAcceptModule)
-  }
 ];
 
 @NgModule({
   declarations: [
-    BulkAcceptOrderComponent
+    BulkAcceptCancelOrderComponent
   ],
   imports: [
     CommonModule,
@@ -40,4 +32,4 @@ const routes: Routes = [
     DialogModule
   ]
 })
-export class BulkAcceptOrderModule { }
+export class BulkAcceptCancelOrderModule { }

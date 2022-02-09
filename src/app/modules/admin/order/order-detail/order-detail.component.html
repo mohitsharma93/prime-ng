@@ -260,9 +260,10 @@
                 class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)"
                 *ngIf="
-                (selectedOrderDetail | async)?.orderStatusId !== 4 &&
-                (selectedOrderDetail | async)?.orderStatusId !== 3 &&
-                (selectedOrderDetail | async)?.orderStatusId !== 6" 
+                  (selectedOrderDetail | async)?.orderStatusId !== 4 &&
+                  (selectedOrderDetail | async)?.orderStatusId !== 3 &&
+                  (selectedOrderDetail | async)?.orderStatusId !== 6
+                " 
               ></button>
               <button
                 pButton
