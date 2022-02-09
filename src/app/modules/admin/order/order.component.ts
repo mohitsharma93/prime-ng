@@ -262,4 +262,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.searchControl.setValue('')
   }
 
+  public redirectToBulkAccept() {
+    this.router.navigate(['/admin', 'order', 'bulk-accept'])
+  }
+
 }

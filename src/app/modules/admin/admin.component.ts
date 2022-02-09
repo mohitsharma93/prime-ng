@@ -12,6 +12,7 @@ import { BaseComponent } from './base.component';
 export class AdminComponent extends BaseComponent implements OnInit {
 
   public minimize = true;
+  public addPadding = false;
 
   constructor(
     private router: Router,
@@ -30,6 +31,11 @@ export class AdminComponent extends BaseComponent implements OnInit {
         if (event instanceof NavigationStart) {
           if (event && !event.url.includes('/admin/order')) {
             this.subjectService.setSaveFilterOnRedirection(null);
+          }
+          if (event && event.url.includes('/admin/order/bulk-accept')) {
+            this.addPadding = true;
+          } else {
+            this.addPadding = false;
           }
         }
       });
