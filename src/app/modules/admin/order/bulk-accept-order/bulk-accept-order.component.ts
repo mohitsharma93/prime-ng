@@ -27,6 +27,7 @@ import { Observable, of, take } from "rxjs";
 })
 export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
+  public cancelModelShow: boolean = false;
   public columns: any[] = [];
   public orders$: Observable<any[]>;
   public expandedRows: any = {};
@@ -73,4 +74,14 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
+  public cancelOrder(showHideModel: boolean, selectedOrder: any): void {
+    this.cancelModelShow = showHideModel;
+    if (selectedOrder && Object.keys(selectedOrder).length) {
+      console.log('selectedOrder', selectedOrder)
+    }
+  }
+
+  public hitCancelOrderApi(): void {
+    
+  }
 }

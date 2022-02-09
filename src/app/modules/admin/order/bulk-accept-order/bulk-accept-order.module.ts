@@ -7,6 +7,7 @@ import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
 import { BulkAcceptOrderComponent } from './bulk-accept-order.component';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   { 
@@ -27,7 +28,8 @@ const routes: Routes = [
     ButtonModule,
     CardModule,
     TableModule,
-    DropdownModule
+    DropdownModule,
+    DialogModule
   ]
 })
 export class BulkAcceptOrderModule { }
