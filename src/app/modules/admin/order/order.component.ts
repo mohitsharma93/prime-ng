@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
@@ -37,12 +37,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public selectTopBarSearchString$: Observable<string>;
   public searchControl: FormControl = new FormControl('');
 
+
   constructor(
     private router: Router,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
     private subjectService: SubjectService,
-    private cdn: ChangeDetectorRef
   ) {
     super();
     this.setColumById(0);
@@ -219,13 +219,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
+    this.setLoader(true);
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
       if (res && res.Status == 'OK') {
         console.log("res.Data",res.Data)
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
+        this.setLoader(false);
       } else {
         this.toasterService.error(res?.ErrorMessage);
+        this.setLoader(false);
       }
     })
   }
