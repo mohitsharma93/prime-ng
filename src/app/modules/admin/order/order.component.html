@@ -116,7 +116,9 @@
             [value]="products"
             [scrollable]="true"
             scrollHeight="600px"
-            [paginator]="(orderRequestParam?.orderStatusId === 1) ? false :true"
+            [paginator]="
+              (orderRequestParam?.orderStatusId === 1 || orderRequestParam?.orderStatusId === 2) ? false : true
+            "
             [rows]="10"
             [showCurrentPageReport]="true"
             [rowsPerPageOptions]="[5, 10, 25, 50]"
@@ -167,7 +169,7 @@
           </p-table>
           <div
             class="text-uppercase d-flex justify-content-center c-danger mt-4" 
-            *ngIf="(orderRequestParam?.orderStatusId === 1)"
+            *ngIf="(orderRequestParam?.orderStatusId === 1  || orderRequestParam?.orderStatusId === 2)"
           >
             view more
           </div>
