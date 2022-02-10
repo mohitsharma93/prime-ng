@@ -130,7 +130,7 @@
             <ng-template pTemplate="header" let-columns>
               <tr>
                 <th *ngIf="orderRequestParam?.orderStatusId === 2">
-                  <p-tableHeaderCheckbox ></p-tableHeaderCheckbox>
+                  <p-tableHeaderCheckbox class="custom-checkbox"></p-tableHeaderCheckbox>
                 </th>
                 <th
                   *ngFor="let col of columns"
@@ -145,7 +145,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
               <tr>
                 <td *ngIf="orderRequestParam?.orderStatusId === 2">
-                  <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                  <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
                 </td>
                 <td *ngFor="let col of columns">
                   {{
