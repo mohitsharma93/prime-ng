@@ -228,13 +228,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
-    this.dt.first = 0;
-    this.setColumById(orderStatusId)
     this.orderRequestParam = {
       endPoint: 'OverAll',
       orderStatusId: orderStatusId,
       urlMiddlePoint: urlMiddlePoint
     }
+    this.dt.first = 0;
+    this.setColumById(orderStatusId)
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {
       this.showPrint = true;
