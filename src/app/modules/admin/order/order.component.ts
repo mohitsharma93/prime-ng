@@ -21,7 +21,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public rangeDates: FormControl = new FormControl(
     [new Date(), new Date()]
   );
-  public dateFormat: string = 'M, yy';
+  public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 
   public products: any[] = [];
@@ -244,7 +244,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public dateConvection(date: Array<Date>) {
-    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1) + ',' + date[1].getFullYear()
+    const first = date[0];
+    const second = date[1];
+    return first.getDate() + ',' + (first.getMonth() + 1) + ',' + first.getFullYear() + '-' + second.getDate() + ',' + (second.getMonth() + 1) + ',' + second.getFullYear()
   }
 
   public getApiCallStatusWise(key: number): string {
@@ -274,3 +276,4 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
 }
+

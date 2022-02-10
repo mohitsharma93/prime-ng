@@ -29,6 +29,7 @@
               (onSelect)="dateChange($event)"
               [dateFormat]="dateFormat"
               [formControl]="rangeDates"
+              [showIcon]="true"
             >
             </p-calendar>
           </div>
@@ -115,7 +116,7 @@
             [value]="products"
             [scrollable]="true"
             scrollHeight="600px"
-            [paginator]="true"
+            [paginator]="(orderRequestParam?.orderStatusId === 1) ? false :true"
             [rows]="10"
             [showCurrentPageReport]="true"
             [rowsPerPageOptions]="[5, 10, 25, 50]"
@@ -164,6 +165,7 @@
               </tr>
             </ng-template>
           </p-table>
+          <p-card class="text-capitalize">view more</p-card>
         </p-card>
       </div>
     </div>
