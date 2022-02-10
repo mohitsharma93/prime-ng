@@ -32,7 +32,7 @@ export class AdminComponent extends BaseComponent implements OnInit {
           if (event && !event.url.includes('/admin/order')) {
             this.subjectService.setSaveFilterOnRedirection(null);
           }
-          if (event && event.url.includes('/admin/order/bulk-accept')) {
+          if (event && (event.url.includes('/admin/order/bulk-accept') || event.url.includes('/admin/order/detail'))) {
             this.addPadding = true;
           } else {
             this.addPadding = false;
