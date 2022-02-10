@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
@@ -28,7 +28,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public status = [
     { name: 'Approved', code: 'approved' },
   ];
-  public orderRequestParam: IOrderRequestModel;
+  public orderRequestParam: IOrderRequestModel | any;
   public orders$: Observable<any[]> = of([]);
   public columns: any[] = [];
   public showPrint = false;
@@ -41,7 +41,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     private router: Router,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private cdn: ChangeDetectorRef
   ) {
     super();
     this.setColumById(0);
@@ -49,7 +50,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.getOrders(this.orderRequestParam);
+    // this.getOrders(this.orderRequestParam);
 
     this.rangeDates.valueChanges.pipe(
       debounceTime(500),
@@ -107,6 +108,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (res?.topFilter) {
         this.orderRequestParam = res.topFilter;
         this.setColumById(this.orderRequestParam.orderStatusId)
+        this.getOrders(this.orderRequestParam);
+      } else {
         this.getOrders(this.orderRequestParam);
       }
     });

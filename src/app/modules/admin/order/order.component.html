@@ -85,10 +85,10 @@
           <ng-container *ngSwitchCase="2">
             <div class="outlined-button">
               <button
-                class="p-button-outlined p-button-sm order-detail-action"
+                class="p-button-outlined p-button-sm order-detail-action bg-white"
                 pButton
                 pRipple
-                label="Create Shipment bg-white"
+                label="Create Shipment"
                 (click)="createShipment()"
               ></button>
             </div>
@@ -185,9 +185,9 @@
     pRipple
     type="button"
     label="All"
-    class="p-button-rounded p-button-outlined bg-white"
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(0, 'GetAllOrderDetails')"
-    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 0 }"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 0, 'bg-white': orderRequestParam?.orderStatusId !== 0 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -195,9 +195,9 @@
     pRipple
     type="button"
     label="Pending"
-    class="p-button-rounded p-button-outlined bg-white"
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(1, 'GetAllOrderDetails')"
-    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 1 }"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 1, 'bg-white': orderRequestParam?.orderStatusId !== 1 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -205,9 +205,9 @@
     pRipple
     type="button"
     label="Accepted"
-    class="p-button-rounded p-button-outlined bg-white"
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(2, 'GetAllOrderDetails')"
-    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 2 }"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 2, 'bg-white': orderRequestParam?.orderStatusId !== 2 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -215,9 +215,9 @@
     pRipple
     type="button"
     label="In-transit Shipment"
-    class="p-button-rounded p-button-outlined bg-white"
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(3, 'GetInTransitOrderDetails')"
-    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 3 }"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 3, 'bg-white': orderRequestParam?.orderStatusId !== 3}"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -225,9 +225,9 @@
     pRipple
     type="button"
     label="Delivered Shipment"
-    class="p-button-rounded p-button-outlined bg-white"
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(4, 'GetDeliveredOrderDetails')"
-    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 4 }"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 4, 'bg-white': orderRequestParam?.orderStatusId !== 4 }"
   ></button>
   <button class="arrow dotted"></button>
   <button
@@ -235,9 +235,9 @@
     pRipple
     type="button"
     label="Cancelled Order"
-    class="p-button-rounded p-button-outlined bg-white"
+    class="p-button-rounded p-button-outlined"
     (click)="orderChange(6, 'GetAllOrderDetails')"
-    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 6 }"
+    [ngClass]="{ is_active: orderRequestParam?.orderStatusId === 6, 'bg-white': orderRequestParam?.orderStatusId !== 6 }"
   ></button>
 </ng-template>
 
