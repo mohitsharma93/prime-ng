@@ -270,8 +270,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public createShipment() {
     if (this.selectedData && this.selectedData.length) {
-      const allId = this.selectedData.map(p => p.OrderID);
-      console.log('allId', allId);
+      const allId: number[] = this.selectedData.map(p => p.OrderID);
+      this.adminOrderService.addToShipmentService(allId).subscribe(res => {
+        if (res && res.Status == 'OK') {
+          this.getOrders(this.orderRequestParam);
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      })
+    } else {
+      this.toasterService.info('Select order first through checkbox.')
     }
   }
 

@@ -70,9 +70,9 @@ export class AdminOrderService {
       );
   }
 
-  public addToShipmentService(orderId: any): Observable<any> {
+  public addToShipmentService(allIds: number[]): Observable<any> {
     return this.http
-      .post(AdminOrderUrls.addToShipmentOrder(this.adminBaseUrl).replace(':orderId', orderId), {})
+      .post(AdminOrderUrls.addToShipmentOrder(this.adminBaseUrl), allIds)
       .pipe(
         map((res) => {
           const data: any = res;
