@@ -186,6 +186,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
+          this.backClicked();
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -222,6 +223,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public acceptOrder() {
     this.adminOrderService.acceptOrderService(this.getCurrentOrder()?.OrderID).subscribe(res => {
       if (res && res?.Status == 'OK') {
+        this.backClicked();
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -231,6 +233,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public addToShipment() {
     this.adminOrderService.addToShipmentService(this.getCurrentOrder()?.OrderID).subscribe(res => {
       if (res && res?.Status == 'OK') {
+        this.backClicked();
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
