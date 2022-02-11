@@ -37,7 +37,7 @@
                         <i class="fa fa-arrow-up" *ngIf="totalPreviousOrder >= 0"></i>
                         <i class="fa fa-arrow-down" *ngIf="totalPreviousOrder < 0"></i>
                       </span>
-                      <span class="ml-1">{{selectedFilter === 'Today'? 'than yesterday': 'than last Month'}}</span>
+                      <span class="ml-1 shop-des">{{selectedFilter === 'Today'? 'than yesterday': 'than last Month'}}</span>
                     </div>
                   </div>
                 </div>
@@ -56,7 +56,7 @@
                         <i class="fa fa-arrow-up " *ngIf="totalPreviousSale >= 0"></i>
                         <i class="fa fa-arrow-down" *ngIf="totalPreviousSale < 0"></i>
                       </span>
-                      <span class="ml-1">
+                      <span class="ml-1 shop-des">
                         {{selectedFilter === 'Today'? ' than yesterday': 'than last Month'}}
                       </span>
                     </div>

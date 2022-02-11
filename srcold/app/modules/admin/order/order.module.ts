@@ -8,6 +8,7 @@ import { CalendarModule } from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
+import { LoaderModule } from '../../loader/loader.module';
 
 const routes: Routes = [
   { 
@@ -37,7 +38,8 @@ const routes: Routes = [
     CalendarModule,
     CardModule,
     TableModule,
-    DropdownModule
+    DropdownModule,
+    LoaderModule
   ]
 })
 export class OrderModule { }

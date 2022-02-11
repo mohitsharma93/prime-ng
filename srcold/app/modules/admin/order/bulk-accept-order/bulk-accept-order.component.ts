@@ -6,6 +6,7 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { BaseComponent } from "../../base.component";
 import { dummyData } from "./dummy";
 import { Observable, of, take } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -35,6 +36,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   constructor(
     private _location: Location,
+    private router: Router
   ) {
     super();
     this.setColumById();
@@ -74,14 +76,20 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
-  public cancelOrder(showHideModel: boolean, selectedOrder: any): void {
+  public showCancelPopUp(showHideModel: boolean) {
     this.cancelModelShow = showHideModel;
-    if (selectedOrder && Object.keys(selectedOrder).length) {
-      console.log('selectedOrder', selectedOrder)
-    }
   }
 
-  public hitCancelOrderApi(): void {
-    
+  public cancelOrder(showHideModel: boolean): void {
+    console.log('after pop up cancel click');
+    this.showCancelPopUp(showHideModel);
+  }
+
+  public proceed(): void {
+    this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
+  }
+
+  public next(): void {
+    this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
   }
 }

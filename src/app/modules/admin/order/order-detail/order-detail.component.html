@@ -49,14 +49,17 @@
                       | date: "MMM. d, y : h:mm a"
                   }}</span>
                 </p>
-                <p *ngIf="(selectedOrderDetail | async)?.orderStatusId === 6">
+                <p  *ngIf="((selectedOrderDetail | async)?.orderStatusId === 6 ||(selectedOrderDetail | async)?.Status === 'Cancelled'  )">
                   Cancelled Date:
                   <span>{{
                     (selectedOrderDetail | async)?.CancelationDate
                       | date: "MMM. d, y : h:mm a"
                   }}</span>
                 </p>
-                <div class="d-flex flex-column cancel-reason" *ngIf="(selectedOrderDetail | async)?.orderStatusId === 6">
+                <div
+                 class="d-flex flex-column cancel-reason"
+                  *ngIf="((selectedOrderDetail | async)?.orderStatusId === 6 ||(selectedOrderDetail | async)?.Status === 'Cancelled'  )"
+                >
                   <p>
                     Cancelled by : <span>{{(selectedOrderDetail | async)?.CancelBy}}</span>
                   </p>
@@ -156,7 +159,7 @@
             <div>
               <p-table
                 responsiveLayout="scroll"
-                [value]="(orders$ | async) || []"
+                [value]="(orders$ | async)?.getShowOrderDetailList || []"
                 [scrollable]="true"
                 scrollHeight="700px"
                 [columns]="columns"

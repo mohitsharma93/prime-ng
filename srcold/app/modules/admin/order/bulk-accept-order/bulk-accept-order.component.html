@@ -33,7 +33,7 @@
                   label="Print Demand Sheet"
                   class="p-button-outlined p-button-sm order-detail-action h-40"
                   icon="pi pi-print"
-                  (click)="cancelOrder(true, null)"
+                  (click)="showCancelPopUp(true)"
                 ></button>
               </div>
             </div>
@@ -85,6 +85,7 @@
                 type="button"
                 label="Next"
                 class="p-button-raised p-button-success"
+                (click)="next()"
               ></button>
             </div>
           </div>
@@ -118,7 +119,7 @@
         label="No"
         class="p-button-outlined outlined-border"
         style="width: 150px"
-        (click)="cancelOrder(false, null)"
+        (click)="cancelOrder(false)"
       ></button>
       <button
         pButton
@@ -127,7 +128,7 @@
         label="Yes"
         class="p-button-outlined is_active ml-2"
         style="width: 150px"
-        (click)="hitCancelOrderApi()"
+        (click)="proceed()"
       ></button>
     </div>
   </p-dialog>

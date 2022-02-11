@@ -29,7 +29,7 @@ export class SideBarComponent extends BaseComponent implements OnInit, OnChanges
       takeUntil(this.destroy$)
     ).subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
-        if (event && event.url.includes('/admin/order/bulk-accept')) {
+        if (event && (event.url.includes('/admin/order/bulk-accept') || event.url.includes('/admin/order/detail'))) {
           this.visible = false;
         } else {
           this.visible = true;

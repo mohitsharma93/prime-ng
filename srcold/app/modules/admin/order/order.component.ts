@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
@@ -21,14 +21,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public rangeDates: FormControl = new FormControl(
     [new Date(), new Date()]
   );
-  public dateFormat: string = 'M, yy';
+  public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 
   public products: any[] = [];
   public status = [
     { name: 'Approved', code: 'approved' },
   ];
-  public orderRequestParam: IOrderRequestModel;
+  public orderRequestParam: IOrderRequestModel | any;
   public orders$: Observable<any[]> = of([]);
   public columns: any[] = [];
   public showPrint = false;
@@ -37,11 +37,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public selectTopBarSearchString$: Observable<string>;
   public searchControl: FormControl = new FormControl('');
 
+
   constructor(
     private router: Router,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
   ) {
     super();
     this.setColumById(0);
@@ -49,7 +50,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.getOrders(this.orderRequestParam);
+    // this.getOrders(this.orderRequestParam);
 
     this.rangeDates.valueChanges.pipe(
       debounceTime(500),
@@ -107,6 +108,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (res?.topFilter) {
         this.orderRequestParam = res.topFilter;
         this.setColumById(this.orderRequestParam.orderStatusId)
+        this.getOrders(this.orderRequestParam);
+      } else {
         this.getOrders(this.orderRequestParam);
       }
     });
@@ -216,25 +219,28 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
+    this.setLoader(true);
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
       if (res && res.Status == 'OK') {
         console.log("res.Data",res.Data)
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
+        this.setLoader(false);
       } else {
         this.toasterService.error(res?.ErrorMessage);
+        this.setLoader(false);
       }
     })
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
-    this.dt.first = 0;
-    this.setColumById(orderStatusId)
     this.orderRequestParam = {
       endPoint: 'OverAll',
       orderStatusId: orderStatusId,
       urlMiddlePoint: urlMiddlePoint
     }
+    this.dt.first = 0;
+    this.setColumById(orderStatusId)
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {
       this.showPrint = true;
@@ -244,7 +250,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public dateConvection(date: Array<Date>) {
-    return (date[0].getMonth() + 1) + ',' + date[0].getFullYear() + '-' + (date[1].getMonth() + 1) + ',' + date[1].getFullYear()
+    const first = date[0];
+    const second = date[1];
+    return first.getDate() + ',' + (first.getMonth() + 1) + ',' + first.getFullYear() + '-' + second.getDate() + ',' + (second.getMonth() + 1) + ',' + second.getFullYear()
   }
 
   public getApiCallStatusWise(key: number): string {
@@ -268,9 +276,18 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public createShipment() {
     if (this.selectedData && this.selectedData.length) {
-      const allId = this.selectedData.map(p => p.OrderID);
-      console.log('allId', allId);
+      const allId: number[] = this.selectedData.map(p => p.OrderID);
+      this.adminOrderService.addToShipmentService(allId).subscribe(res => {
+        if (res && res.Status == 'OK') {
+          this.getOrders(this.orderRequestParam);
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      })
+    } else {
+      this.toasterService.info('Select order first through checkbox.')
     }
   }
 
 }
+

@@ -11,7 +11,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
 import {MenuItem} from 'primeng/api';
 
-interface Product {
+interface Products {
   id?:string;
   name?:string;
   address?:string;
@@ -19,6 +19,11 @@ interface Product {
   order_amt?:string;
   order_date?:string;
   status?:string;
+}
+
+interface Product {
+  shipmentId: number;
+  getShowOrderDetailList: Products[]
 }
 
 @Component({
@@ -31,7 +36,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
 
   public routeParam: Params;
-  public orders$: Observable<Product[]> = of([]);
+  public orders$: Observable<Product> = of({
+    shipmentId: 0,
+    getShowOrderDetailList: []
+  });
 
   public columns: any[] = [];
   public cancelModelShow: boolean = false;
@@ -147,12 +155,13 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.getOrderDetailRecordService(orderId).subscribe(res => {
       if (res && res.Status == 'OK') {
         const changeRes = res?.Data;
+        console.log("changeRes",changeRes)
         if (this.getCurrentOrder()?.Status === 'Pending') {
-          changeRes.map((order: any) => {
+          changeRes.getShowOrderDetailList.map((order: any) => {
             order['showEdit'] = true;
           })
         }
-        console.log("changeRes",changeRes)
+       
         this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);
