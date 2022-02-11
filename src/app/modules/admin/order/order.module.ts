@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: 'bulk-accept',
     loadChildren: () => import('./bulk-accept-order/bulk-accept-order.module').then((m) => m.BulkAcceptOrderModule)
+  },
+  {
+    path: 'review-shipment',
+    loadChildren: () => import('./review-shipment/review-shipment.module').then((m) => m.ReviewShipmentModule)
   }
 ];
 

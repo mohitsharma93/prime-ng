@@ -356,7 +356,7 @@
     type="button"
     label="View"
     class="p-button-outlined order-detail-action"
-    (click)="redirectToDetail(order)"
+    (click)="redirectToDetail(order?.OrderId)"
     style="width: 85px"
     *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"
   ></button>
