@@ -52,16 +52,6 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
     ]
   }
 
-  public getAllIds(): number[] {
-    let allIds: number[] = [];
-    this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
-      if (res && res?.length) {
-        allIds = res;
-      }
-    })
-    return allIds;
-  }
-
   public createShipment(): void {
     console.log('in createShipment');
     this.adminOrderService.addToShipmentService(this.allIds).subscribe(res => {
