@@ -97,7 +97,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(id: string): void {
     if (id) {
-      this.router.navigate(['/admin', 'order-detail', id]);
+      // this.router.navigate(['/admin', 'order-detail', id]);
     }
   }
 
