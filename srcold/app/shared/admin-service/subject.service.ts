@@ -14,6 +14,9 @@ export class SubjectService {
 
     public saveFilterOnRedirection = new BehaviorSubject<any>(null);
     public saveFilterOnRedirection$ = this.saveFilterOnRedirection.asObservable();
+
+    public holdIdsForCreateShipment = new BehaviorSubject<any>(null);
+    public holdIdsForCreateShipment$ = this.holdIdsForCreateShipment.asObservable();
   
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
@@ -29,5 +32,9 @@ export class SubjectService {
 
     public setSaveFilterOnRedirection(response: any): void {
         this.saveFilterOnRedirection.next(response);
+    }
+
+    public setHoldIdsForCreateShipment(response: any): void {
+        this.holdIdsForCreateShipment.next(response);
     }
 }

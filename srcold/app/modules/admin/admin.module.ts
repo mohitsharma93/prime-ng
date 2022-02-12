@@ -21,7 +21,7 @@ import { environment } from 'src/environments/environment';
     ReactiveFormsModule,
     AdminRoutingModule,
     SidebarModule,
-    AdminServiceModule.forRoot()
+    AdminServiceModule.forRoot(),
   ],
   providers: [
     { provide: 'ADMIN_API_URL', useValue: environment.API_ENDPOINT + '' + environment.API_ENDPOINT_PROXY }

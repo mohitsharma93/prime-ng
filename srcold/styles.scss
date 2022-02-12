@@ -437,15 +437,12 @@ th, td {
   padding-right: 0 !important;
   padding: 8px 0px 8px 10px;
   font-size: 14px;
+  width: 100px;
 }
 .p-button-label {
   font-weight: normal !important;
 }
-.p-button.p-button-danger {
-  background: red !important;
-  border: 1px solid red !important;
-  padding: 8px !important;
-}
+
 .ng-tns-c70-3.p-dropdown.p-component.p-dropdown-clearable {
   border: none;
 }
@@ -492,8 +489,20 @@ cursor: default  !important
   padding: 1.5rem 1rem !important;
 }
 .card-body .svg-inline--fa {
-  font-size: 23px;
+  font-size: 15px;
   font-weight: 300;
+}
+.shop-des {
+  color: #7e84a3;
+}
+.p-button.p-button-icon-only {
+  padding: 0.1rem 0 !important;
+}
+.p-calendar {
+  width: 90%;
+}
+.order-outlinebtn .p-button {
+  margin-right: 0;
 }
 .p-datatable .p-datatable-thead > tr > th, td {
   font-size: 12px !important;

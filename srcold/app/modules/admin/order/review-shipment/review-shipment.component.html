@@ -1,0 +1,81 @@
+<div class="content-wrapper">
+  <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Accepted Orders
+  </h4>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="">
+        <p-card>
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-between ">
+              <div>
+                <div>Order Id's</div>
+                <div class="d-flex">
+                  <div *ngFor="let id of allIds" class="box-catskill-white mr-2">
+                    {{id}}
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column justify-content-end">
+                <p class="p-inline"> Order count: 07</p>
+                <p> Total Shipment Value: 12344</p>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="outlined-button d-flex justify-content-between">
+                <h4>
+                  Review Shipment
+                </h4>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  label="Print Shipment Detail"
+                  class="p-button-outlined p-button-sm order-detail-action h-40"
+                  icon="pi pi-print"
+                ></button>
+              </div>
+            </div>
+            <div>
+              <p-table
+                responsiveLayout="scroll"
+                [value]="(orders$ | async) || []"
+                [scrollable]="true"
+                scrollHeight="700px"
+                [columns]="columns"
+              >
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th
+                      *ngFor="let col of columns"
+                    >
+                      {{ col.header }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                  <tr>
+                    <td *ngFor="let col of columns">
+                      {{ rowData[col.field] }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Create Shipment"
+                class="p-button-raised p-button-success h-40"
+                style="width: 140px"
+                (click)="createShipment()"
+              ></button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>

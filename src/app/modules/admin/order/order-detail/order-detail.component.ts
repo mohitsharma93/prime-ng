@@ -72,7 +72,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('res', res);
-      if (res && (res?.OrderID || res?.ShipmentID)) {
+      if (res && (res?.OrderID || res?.ShipmentId)) {
+        console.log("this",this.routeParam['orderId'])
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
           this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { FormArray, FormGroup } from '@angular/forms';
 import * as FileSaver from 'file-saver';
 @Component({
@@ -7,8 +7,7 @@ import * as FileSaver from 'file-saver';
 })
 export abstract class BaseComponent implements OnDestroy {
     private _destroy$: Subject<any>;
-    public showLoader: Observable<boolean> = of(false);
-    
+
     constructor() {}
 
     get destroy$() {
@@ -41,9 +40,5 @@ export abstract class BaseComponent implements OnDestroy {
             type: EXCEL_TYPE
         });
         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-    }
-
-    public setLoader(showHideLoader: boolean): void {
-        this.showLoader = of(showHideLoader)
     }
 }

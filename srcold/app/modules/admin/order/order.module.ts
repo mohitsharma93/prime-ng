@@ -8,7 +8,6 @@ import { CalendarModule } from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
-import { LoaderModule } from '../../loader/loader.module';
 
 const routes: Routes = [
   { 
@@ -22,6 +21,10 @@ const routes: Routes = [
   {
     path: 'bulk-accept',
     loadChildren: () => import('./bulk-accept-order/bulk-accept-order.module').then((m) => m.BulkAcceptOrderModule)
+  },
+  {
+    path: 'review-shipment',
+    loadChildren: () => import('./review-shipment/review-shipment.module').then((m) => m.ReviewShipmentModule)
   }
 ];
 
@@ -38,8 +41,7 @@ const routes: Routes = [
     CalendarModule,
     CardModule,
     TableModule,
-    DropdownModule,
-    LoaderModule
+    DropdownModule
   ]
 })
 export class OrderModule { }

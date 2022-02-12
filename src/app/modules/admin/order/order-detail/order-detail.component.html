@@ -111,18 +111,18 @@
                 <div class="tab_sec_left d-flex flex-column">
                   <p>
                     Shipment ID :
-                    {{ (selectedOrderDetail | async)?.ShipmentID }}
+                    {{ (selectedOrderDetail | async)?.ShipmentId }}
                   </p>
                   <p>
                     Total Shipment Value:
-                    {{ (selectedOrderDetail | async)?.OrderAmount }}
+                    {{ (selectedOrderDetail | async)?.ShipmentAmount }}
                   </p>
                 </div>
                 <div class="tab_sec_right d-flex flex-column">
                   <p class="p-inline">
                     Created Date:
                     {{
-                      (selectedOrderDetail | async)?.OrderAmount
+                      (selectedOrderDetail | async)?.OrderDate
                         | date: "MMM. d, y"
                     }}
                   </p>

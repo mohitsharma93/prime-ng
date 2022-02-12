@@ -68,5 +68,14 @@
   }
 }
 .bulkbtn {
-  padding: 8px 10px 9px 10px !important;
+  padding: 9px 5px !important;
+}
+.p-button.p-button-success {
+  background: #6aa84f !important;
+  border: 1px solid #6aa84f !important;
+}
+.p-button.p-button-danger {
+  background: #f0142f !important;
+  border: 1px solid #f0142f !important;
+  padding: 8px !important;
 }

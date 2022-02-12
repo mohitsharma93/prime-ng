@@ -11,7 +11,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
 import {MenuItem} from 'primeng/api';
 
-interface Product {
+interface Products {
   id?:string;
   name?:string;
   address?:string;
@@ -19,6 +19,11 @@ interface Product {
   order_amt?:string;
   order_date?:string;
   status?:string;
+}
+
+interface Product {
+  shipmentId: number;
+  getShowOrderDetailList: Products[]
 }
 
 @Component({
@@ -31,7 +36,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
 
   public routeParam: Params;
-  public orders$: Observable<Product[]> = of([]);
+  public orders$: Observable<Products[]> = of([]);
 
   public columns: any[] = [];
   public cancelModelShow: boolean = false;
@@ -57,9 +62,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     super();
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
-      if (res && res['orderId']) {
-        this.getOrderDetailRecord(res['orderId']);
-      }
+      // if (res && res['orderId']) {
+      //   this.getOrderDetailRecord(res['orderId']);
+      // }
     })
     // this.setMenuItem();
   }
@@ -68,6 +73,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('res', res);
       if (res && (res?.OrderID || res?.ShipmentID)) {
+        if (this.routeParam && this.routeParam['orderId']) {
+          const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
+          this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+        }
         this.selectedOrderDetail = of(res);
         this.setColumById(res?.orderStatusId);
         if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
@@ -89,7 +98,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(id: string): void {
     if (id) {
-      this.router.navigate(['/admin', 'order-detail', id]);
+      // this.router.navigate(['/admin', 'order-detail', id]);
     }
   }
 
@@ -101,10 +110,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     if (id === 3) {
       this.columns = [
         { field: 'OrderId', header: 'ORDER ID' },
-        { field: 'Name', header: 'NAME' },
-        { field: 'Address', header: 'ADDRESS' },
+        { field: 'ShopName', header: 'NAME' },
+        { field: 'newAddress', header: 'ADDRESS' },
         { field: 'Mobile', header: 'MOBILE' },
-        { field: 'OrdersAmount', header: 'ORDERS AMOUNT' },
+        { field: 'OrderAmount', header: 'ORDERS AMOUNT' },
         { field: 'OrderDate', header: 'ORDERS DATE' },
         { field: 'Status', header: 'STATUS' },
       ]
@@ -143,16 +152,38 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   }
 
-  public getOrderDetailRecord(orderId: number): void {
-    this.adminOrderService.getOrderDetailRecordService(orderId).subscribe(res => {
+  public getApiCallStatusWise(key: number): string {
+    switch (key) {
+      case 3:
+        return 'GetShipmentOrderData';
+      default:
+        return 'GetOrderDetailRecord';
+    }
+  }
+
+  public getOrderDetailRecord(orderId: number, apiMiddleStr: string): void {
+    this.adminOrderService.getOrderDetailRecordService(orderId, apiMiddleStr).subscribe(res => {
       if (res && res.Status == 'OK') {
-        const changeRes = res?.Data;
-        if (this.getCurrentOrder()?.Status === 'Pending') {
-          changeRes.map((order: any) => {
-            order['showEdit'] = true;
-          })
-        }
+        let changeRes = res?.Data;
         console.log("changeRes",changeRes)
+        if (this.getCurrentOrder()?.Status === 'Pending') {
+          changeRes.getShowOrderDetailList.map((order: any) => {
+            order['showEdit'] = true;
+          });
+        }
+        if (apiMiddleStr === 'GetShipmentOrderData') {
+          changeRes = changeRes.shipMentOrderDataListDTO
+          changeRes.map((p: any) => {
+            let newAddress = ''
+            if (p.Address1) newAddress += ' ' + p.Address1;
+            if (p.Address2) newAddress += ' ' + p.Address2;
+            if (p.Address3) newAddress += ' ' + p.Address3;
+            if (newAddress?.length) p['newAddress'] = newAddress
+          })
+        } else {
+          changeRes = changeRes.getShowOrderDetailList
+        }
+        console.log('changeRes', changeRes)
         this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);
@@ -177,6 +208,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
+          this.backClicked();
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -213,6 +245,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public acceptOrder() {
     this.adminOrderService.acceptOrderService(this.getCurrentOrder()?.OrderID).subscribe(res => {
       if (res && res?.Status == 'OK') {
+        this.backClicked();
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -222,6 +255,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public addToShipment() {
     this.adminOrderService.addToShipmentService(this.getCurrentOrder()?.OrderID).subscribe(res => {
       if (res && res?.Status == 'OK') {
+        this.backClicked();
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }

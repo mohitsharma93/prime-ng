@@ -1,8 +1,7 @@
 <div class="content-wrapper">
-  <loader *ngIf="(showLoader | async)"></loader>
   <div class="">
     <div class="text-center justify-content-between">
-      <div class="outlined-button">
+      <div class="outlined-button order-outlinebtn">
         <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
       </div>
     </div>
@@ -153,9 +152,14 @@
                     col.field === "OrderDate" || col.field === "CloseDate"
                       ? (rowData[col.field] | date: "MMM. d, y")
                       : col.field === "ShopAddressOne"
-                      ? rowData["newAddress"]
-                      : rowData[col.field]
+                        ? rowData["newAddress"]
+                        : (col.field === 'Status') 
+                          ? ''
+                          : rowData[col.field]
                   }}
+                  <ng-container *ngIf="col.field === 'Status'">
+                    <ng-container *ngTemplateOutlet="statusCol context: { $implicit: rowData['Status'] }" ></ng-container>
+                  </ng-container>
                 </td>
                 <td class="outlined-button">
                   <ng-container
@@ -261,4 +265,12 @@
     (click)="redirectToDetail(orderDetail)"
     style="width: 85px"
   ></button>
+</ng-template>
+
+<ng-template #statusCol let-status>
+  <span class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</span>
+  <span class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</span>
+  <span class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</span>
+  <span class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</span>
+  <span class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{status}}</span>
 </ng-template>

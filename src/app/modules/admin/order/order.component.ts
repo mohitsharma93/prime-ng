@@ -135,8 +135,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     if (id === 3) {
       this.columns = [
         { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
-        { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
-        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
+        { field: 'OrderCount', header: 'ORDERS COUNT', sort: false },
+        { field: 'ShipmentAmount', header: 'SHIPMENT AMOUNT', sort: true },
         { field: 'OrderDate', header: 'ORDER DATE', sort: true }
       ]
     } else if (id === 4) {
@@ -176,7 +176,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(orderDetail: any): void {
     console.log("orderDetail",orderDetail)
-    if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentID)) {
+    if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
      
       if (this.orderRequestParam?.orderStatusId === 3 || this.orderRequestParam?.orderStatusId === 4) {
         orderDetail['showElse'] = true;
@@ -191,7 +191,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           searchString: this.searchControl.value
         })
       });
-      this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentID)]);
+      this.router.navigate(['/admin', 'order', 'detail', (orderDetail?.OrderID || orderDetail?.ShipmentId)]);
     }
   }
 
@@ -219,13 +219,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
+    this.setLoader(true);
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
       if (res && res.Status == 'OK') {
         console.log("res.Data",res.Data)
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
+        this.setLoader(false);
       } else {
         this.toasterService.error(res?.ErrorMessage);
+        this.setLoader(false);
       }
     })
   }

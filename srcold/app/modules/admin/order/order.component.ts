@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { IOrderRequestModel } from 'src/app/models/admin/order';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, take, takeUntil } from 'rxjs';
@@ -37,12 +37,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public selectTopBarSearchString$: Observable<string>;
   public searchControl: FormControl = new FormControl('');
 
-
   constructor(
     private router: Router,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
     private subjectService: SubjectService,
+    private cdn: ChangeDetectorRef
   ) {
     super();
     this.setColumById(0);
@@ -134,7 +134,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public setColumById(id: number) {
     if (id === 3) {
       this.columns = [
-        { field: 'ShipmentID', header: 'SHIPMENT ID', sort: true },
+        { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
         { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
         { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
         { field: 'OrderDate', header: 'ORDER DATE', sort: true }
@@ -219,16 +219,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: IOrderRequestModel) {
-    this.setLoader(true);
     this.adminOrderService.getOrdersService(requestParam.endPoint, requestParam.orderStatusId, requestParam.urlMiddlePoint).subscribe(res => {
       if (res && res.Status == 'OK') {
         console.log("res.Data",res.Data)
         this.orders$ = of(res?.Data);
         this.setProduct(res?.Data);
-        this.setLoader(false);
       } else {
         this.toasterService.error(res?.ErrorMessage);
-        this.setLoader(false);
       }
     })
   }
@@ -277,13 +274,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public createShipment() {
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map(p => p.OrderID);
-      this.adminOrderService.addToShipmentService(allId).subscribe(res => {
-        if (res && res.Status == 'OK') {
-          this.getOrders(this.orderRequestParam);
-        } else {
-          this.toasterService.error(res?.ErrorMessage);
-        }
-      })
+      this.subjectService.setHoldIdsForCreateShipment(allId);
+      this.router.navigate(['/admin', 'order', 'review-shipment'])
     } else {
       this.toasterService.info('Select order first through checkbox.')
     }
