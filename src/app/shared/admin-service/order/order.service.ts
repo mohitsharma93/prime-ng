@@ -32,9 +32,9 @@ export class AdminOrderService {
       );
   }
 
-  public getOrderDetailRecordService(orderId: number): Observable<any> {
+  public getOrderDetailRecordService(orderId: number, urlMiddlePoint: string): Observable<any> {
     return this.http
-      .get(AdminOrderUrls.getOrderDetailRecord(this.adminBaseUrl).replace(':orderId', orderId.toString()))
+      .get(AdminOrderUrls.getOrderDetailRecord(this.adminBaseUrl+ '/' + urlMiddlePoint).replace(':orderId', orderId.toString()))
       .pipe(
         map((res) => {
           const data: any = res;
