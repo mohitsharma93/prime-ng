@@ -42,8 +42,7 @@
               [options]="status"
               placeholder="Select Status"
               optionLabel="name"
-              [showClear]="true"
-              (onChange)="statusChange($event)"
+              (onChange)="statusChange($event?.value.code)"
             ></p-dropdown>
           </div>
         </div>

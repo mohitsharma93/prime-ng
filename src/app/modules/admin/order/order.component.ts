@@ -26,7 +26,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public products: any[] = [];
   public status = [
-    { name: 'Approved', code: 'approved' },
+    { name: 'Pending', code: 1 },
+    { name: 'Accepted', code: 2 },
+    { name: 'In-transit', code: 3 },
+    { name: 'Delivered', code: 4 },
+    { name: 'Canceled', code: 6 },
   ];
   public orderRequestParam: IOrderRequestModel | any;
   public orders$: Observable<any[]> = of([]);
@@ -199,8 +203,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
     console.log('event', event);
   }
 
-  public statusChange(event: any): void {
+  public statusChange(statusId: number): void {
     console.log('status change', event)
+    const forAll = {
+      endPoint: 'OverAll',
+      orderStatusId: statusId,
+      urlMiddlePoint: 'GetAllOrderDetails'
+    }
+    this.getOrders(forAll);
   }
 
   public export(tableId: string): void {
