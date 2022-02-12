@@ -14,9 +14,15 @@ export class AdminOrderService {
 
 
   public getOrdersService(endPoint: string, orderStatusId: number, urlMiddlePoint: string): Observable<any> {
+    let url = AdminOrderUrls.getOrders(this.adminBaseUrl + '/' + urlMiddlePoint)
+    if (urlMiddlePoint === 'GetInTransitOrderDetails') {
+      url = url.slice(0, url.length - 15)
+    } else {
+      url = url.replace(':orderStatusId', orderStatusId.toString())
+    }
     return this.http
       .get(
-        AdminOrderUrls.getOrders(this.adminBaseUrl + '/' + urlMiddlePoint).replace(':orderStatusId', orderStatusId.toString()) + '' + endPoint
+        url + '' + endPoint
       )
       .pipe(
         map((res) => {

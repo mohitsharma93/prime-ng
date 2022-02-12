@@ -134,7 +134,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public setColumById(id: number) {
     if (id === 3) {
       this.columns = [
-        { field: 'ShipmentID', header: 'SHIPMENT ID', sort: true },
+        { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
         { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
         { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
         { field: 'OrderDate', header: 'ORDER DATE', sort: true }
