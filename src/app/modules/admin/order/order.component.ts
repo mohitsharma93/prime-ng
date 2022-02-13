@@ -129,7 +129,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.saveFilterOnRedirection$
       .pipe(take(1))
       .subscribe((res) => {
-        console.log('filter save', res);
         if (res?.topFilter) {
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.orderStatusId);
@@ -201,7 +200,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToDetail(orderDetail: any): void {
-    console.log('orderDetail', orderDetail);
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
       if ( orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered' ) {
         orderDetail['showElse'] = true;
@@ -235,7 +233,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public statusChange(statusId: number): void {
-    console.log('status change', event);
     const forAll = {
       endPoint: 'OverAll',
       orderStatusId: statusId,
@@ -269,7 +266,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
       )
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
-          console.log('res.Data', res.Data);
           this.orders$ = of(res?.Data);
           this.setProduct(res?.Data);
           this.setLoader(false);

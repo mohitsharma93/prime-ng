@@ -60,7 +60,6 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
 
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      console.log('res', res);
       if (res && (res?.OrderID || res?.ShipmentID)) {
         this.selectedOrderDetail = of(res);
         this.setColumById();
@@ -89,7 +88,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   }
 
   public getOrderDetailRecord(orderId: number): void {
-    this.adminOrderService.getOrderDetailRecordService(orderId).subscribe(res => {
+    this.adminOrderService.getOrderDetailRecordService(orderId, 'GetShipmentdeliveredOrderData').subscribe(res => {
       if (res && res.Status == 'OK') {
         const changeRes = res?.Data;
         if (this.getCurrentOrder()?.Status === 'Pending') {

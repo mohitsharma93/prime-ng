@@ -46,7 +46,6 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
 
   public cancelOrder(): void {
-    console.log('in cancel order');
     this.backClicked();
   }
 

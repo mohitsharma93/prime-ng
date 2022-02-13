@@ -53,7 +53,6 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
   }
 
   public createShipment(): void {
-    console.log('in createShipment');
     this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
       if (res && res.Status == 'OK') {
       } else {

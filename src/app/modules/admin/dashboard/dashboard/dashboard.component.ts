@@ -81,7 +81,6 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     this.selectedFilter = filter;
     this.adminDashboardService.getDashboardAnalyticsService(filter).subscribe(res => {
       if (res && res.Status == 'OK') {
-        console.log(res.Data)
         // this.setGraphLabelDetail(res?.Data);
         this.dashboardAnalytics$ = of(res?.Data);
         this.totalPreviousSale = res?.Data['TotalPreviousSale'] || 0;
