@@ -54,7 +54,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public createShipment(): void {
     console.log('in createShipment');
-    this.adminOrderService.addToShipmentService(this.allIds).subscribe(res => {
+    this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
       if (res && res.Status == 'OK') {
       } else {
         this.toasterService.error(res?.ErrorMessage);

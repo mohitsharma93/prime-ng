@@ -73,7 +73,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('res', res);
       if (res && (res?.OrderID || res?.ShipmentId)) {
-        console.log("this",this.routeParam['orderId'])
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
           this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
@@ -157,6 +156,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     switch (key) {
       case 3:
         return 'GetShipmentOrderData';
+      case 4:
+        return 'GetShipmentdeliveredOrderData'
       default:
         return 'GetOrderDetailRecord';
     }
@@ -172,7 +173,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
             order['showEdit'] = true;
           });
         }
-        if (apiMiddleStr === 'GetShipmentOrderData') {
+        if (apiMiddleStr === 'GetShipmentOrderData' || apiMiddleStr === 'GetShipmentdeliveredOrderData') {
           changeRes = changeRes.shipMentOrderDataListDTO
           changeRes.map((p: any) => {
             let newAddress = ''
@@ -265,9 +266,39 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public deliveredSelected() {
     console.log('this.selected', this.selectedData);
+    if (this.selectedData && this.selectedData.length) {
+      console.log('in selected api call deliveredSelected')
+      const allOrderId = this.selectedData.map(o => o.OrderId);
+      this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
+        if (res && res?.Status == 'OK') {
+          this.backClicked();
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      });
+    } else {
+      this.toasterService.info('Please select order through checkbox for delivered')
+    }
+  }
+
+  public warningCancel() {
+    this.toasterService.info('Please select order through checkbox for canceled')
   }
 
   public cancelSelected() {
     console.log('this.selected', this.selectedData)
+    if (this.selectedData && this.selectedData.length) {
+      console.log('in selected api call cancelSelected' )
+      const allOrderId = this.selectedData.map(o => o.OrderId);
+      this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
+        if (res && res?.Status == 'OK') {
+          this.backClicked();
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      });
+    } else {
+      this.toasterService.info('Please select order through checkbox for canceled')
+    }
   }
 }
