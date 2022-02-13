@@ -266,6 +266,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       )
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
+          console.log('orders', res?.Data)
           this.orders$ = of(res?.Data);
           this.setProduct(res?.Data);
           this.setLoader(false);
