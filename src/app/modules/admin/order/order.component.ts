@@ -236,8 +236,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
     const forAll = {
       endPoint: 'OverAll',
       orderStatusId: statusId,
-      urlMiddlePoint: 'GetAllOrderDetails',
+      urlMiddlePoint: this.getApiCallStatusWise(statusId),
     };
+    this.setColumById(statusId);
     this.getOrders(forAll);
   }
 
