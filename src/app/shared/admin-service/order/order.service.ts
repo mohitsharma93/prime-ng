@@ -151,4 +151,14 @@ export class AdminOrderService {
         })
       )
   }
+  public getReviewShipmentService(): Observable<any> {
+    return this.http
+      .get(AdminOrderUrls.getReviewShipment(this.adminBaseUrl))
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
 }

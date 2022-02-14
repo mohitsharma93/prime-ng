@@ -26,10 +26,11 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
   ) {
     super();
     this.setColumById();
-    this.orders$ = of(dummyData)
+    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
+    this.getReviewShipmentData();
     this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
       if (res && res?.length) {
         this.allIds = res;
@@ -43,11 +44,21 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public setColumById() {
     this.columns = [
-      { field: 'SNo', header: 'S NO.'},
       { field: 'ItemName', header: 'ITEM NAME'},
       { field: 'Quantity', header: 'QUANTITY'},
-      { field: 'OrderWiseQuantity', header: 'ORDER WISE QUANTITY'},
+      { field: 'OrderQuantityList', header: 'ORDER WISE QUANTITY'},
     ]
+  }
+
+  public getReviewShipmentData(): void {
+    this.adminOrderService.getReviewShipmentService().subscribe(res => {
+      console.log('getReviewShipmentData', res);
+      if (res && res.Status == 'OK') {
+        this.orders$ = of(res.Data);
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    })
   }
 
   public createShipment(): void {
