@@ -36,4 +36,4 @@ const routes: Routes = [
     MenuModule,
   ]
 })
-export class OrderDetailModule { }
+export class OrderDetailShipmentModule { }

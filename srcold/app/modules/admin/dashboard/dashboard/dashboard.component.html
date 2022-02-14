@@ -14,7 +14,7 @@
     </div>
     <div class="mx-4">
       <p-calendar selectionMode="range" [readonlyInput]="true" inputId="range" [showTime]="false" [showIcon]="true"
-        (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates">
+        (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates" [maxDate]="maxDateRange">
       </p-calendar>
     </div>
   </div>
@@ -48,7 +48,7 @@
                 <div class="card-body">
                   <div class="widget">
                     <p class="">Total Sale</p>
-                    <h3><i class="fas fa-rupee-sign"></i>{{(dashboardAnalytics$ | async)?.TotalSale}} </h3>
+                    <h3><i class="fas fa-rupee-sign"></i> {{(dashboardAnalytics$ | async)?.TotalSale}} </h3>
                     <div class="widget-bottom" *ngIf="selectedFilter !== 'OverAll'">
                       <span class="widget-bottom-title"
                         [ngClass]="{'text-success': totalPreviousSale >= 0, 'text-danger': totalPreviousSale < 0}">

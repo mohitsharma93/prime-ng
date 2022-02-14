@@ -12,6 +12,9 @@ export class SubjectService {
     public orderDetail = new BehaviorSubject<any>(null);
     public orderDetail$ = this.orderDetail.asObservable();
 
+    public orderDetailShipment = new BehaviorSubject<any>(null);
+    public orderDetailShipment$ = this.orderDetailShipment.asObservable();
+
     public saveFilterOnRedirection = new BehaviorSubject<any>(null);
     public saveFilterOnRedirection$ = this.saveFilterOnRedirection.asObservable();
 
@@ -28,6 +31,10 @@ export class SubjectService {
 
     public setOrderDetail(response: any): void {
         this.orderDetail.next(response);
+    }
+
+    public setOrderDetailShipment(response: any): void {
+        this.orderDetailShipment.next(response);
     }
 
     public setSaveFilterOnRedirection(response: any): void {

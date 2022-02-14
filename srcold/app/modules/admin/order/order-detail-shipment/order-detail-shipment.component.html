@@ -12,13 +12,13 @@
                 <p>
                   Shipment ID:
                   <span
-                    ><b>{{ (selectedOrderDetail | async)?.ShipmentID }}</b></span
+                    ><b>{{ (orders$ | async)?.shipmentId }}</b></span
                   >
                 </p>
                 <p>
                   ID:
                   <span
-                    ><b>{{ (selectedOrderDetail | async)?.OrderID }}</b></span
+                    ><b>{{ (selectedOrderDetail | async)?.OrderId }}</b></span
                   >
                 </p>
                 <p>
@@ -46,13 +46,22 @@
                   }}</span>
                 </p>
                 <br /><br />
-                <p>
-                  Order Date:
-                  <span>{{
-                    (selectedOrderDetail | async)?.OrderDate
-                      | date: "MMM. d, y : h:mm a"
-                  }}</span>
-                </p>
+                <div class="d-flex">
+                  <p>
+                    Order Date:
+                    <span>{{
+                      (selectedOrderDetail | async)?.OrderDate
+                        | date: "MMM. d, y | h:mm a"
+                    }}</span>
+                  </p>
+                  <p *ngIf="(selectedOrderDetail | async)?.Status === 'Delivered'">
+                    Delivery Date:
+                    <span>{{
+                      (selectedOrderDetail | async)?.OrderDate
+                        | date: "MMM. d, y | h:mm a"
+                    }}</span>
+                  </p>
+                </div>
               </div>
               <div class="tab_sec_right">
                 <p class="d-flex justify-content-end">
@@ -96,7 +105,7 @@
             <div>
               <p-table
                 responsiveLayout="scroll"
-                [value]="(orders$ | async) || []"
+                [value]="(orders$ | async)?.getShowOrderDetailList || []"
                 [scrollable]="true"
                 scrollHeight="700px"
                 [columns]="columns"

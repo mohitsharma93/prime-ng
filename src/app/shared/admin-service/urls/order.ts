@@ -11,5 +11,6 @@ export const AdminOrderUrls = {
     addToDeliveredOrder: (baseUrl: string) => createUrl(baseUrl, 'PostAddToDeliveredOrder/:orderId'),
     deliveredSelected: (baseUrl: string) => createUrl(baseUrl, 'PostBulkOrderAddtoDelivered'),
     canceledSelected: (baseUrl: string) => createUrl(baseUrl, 'PostBulkOrderAddtoCancel/:remark'),
-    getBulkAcceptOrderData: (baseUrl: string) => createUrl(baseUrl, 'GetBulkAcceptOrderData')
+    getBulkAcceptOrderData: (baseUrl: string) => createUrl(baseUrl, 'GetBulkAcceptOrderData'),
+    deliveredOrder: (baseUrl: string) => createUrl(baseUrl, 'PostAddToDeliveredOrder/:orderId')
 };

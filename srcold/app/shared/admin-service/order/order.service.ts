@@ -82,6 +82,7 @@ export class AdminOrderService {
       .pipe(
         map((res) => {
           const data: any = res;
+          // console.log(data)
           return data;
         })
       );
@@ -129,5 +130,15 @@ export class AdminOrderService {
           return data;
         })
       );
+  }
+  public getBulkAcceptedOrderService(): Observable<any> {
+    return this.http
+      .get(AdminOrderUrls.getBulkAcceptOrderData(this.adminBaseUrl))
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
   }
 }

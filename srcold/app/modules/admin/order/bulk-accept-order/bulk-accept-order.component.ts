@@ -7,6 +7,8 @@ import { BaseComponent } from "../../base.component";
 import { dummyData } from "./dummy";
 import { Observable, of, take } from "rxjs";
 import { Router } from "@angular/router";
+import { ToasterService } from "src/app/shared/services/toaster.service";
+import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -36,7 +38,10 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   constructor(
     private _location: Location,
-    private router: Router
+    private router: Router,
+    private toasterService: ToasterService,
+    private adminOrderService: AdminOrderService,   
+
   ) {
     super();
     this.setColumById();
@@ -44,6 +49,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getBulkAcceptedOrder()
 
   }
 
@@ -74,6 +80,19 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       this.expandedRows={};
     }
     this.isExpanded = !this.isExpanded;
+  }
+
+  public getBulkAcceptedOrder() {
+    this.adminOrderService
+      .getBulkAcceptedOrderService()
+      .subscribe((res) => {
+        if (res && res.Status == 'OK') {
+          console.log('res bulk', res)
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+          this.setLoader(false);
+        }
+      });
   }
 
   public showCancelPopUp(showHideModel: boolean) {

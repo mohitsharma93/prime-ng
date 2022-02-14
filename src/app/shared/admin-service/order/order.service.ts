@@ -141,4 +141,14 @@ export class AdminOrderService {
         })
       )
   }
+  public deliveredOrder(orderId: string, data: any): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.deliveredOrder(this.adminBaseUrl).replace(':orderId', orderId.toString()), data)
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
 }

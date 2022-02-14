@@ -35,7 +35,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     { name: 'Accepted', code: 2 },
     { name: 'In-transit', code: 3 },
     { name: 'Delivered', code: 4 },
-    { name: 'Canceled', code: 6 },
+    { name: 'Cancelled', code: 6 },
   ];
   public orderRequestParam: IOrderRequestModel | any;
   public orders$: Observable<any[]> = of([]);
@@ -112,7 +112,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   return (
                     f?.OrderID?.toString()?.includes(res) ||
                     f?.Mobile?.toString()?.includes(res) ||
-                    f?.ShipmentID?.toString()?.includes(res)
+                    f?.ShipmentId?.toString()?.includes(res)
                   );
                 });
               } else {
@@ -166,8 +166,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     } else if (id === 4) {
       this.columns = [
         { field: 'ShipmentId', header: 'SHIPMENT ID', sort: true },
-        { field: 'ShipmentCount', header: 'ORDERS COUNT', sort: false },
-        { field: 'OrderAmount', header: 'SHIPMENT AMOUNT', sort: true },
+        { field: 'OrderCount', header: 'ORDERS COUNT', sort: false },
+        { field: 'ShipmentAmount', header: 'SHIPMENT AMOUNT', sort: true },
         { field: 'OrderDate', header: 'CREATED DATE', sort: true },
         { field: 'CloseDate', header: 'CLOSED DATE', sort: true },
       ];

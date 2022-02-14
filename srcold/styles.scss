@@ -489,7 +489,7 @@ cursor: default  !important
   padding: 1.5rem 1rem !important;
 }
 .card-body .svg-inline--fa {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 300;
 }
 .shop-des {
@@ -497,6 +497,11 @@ cursor: default  !important
 }
 .p-button.p-button-icon-only {
   padding: 0.1rem 0 !important;
+}
+.p-dropdown .p-dropdown-label {
+ 
+  padding: 8px 0px 9px 11px;
+  font-size: 14px;
 }
 .p-calendar {
   width: 90%;
@@ -521,4 +526,16 @@ cursor: default  !important
   padding: 0;
   margin: 0;
   display: inline;
+}
+
+span.p-button-icon.pi.pi-minus, span.p-button-icon.pi.pi-plus {
+  font-size: 12px !important;
+}
+.p-dialog-content {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.p-button.p-button-raised {
+  padding: 0.65625rem 1.09375rem;
+  font-size: 0.875rem;
 }

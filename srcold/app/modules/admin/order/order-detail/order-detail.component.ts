@@ -96,9 +96,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this._location.back();
   }
 
-  public redirectToDetail(id: string): void {
-    if (id) {
-      // this.router.navigate(['/admin', 'order-detail', id]);
+  public redirectToDetail(order: any): void {
+    if (order) {
+      this.subjectService.setOrderDetailShipment(order);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
     }
   }
 
@@ -120,12 +121,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     } else if (id === 4) {
       this.columns = [
         { field: 'OrderId', header: 'ORDER ID' },
-        { field: 'Name', header: 'NAME' },
-        { field: 'Address', header: 'ADDRESS' },
+        { field: 'ShopName', header: 'NAME' },
+        { field: 'newAddress', header: 'ADDRESS' },
         { field: 'Mobile', header: 'MOBILE' },
-        { field: 'OrdersAmount', header: 'ORDERS AMOUNT' },
+        { field: 'OrderAmount', header: 'ORDERS AMOUNT' },
         { field: 'OrderDate', header: 'ORDERS DATE' },
-        { field: 'Delivery Date', header: 'DELIVERY DATE' },
+        { field: 'DeliveryDate', header: 'DELIVERY DATE' },
         { field: 'Status', header: 'STATUS' },
       ]
     } else {
@@ -136,7 +137,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         { field: 'Moq', header: 'MOQ' },
         { field: 'Mrp', header: 'MRP' },
         { field: 'SellingPrice', header: 'SELLING PRICE' },
-        { field: 'SellingPrice', header: 'NET AMOUNT' },
+        { field: 'TotalPrice', header: 'NET AMOUNT' },
       ]
     }
   }
@@ -167,13 +168,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.getOrderDetailRecordService(orderId, apiMiddleStr).subscribe(res => {
       if (res && res.Status == 'OK') {
         let changeRes = res?.Data;
+        console.log("before",changeRes)
         if (this.getCurrentOrder()?.Status === 'Pending') {
           changeRes.getShowOrderDetailList.map((order: any) => {
             order['showEdit'] = true;
           });
         }
         if (apiMiddleStr === 'GetShipmentOrderData' || apiMiddleStr === 'GetShipmentdeliveredOrderData') {
-          changeRes = changeRes.shipMentOrderDataListDTO
+          if(apiMiddleStr === 'GetShipmentOrderData'){
+
+            changeRes = changeRes.shipMentOrderDataListDTO
+          }
+          if( apiMiddleStr === 'GetShipmentdeliveredOrderData' ) {
+            changeRes = changeRes.deliveredOrderDataListDTO
+          }
           changeRes.map((p: any) => {
             let newAddress = ''
             if (p.Address1) newAddress += ' ' + p.Address1;
