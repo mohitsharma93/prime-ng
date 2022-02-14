@@ -49,7 +49,7 @@
                       | date: "MMM. d, y : h:mm a"
                   }}</span>
                 </p>
-                <p  *ngIf="((selectedOrderDetail | async)?.orderStatusId === 6 ||(selectedOrderDetail | async)?.Status === 'Cancelled'  )">
+                <p  *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'">
                   Cancelled Date:
                   <span>{{
                     (selectedOrderDetail | async)?.CancelationDate
@@ -58,7 +58,7 @@
                 </p>
                 <div
                  class="d-flex flex-column cancel-reason"
-                  *ngIf="((selectedOrderDetail | async)?.orderStatusId === 6 ||(selectedOrderDetail | async)?.Status === 'Cancelled'  )"
+                  *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'"
                 >
                   <p>
                     Cancelled by : <span>{{(selectedOrderDetail | async)?.CancelBy}}</span>
@@ -111,22 +111,22 @@
                 <div class="tab_sec_left d-flex flex-column">
                   <p>
                     Shipment ID :
-                    {{ (selectedOrderDetail | async)?.ShipmentID }}
+                    {{ (selectedOrderDetail | async)?.ShipmentId }}
                   </p>
                   <p>
                     Total Shipment Value:
-                    {{ (selectedOrderDetail | async)?.OrderAmount }}
+                    {{ (selectedOrderDetail | async)?.ShipmentAmount }}
                   </p>
                 </div>
                 <div class="tab_sec_right d-flex flex-column">
                   <p class="p-inline">
                     Created Date:
                     {{
-                      (selectedOrderDetail | async)?.OrderAmount
+                      (selectedOrderDetail | async)?.OrderDate
                         | date: "MMM. d, y"
                     }}
                   </p>
-                  <p *ngIf="(selectedOrderDetail | async)?.orderStatusId === 4">
+                  <p *ngIf="(selectedOrderDetail | async)?.Status === 'Delivered'">
                     Closed Date:
                     {{
                       (selectedOrderDetail | async)?.CloseDate
@@ -167,7 +167,7 @@
               >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
-                    <th *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3">
+                    <th *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
                     </th>
                     <th
                       *ngFor="let col of columns"
@@ -184,7 +184,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                   <tr>
-                    <td *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3">
+                    <td *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
                       <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
                     </td>
                     <td *ngFor="let col of columns">
@@ -255,7 +255,7 @@
                 type="button"
                 label="Delivered Selected"
                 class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
                 (click)="deliveredSelected()"
               ></button>
               <button
@@ -265,9 +265,9 @@
                 class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)"
                 *ngIf="
-                  (selectedOrderDetail | async)?.orderStatusId !== 4 &&
-                  (selectedOrderDetail | async)?.orderStatusId !== 3 &&
-                  (selectedOrderDetail | async)?.orderStatusId !== 6
+                  (selectedOrderDetail | async)?.Status !== 'Delivered' &&
+                  (selectedOrderDetail | async)?.Status !== 'Shipped' &&
+                  ((selectedOrderDetail | async)?.Status !== 'Cancelled')
                 " 
               ></button>
               <button
@@ -275,8 +275,8 @@
                 type="button"
                 label="Cancel Selected"
                 class="p-button-raised p-button-danger ml-2"
-                *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
-                (click)="cancelSelected()"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+                (click)="(selectedData && selectedData.length) ? cancelOrder(true) : warningCancel()"
               ></button>
             </div>
           </div>
@@ -337,7 +337,7 @@
         label="Yes"
         class="p-button-outlined is_active ml-2"
         style="width: 150px"
-        (click)="hitCancelOrderApi(false)"
+        (click)="(getCurrentOrder()?.Status === 'Shipped') ? cancelSelected() : hitCancelOrderApi(false)"
       ></button>
     </div>
   </p-dialog>
@@ -388,7 +388,7 @@
   <i
     class="pi pi-ellipsis-h"
     style="font-size: 2rem"
-    *ngIf="(selectedOrderDetail | async)?.orderStatusId === 3"
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
   ></i>
   <div></div>
 </ng-template>

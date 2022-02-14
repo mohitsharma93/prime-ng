@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core"
 import {Location} from '@angular/common';
-
 import { Observable, of, take } from "rxjs";
-import { FormControl, Validators } from "@angular/forms";
 import { dummyData } from "./dummy";
 import { BaseComponent } from "../../base.component";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
@@ -54,6 +52,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public createShipment(): void {
     this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
+      console.log(res);
       if (res && res.Status == 'OK') {
       } else {
         this.toasterService.error(res?.ErrorMessage);

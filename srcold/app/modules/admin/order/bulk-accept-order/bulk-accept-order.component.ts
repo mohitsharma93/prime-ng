@@ -81,7 +81,6 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   }
 
   public cancelOrder(showHideModel: boolean): void {
-    console.log('after pop up cancel click');
     this.showCancelPopUp(showHideModel);
   }
 

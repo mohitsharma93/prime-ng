@@ -253,7 +253,6 @@ export class OtpLoginComponent implements OnInit {
 
   }
   public enableField() {
-    console.log('enableField called');
     this.remainingTime = '00:00';
     this.isTimerOn = false;
     this.loginOtpForm.controls['MobileNumber'].enable();

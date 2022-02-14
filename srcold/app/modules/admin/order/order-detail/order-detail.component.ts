@@ -71,8 +71,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      console.log('res', res);
-      if (res && (res?.OrderID || res?.ShipmentID)) {
+      console.log('res orderDetail', res);
+      if (res && (res?.OrderID || res?.ShipmentId)) {
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
           this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
@@ -156,6 +156,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     switch (key) {
       case 3:
         return 'GetShipmentOrderData';
+      case 4:
+        return 'GetShipmentdeliveredOrderData'
       default:
         return 'GetOrderDetailRecord';
     }
@@ -165,13 +167,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.getOrderDetailRecordService(orderId, apiMiddleStr).subscribe(res => {
       if (res && res.Status == 'OK') {
         let changeRes = res?.Data;
-        console.log("changeRes",changeRes)
         if (this.getCurrentOrder()?.Status === 'Pending') {
           changeRes.getShowOrderDetailList.map((order: any) => {
             order['showEdit'] = true;
           });
         }
-        if (apiMiddleStr === 'GetShipmentOrderData') {
+        if (apiMiddleStr === 'GetShipmentOrderData' || apiMiddleStr === 'GetShipmentdeliveredOrderData') {
           changeRes = changeRes.shipMentOrderDataListDTO
           changeRes.map((p: any) => {
             let newAddress = ''
@@ -183,7 +184,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         } else {
           changeRes = changeRes.getShowOrderDetailList
         }
-        console.log('changeRes', changeRes)
+        console.log('changeRes after change', changeRes)
         this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);
@@ -227,7 +228,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public saveQuantity(order: any) {
-    console.log('order', order);
     const obj: IOrderQuantityUpdateModel = {
       OrderID: order?.OrderId,
       DetailID: order?.DetailId,
@@ -263,10 +263,36 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public deliveredSelected() {
-    console.log('this.selected', this.selectedData);
+    if (this.selectedData && this.selectedData.length) {
+      const allOrderId = this.selectedData.map(o => o.OrderId);
+      this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
+        if (res && res?.Status == 'OK') {
+          this.backClicked();
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      });
+    } else {
+      this.toasterService.info('Please select order through checkbox for delivered')
+    }
+  }
+
+  public warningCancel() {
+    this.toasterService.info('Please select order through checkbox for canceled')
   }
 
   public cancelSelected() {
-    console.log('this.selected', this.selectedData)
+    if (this.selectedData && this.selectedData.length) {
+      const allOrderId = this.selectedData.map(o => o.OrderId);
+      this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
+        if (res && res?.Status == 'OK') {
+          this.backClicked();
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      });
+    } else {
+      this.toasterService.info('Please select order through checkbox for canceled')
+    }
   }
 }

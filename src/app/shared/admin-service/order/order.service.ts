@@ -82,6 +82,7 @@ export class AdminOrderService {
       .pipe(
         map((res) => {
           const data: any = res;
+          // console.log(data)
           return data;
         })
       );

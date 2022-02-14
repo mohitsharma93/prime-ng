@@ -37,9 +37,11 @@
                 <br /><br />
                 <p>
                   Status
-                  <span class="ml-2">{{
-                    (selectedOrderDetail | async)?.Status
-                  }}</span>
+                  <span  class="ml-2">
+                    <ng-container *ngTemplateOutlet="statusCol context: { $implicit:  (selectedOrderDetail | async)?.Status }" ></ng-container>
+              
+                  </span>
+        
                 </p>
                 <br /><br />
                 <p>
@@ -291,7 +293,7 @@
     [(visible)]="cancelModelShow"
     [position]="'center'"
     [modal]="true"
-    [style]="{ width: '50vw' }"
+    [style]="{ width: '30vw' }"
     [baseZIndex]="10000"
     [draggable]="false"
     [resizable]="false"
@@ -327,7 +329,7 @@
         type="button"
         label="No"
         class="p-button-outlined outlined-border"
-        style="width: 150px"
+        style="width: 90px; height: 40px;"
         (click)="cancelOrder(false); cancelReasonControl.setValue('')"
       ></button>
       <button
@@ -336,7 +338,7 @@
         type="button"
         label="Yes"
         class="p-button-outlined is_active ml-2"
-        style="width: 150px"
+        style="width: 90px; height: 40px;"
         (click)="(getCurrentOrder()?.Status === 'Shipped') ? cancelSelected() : hitCancelOrderApi(false)"
       ></button>
     </div>
@@ -391,4 +393,11 @@
     *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
   ></i>
   <div></div>
+</ng-template>
+<ng-template #statusCol let-status>
+  <span class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</span>
+  <span class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</span>
+  <span class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</span>
+  <span class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</span>
+  <span class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{status}}</span>
 </ng-template>

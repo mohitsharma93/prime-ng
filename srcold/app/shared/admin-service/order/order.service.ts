@@ -15,7 +15,7 @@ export class AdminOrderService {
 
   public getOrdersService(endPoint: string, orderStatusId: number, urlMiddlePoint: string): Observable<any> {
     let url = AdminOrderUrls.getOrders(this.adminBaseUrl + '/' + urlMiddlePoint)
-    if (urlMiddlePoint === 'GetInTransitOrderDetails') {
+    if (urlMiddlePoint === 'GetInTransitOrderDetails' || urlMiddlePoint === 'GetDeliveredOrderDetails') {
       url = url.slice(0, url.length - 15)
     } else {
       url = url.replace(':orderStatusId', orderStatusId.toString())
@@ -76,9 +76,20 @@ export class AdminOrderService {
       );
   }
 
-  public addToShipmentService(allIds: number[]): Observable<any> {
+  public addBulkToShipmentService(allIds: number[]): Observable<any> {
     return this.http
-      .post(AdminOrderUrls.addToShipmentOrder(this.adminBaseUrl), allIds)
+      .post(AdminOrderUrls.addBulkToShipmentOrder(this.adminBaseUrl), allIds)
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public addToShipmentService(orderId: any): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.addToShipmentOrder(this.adminBaseUrl).replace(':orderId', orderId.toString()), {})
       .pipe(
         map((res) => {
           const data: any = res;
@@ -90,6 +101,28 @@ export class AdminOrderService {
   public addToDeliveredService(orderId: any): Observable<any> {
     return this.http
       .post(AdminOrderUrls.addToDeliveredOrder(this.adminBaseUrl).replace(':orderId', orderId), {})
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public deliveredSelectedService(idsToBeDelivered: number[]): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.deliveredSelected(this.adminBaseUrl), idsToBeDelivered)
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
+  public canceledSelectedService(remark: string, idsToBeCancel: number[]): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.canceledSelected(this.adminBaseUrl).replace(':remark', remark), idsToBeCancel)
       .pipe(
         map((res) => {
           const data: any = res;
