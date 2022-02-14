@@ -151,9 +151,21 @@ export class AdminOrderService {
         })
       )
   }
+
   public getReviewShipmentService(): Observable<any> {
     return this.http
       .get(AdminOrderUrls.getReviewShipment(this.adminBaseUrl))
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
+
+  public bulkOrderAddtoAcceptService(ids: number[]): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.bulkOrderAddtoAccept(this.adminBaseUrl), ids)
       .pipe(
         map(res => {
           const data: any = res;

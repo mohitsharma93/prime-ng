@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core"
 import {Location} from '@angular/common';
 import { Observable, of, take } from "rxjs";
-import { dummyData } from "./dummy";
 import { BaseComponent } from "../../base.component";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 import { ToasterService } from "src/app/shared/services/toaster.service";
@@ -26,7 +25,6 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
   ) {
     super();
     this.setColumById();
-    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
