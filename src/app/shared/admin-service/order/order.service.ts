@@ -131,4 +131,14 @@ export class AdminOrderService {
         })
       );
   }
+  public getBulkAcceptedOrderService(): Observable<any> {
+    return this.http
+      .get(AdminOrderUrls.getBulkAcceptOrderData(this.adminBaseUrl))
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
 }

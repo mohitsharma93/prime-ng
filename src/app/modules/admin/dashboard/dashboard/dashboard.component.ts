@@ -21,7 +21,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     [new Date(), new Date()]
   );
   public dateFormat: string = 'dd/mm/yy';
-  public maxDateValue: Date = new Date();
+  maxDateRange: Date = new Date();
   public chartData: any;
   public graphLabelDetail: any[] = []
   public graphColor = ["#21d59b", "#0058ff", "#f0142f", "#f99600", "#ffc700"]
@@ -58,10 +58,12 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    // this.rangeDates = [new Date(this.maxDateValue.getFullYear(), this.maxDateValue.getMonth() - 3, 1), new Date()];
     this.rangeDates.valueChanges.pipe(
       debounceTime(500),
       filter(date => {
+        if (date && date.length === 2 && date[1] == null) {
+          this.updateMaxDateRange(this.rangeDates.value[0]);
+        }
         return date && date.length === 2 && date[1] !== null
       }),
       distinctUntilChanged(),
@@ -144,5 +146,18 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     this.router.navigate(['/admin', 'order']);
     this.subjectService.setApiCallStatusWise({ statusId: statusId });
   }
+
+updateMaxDateRange(d: Date) {
+  let sDate = new Date(d);
+  let sMonth = sDate.getMonth();
+  let sYear = sDate.getFullYear();
+  this.maxDateRange.setDate(sDate.getDate());
+  this.maxDateRange.setMonth(sMonth + 3);
+  if (sMonth == 11 || sMonth == 22) {
+    this.maxDateRange.setFullYear(sYear + 1);
+  } else {
+    this.maxDateRange.setFullYear(sYear);
+  }
+}
 }
 
