@@ -45,7 +45,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   ) {
     super();
     this.setColumById();
-    this.orders$ = of(dummyData)
+    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
@@ -59,11 +59,10 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   public setColumById() {
     this.columns = [
-      { field: 'SNo', header: 'S.NO.'},
       { field: 'ItemName', header: 'ITEM NAME'},
       { field: 'NetQuantity', header: 'NET QUANTITY'},
       { field: 'Orders', header: 'ORDERS'},
-      { field: 'OrderAmount', header: 'DISPATCH QUANTITY' },
+      { field: 'DispatchQuantity', header: 'DISPATCH QUANTITY' },
     ]
   }
 
@@ -88,6 +87,14 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('res bulk', res)
+          const item1 = res?.Data?.item1
+          if (item1 && item1.length) {
+            item1.forEach((item: any) => {
+              item.expandedRow = res?.Data?.Item2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
+            });
+          }
+          this.orders$ = of(item1)
+          console.log('item1', item1)
         } else {
           this.toasterService.error(res?.ErrorMessage);
           this.setLoader(false);

@@ -80,3 +80,42 @@
   border: 1px solid #ff5722 !important;
   padding: 8px !important;
 }
+
+.arrow-left-right-button {
+  span {
+    .p-inputtext {
+      height: 34px;
+      border-left: none;
+      border-right: none;
+      border-top: 1px solid #dee2e6 !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      text-align: center;
+      padding: 0;
+      width: 60px;
+    }
+    .p-inputtext:enabled:focus {
+      border-color: none !important;
+      box-shadow: none !important;
+    }
+    button {
+      background-color: #fff !important;
+      color: black;
+      height: 34px;
+    }
+    .p-button {
+      border: 1px solid #dee2e6 !important;
+    }
+    .p-button[ng-reflect-icon="pi pi-caret-right"] {
+      border-left: none !important;
+      width: 20px;
+    }
+    .p-button[ng-reflect-icon="pi pi-caret-left"] {
+      border-right: none !important;
+      width: 20px;
+    }
+    .p-button:hover {
+      background: none !important;
+      color: black !important;
+    }
+  }
+}
