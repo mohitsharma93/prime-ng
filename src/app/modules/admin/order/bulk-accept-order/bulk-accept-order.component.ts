@@ -4,7 +4,6 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 
 
 import { BaseComponent } from "../../base.component";
-import { dummyData } from "./dummy";
 import { Observable, of, take } from "rxjs";
 import { Router } from "@angular/router";
 import { ToasterService } from "src/app/shared/services/toaster.service";
@@ -45,12 +44,10 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   ) {
     super();
     this.setColumById();
-    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
     this.getBulkAcceptedOrder()
-
   }
 
   public backClicked(): void {
