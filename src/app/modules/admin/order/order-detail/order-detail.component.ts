@@ -96,9 +96,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this._location.back();
   }
 
-  public redirectToDetail(id: string): void {
-    if (id) {
-      // this.router.navigate(['/admin', 'order-detail', id]);
+  public redirectToDetail(order: any): void {
+    if (order) {
+      this.subjectService.setOrderDetailShipment(order);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
     }
   }
 
@@ -178,11 +179,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
             changeRes = changeRes.shipMentOrderDataListDTO
           }
-          if(
-            apiMiddleStr === 'GetShipmentdeliveredOrderData'
-          )
-          {
-            changeRes = changeRes.deliveredOrderDataListDTO
+          if( apiMiddleStr === 'GetShipmentdeliveredOrderData' ) {
+            changeRes = changeRes.shipMentOrderDataListDTO
           }
           changeRes.map((p: any) => {
             let newAddress = ''

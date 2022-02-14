@@ -15,7 +15,12 @@ const routes: Routes = [
   { 
     path: '', 
     component: OrderDetailComponent,
-  }
+  },
+  { 
+    path: 's/:id', 
+    loadChildren: () => import('../order-detail-shipment/order-detail-shipment.module').then((m) => m.OrderDetailShipmentModule)
+  },
+  
 ];
 
 @NgModule({

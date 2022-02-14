@@ -21,6 +21,11 @@ interface Product {
   status?:string;
 }
 
+interface Order {
+  shipmentId: number;
+  getShowOrderDetailList: Product[]
+}
+
 @Component({
   selector: 'app-admin-order-detail',
   templateUrl: './order-detail-shipment.component.html',
@@ -31,7 +36,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
 
   public routeParam: Params;
-  public orders$: Observable<Product[]> = of([]);
+  public orders$: Observable<Order> = of();
 
   public columns: any[] = [];
   public cancelModelShow: boolean = false;
@@ -51,16 +56,17 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     super();
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
-      if (res && res['orderId']) {
-        this.getOrderDetailRecord(res['orderId']);
+      if (res && res['id']) {
+        this.getOrderDetailRecord(res['id']);
       }
     })
     // this.setMenuItem();
   }
 
   public ngOnInit(): void {
-    this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      if (res && (res?.OrderID || res?.ShipmentID)) {
+    this.subjectService.orderDetailShipment$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      console.log('detail', res);
+      if (res && (res?.OrderId)) {
         this.selectedOrderDetail = of(res);
         this.setColumById();
       }
@@ -88,14 +94,10 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   }
 
   public getOrderDetailRecord(orderId: number): void {
-    this.adminOrderService.getOrderDetailRecordService(orderId, 'GetShipmentdeliveredOrderData').subscribe(res => {
+    this.adminOrderService.getOrderDetailRecordService(orderId, 'GetOrderDetailRecord').subscribe(res => {
       if (res && res.Status == 'OK') {
-        const changeRes = res?.Data;
-        if (this.getCurrentOrder()?.Status === 'Pending') {
-          changeRes.map((order: any) => {
-            order['showEdit'] = true;
-          })
-        }
+        let changeRes = res?.Data
+        console.log('changeRes after change', changeRes)
         this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);

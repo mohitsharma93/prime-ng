@@ -360,7 +360,7 @@
     type="button"
     label="View"
     class="p-button-outlined order-detail-action"
-    (click)="redirectToDetail(order?.OrderId)"
+    (click)="redirectToDetail(order)"
     style="width: 85px"
     *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"
   ></button>
