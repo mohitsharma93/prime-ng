@@ -19,7 +19,7 @@ export class AppComponent {
 
   ngOnInit(): void {
     if (!this.activeUserService.getToken()) {
-      this.router.navigate(["auth/login"])
+      // this.router.navigate(["auth/login"])
     }
   }
 }

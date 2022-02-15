@@ -36,7 +36,8 @@
                 ></button>
               </div>
             </div>
-            <div>
+            <div class="bulk-accept-table">
+              <!-- responsiveLayout="scroll" -->
               <p-table
                 responsiveLayout="scroll"
                 [value]="(orders$ | async) || []"
@@ -59,7 +60,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded" let-index="rowIndex">
                   <tr>
-                    <td [ngClass]="{'tr-border-bottom': expandedRows[rowData.ItemName]}">
+                    <td [ngClass]="{'tr-border-bottom': expandedRows[rowData.ItemName]}" >
                       <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-minus' : 'pi pi-plus'"></button>
                     </td>
                     <td [ngClass]="{'tr-border-bottom': expandedRows[rowData.ItemName]}">
@@ -71,11 +72,10 @@
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="rowexpansion" let-product>
-                  <tr dataKey="SNO">
-                    <div class="d-flex justify-content-start" style="margin-left: 50px">
-                      <!-- Expanded things go here -->
-                      <div *ngFor="let item of product.expandedRow" class="d-flex ml-5">
-                          <div>
+                  <tr style="min-width: 100wh">
+                      <div class="d-flex justify-content-start bulk-hor-scroll" style="margin-left: 100px">
+                        <div *ngFor="let item of product.expandedRow" class="d-flex" style="margin-left: 100px">
+                          <div style="margin-top: 7px" class="ml-2">
                             {{item.OrderId}}
                           </div>
                           <div class="arrow-left-right-button">
@@ -90,8 +90,8 @@
                             >
                             </p-inputNumber>
                           </div>
-                          <i class="pi pi-trash" (click)="showCancelPopUp(true)"></i>
-                        </div>
+                          <i class="pi pi-trash ml-2" (click)="showCancelPopUp(true)" style="margin-top: 7px"></i>
+                      </div>
                     </div>
                   </tr>
               </ng-template>
