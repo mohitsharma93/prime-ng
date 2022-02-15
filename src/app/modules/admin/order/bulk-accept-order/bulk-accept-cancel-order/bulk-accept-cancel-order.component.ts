@@ -51,13 +51,16 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
 
   public cancelOrder(): void {
     console.log('in cancel order');
-    this.backClicked();
+    if (this.selectedData && this.selectedData.length) {
+      console.log('reason cancel', this.cancelReasonControl.value);
+      // here call canceledSelectedService api for cancel and re
+      this.rejectCancelPopUp(true);
+    }
   }
 
   public next() {
-    if (this.selectedData && this.selectedData.length) {
-      this.rejectCancelPopUp(true);
-    }
+   
+    this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
   }
 
   public rejectCancelPopUp(hideShowCancelModel: boolean): void {
@@ -65,6 +68,14 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   }
 
   public hitCancelOrderApi() {
-    console.log('in bulk-accept cancel order')
+    console.log('in hitCancelOrderApi')
+  }
+
+  public checkReason() {
+    if (this.cancelReasonControl.value.length) {
+      this.rejectCancelPopUp(false)
+    } else {
+      this.cancelReasonControl.markAllAsTouched();
+    }
   }
 }

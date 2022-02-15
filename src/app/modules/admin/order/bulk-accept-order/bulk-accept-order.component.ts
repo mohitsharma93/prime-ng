@@ -35,6 +35,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   public orders$: Observable<any[]>;
   public expandedRows: any = {};
   public isExpanded: boolean = false;
+  public goCancel: number | null;
 
   constructor(
     private _location: Location,
@@ -100,27 +101,29 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       });
   }
 
-  public showCancelPopUp(showHideModel: boolean) {
+  public showCancelPopUp(showHideModel: boolean, orderId: number | null = null) {
     this.cancelModelShow = showHideModel;
+    if (orderId) {
+      this.goCancel = orderId;
+    }
   }
 
   public cancelOrder(showHideModel: boolean): void {
     this.showCancelPopUp(showHideModel);
   }
 
-  public proceed(): void {
-    this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
-  }
-
   public next(): void {
-    const orders = this.getBulkOrder();
-    if (orders && orders.length) {
-      this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
-      this.subjectService.setHoldBulkDataForNext(orders);
+    if (!this.goCancel) {
+      const orders = this.getBulkOrder();
+      if (orders && orders.length) {
+        this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
+        this.subjectService.setHoldBulkDataForNext(orders);
+      } else {
+        this.toasterService.info('There is no order to proceed.')
+      }
     } else {
-      this.toasterService.info('There is no order to proceed.')
+      this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
     }
-
   }
   
   public getBulkOrder() {
