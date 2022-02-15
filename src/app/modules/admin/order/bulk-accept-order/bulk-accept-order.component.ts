@@ -84,7 +84,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('res bulk', res)
-          const item1 = res?.Data?.item1
+          const item1 = res?.Data?.Item1
           if (item1 && item1.length) {
             item1.forEach((item: any) => {
               item.expandedRow = res?.Data?.Item2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)

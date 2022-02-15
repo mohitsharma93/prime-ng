@@ -22,7 +22,7 @@ interface Product {
 }
 
 interface Order {
-  shipmentId: number;
+  ShipmentId: number;
   getShowOrderDetailList: Product[]
 }
 
@@ -131,5 +131,17 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     } else {
       this.cancelReasonControl.markAllAsTouched();
     }
+  }
+  public deliveredOrder() {
+    const id = this.getCurrentOrder()?.OrderId;
+    this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
+      console.log(res)
+      if (res && res?.Status == 'OK') {
+        this.backClicked();
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+      this.cancelReasonControl.setValue('')
+    });
   }
 }

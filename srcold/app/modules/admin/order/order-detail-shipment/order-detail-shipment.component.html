@@ -12,7 +12,7 @@
                 <p>
                   Shipment ID:
                   <span
-                    ><b>{{ (orders$ | async)?.shipmentId }}</b></span
+                    ><b>{{ (orders$ | async)?.ShipmentId }}</b></span
                   >
                 </p>
                 <p>
@@ -141,6 +141,7 @@
                 type="button"
                 label="Delivered"
                 class="p-button-raised p-button-success"
+                (click)="deliveredOrder()"
               ></button>
               <button
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"

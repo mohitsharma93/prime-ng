@@ -141,4 +141,36 @@ export class AdminOrderService {
         })
       )
   }
+  public deliveredOrder(orderId: string, data: any): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.deliveredOrder(this.adminBaseUrl).replace(':orderId', orderId.toString()), data)
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
+
+  public getReviewShipmentService(): Observable<any> {
+    return this.http
+      .get(AdminOrderUrls.getReviewShipment(this.adminBaseUrl))
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
+
+  public bulkOrderAddtoAcceptService(ids: number[]): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.bulkOrderAddtoAccept(this.adminBaseUrl), ids)
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
 }

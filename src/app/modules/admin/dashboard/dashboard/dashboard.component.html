@@ -14,7 +14,8 @@
     </div>
     <div class="mx-4">
       <p-calendar selectionMode="range" [readonlyInput]="true" inputId="range" [showTime]="false" [showIcon]="true"
-        (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates" [maxDate]="maxDateRange">
+        (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates"
+        [maxDate]="maxDateRange">
       </p-calendar>
     </div>
   </div>
@@ -37,7 +38,8 @@
                         <i class="fa fa-arrow-up" *ngIf="totalPreviousOrder >= 0"></i>
                         <i class="fa fa-arrow-down" *ngIf="totalPreviousOrder < 0"></i>
                       </span>
-                      <span class="ml-1 shop-des">{{selectedFilter === 'Today'? 'than yesterday': 'than last Month'}}</span>
+                      <span class="ml-1 shop-des">{{selectedFilter === 'Today'? 'than yesterday': 'than last
+                        Month'}}</span>
                     </div>
                   </div>
                 </div>
@@ -67,16 +69,20 @@
             <div class="col-md-6 col-sm-12">
               <div class="card">
                 <div class="card-body">
-                  <p class="">Pending Orders</p>
-                  <h3>{{(dashboardAnalytics$ | async)?.PendingOrdersCount}}</h3>
+                  <div class="widget">
+                    <p class="">Pending Orders</p>
+                    <h3>{{(dashboardAnalytics$ | async)?.PendingOrdersCount}}</h3>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="col-md-6 col-sm-12">
               <div class="card">
                 <div class="card-body">
-                  <p class="">In-transit Orders</p>
-                  <h3>{{(dashboardAnalytics$ | async)?.IntransitOrders}}</h3>
+                  <div class="widget">
+                    <p class="">In-transit Orders</p>
+                    <h3>{{(dashboardAnalytics$ | async)?.IntransitOrders}}</h3>
+                  </div>
                 </div>
               </div>
             </div>

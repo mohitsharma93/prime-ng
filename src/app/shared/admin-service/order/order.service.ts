@@ -152,9 +152,9 @@ export class AdminOrderService {
       )
   }
 
-  public getReviewShipmentService(): Observable<any> {
+  public getReviewShipmentService(allIds: number[]): Observable<any> {
     return this.http
-      .get(AdminOrderUrls.getReviewShipment(this.adminBaseUrl))
+      .get(AdminOrderUrls.getReviewShipment(this.adminBaseUrl),{"name[]":allIds})
       .pipe(
         map(res => {
           const data: any = res;

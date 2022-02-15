@@ -46,6 +46,7 @@
               >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
+                    <th>S NO.</th>
                     <th
                       *ngFor="let col of columns"
                     >
@@ -53,10 +54,21 @@
                     </th>
                   </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                   <tr>
+                    <td>{{index + 1}}</td>
                     <td *ngFor="let col of columns">
-                      {{ rowData[col.field] }}
+                      <ng-container *ngIf="col.field !== 'OrderQuantityList' else showThroughArray">
+                        {{ rowData[col.field] }}
+                      </ng-container>
+                      <ng-template #showThroughArray>
+                        <div class="d-flex" *ngFor="let orderQuantity of rowData?.OrderQuantityList">
+                          <div>{{orderQuantity.OrderId}}</div>
+                          <div  class="box-catskill-white mr-4">
+                            {{orderQuantity.Quantity}}
+                          </div>
+                        </div>
+                      </ng-template>
                     </td>
                   </tr>
                 </ng-template>

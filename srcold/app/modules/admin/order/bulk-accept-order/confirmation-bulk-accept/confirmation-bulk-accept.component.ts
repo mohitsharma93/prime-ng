@@ -5,6 +5,8 @@ import { BaseComponent } from "../../../base.component";
 import { dummyData } from "./dummy";
 import { Observable, of, take } from "rxjs";
 import { FormControl, Validators } from "@angular/forms";
+import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
+import { ToasterService } from "src/app/shared/services/toaster.service";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -21,6 +23,8 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
   constructor(
     private _location: Location,
+    private adminOrderService: AdminOrderService,
+    private toasterService: ToasterService,
   ) {
     super();
     this.setColumById();
@@ -65,5 +69,13 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
   public acceptBulkOrder() {
     console.log('in accept bulk order')
+    const allOrderId: number[] = [];
+    this.adminOrderService.bulkOrderAddtoAcceptService(allOrderId).subscribe(res => {
+      if (res && res?.Status == 'OK') {
+        this.backClicked();
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+    });
   }
 }
