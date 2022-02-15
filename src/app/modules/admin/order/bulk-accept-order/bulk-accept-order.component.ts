@@ -8,6 +8,7 @@ import { Observable, of, take } from "rxjs";
 import { Router } from "@angular/router";
 import { ToasterService } from "src/app/shared/services/toaster.service";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
+import { SubjectService } from "src/app/shared/admin-service/subject.service";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -39,8 +40,8 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     private _location: Location,
     private router: Router,
     private toasterService: ToasterService,
-    private adminOrderService: AdminOrderService,   
-
+    private adminOrderService: AdminOrderService,
+    private subjectService: SubjectService,
   ) {
     super();
     this.setColumById();
@@ -112,6 +113,21 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   }
 
   public next(): void {
-    this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
+    const orders = this.getBulkOrder();
+    if (orders && orders.length) {
+      this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
+      this.subjectService.setHoldBulkDataForNext(orders);
+    } else {
+      this.toasterService.info('There is no order to proceed.')
+    }
+
+  }
+  
+  public getBulkOrder() {
+    let orders: any = null;
+    this.orders$.pipe(take(1)).subscribe(res => {
+      orders = res;
+    });
+    return orders;
   }
 }
