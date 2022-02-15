@@ -3,10 +3,11 @@ import {Location} from '@angular/common';
 
 import { BaseComponent } from "../../../base.component";
 import { dummyData } from "./dummy";
-import { Observable, of, take } from "rxjs";
+import { Observable, of, take, takeUntil } from "rxjs";
 import { FormControl, Validators } from "@angular/forms";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 import { ToasterService } from "src/app/shared/services/toaster.service";
+import { SubjectService } from "src/app/shared/admin-service/subject.service";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -25,14 +26,20 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     private _location: Location,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
+    private subjectService: SubjectService
   ) {
     super();
     this.setColumById();
-    this.orders$ = of(dummyData)
+    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
-
+    this.subjectService.holdBulkDataForNext$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res && res?.length) {
+        console.log('res', res);
+        this.orders$ = of(res);
+      }
+    })
   }
 
   public backClicked(): void {
@@ -41,10 +48,9 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
   public setColumById() {
     this.columns = [
-      { field: 'SNo', header: 'S NO.'},
       { field: 'ItemName', header: 'ITEM NAME'},
-      { field: 'Quantity', header: 'QUANTITY'},
-      { field: 'OrderWiseQuantity', header: 'ORDER WISE QUANTITY'},
+      { field: 'NetQuantity', header: 'QUANTITY'},
+      { field: 'expandedRow', header: 'ORDER WISE QUANTITY'},
     ]
   }
 

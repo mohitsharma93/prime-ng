@@ -199,6 +199,7 @@
                       >
                         <div class="inc-dec-button">
                           <p-inputNumber
+                          [disabled]="rowData['showEdit']"
                             inputId="integerOnly"
                             [(ngModel)]="rowData[col.field]"
                             [showButtons]="true"
@@ -207,7 +208,6 @@
                             incrementButtonIcon="pi pi-plus"
                             decrementButtonIcon="pi pi-minus"
                             (onInput)="
-                              rowData.showEdit = false;
                               changeAmountAsPerQuantity($event.value, rowData)
                             "
                           >
@@ -374,6 +374,7 @@
     *ngIf="
       (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
     "
+    (click)="order.showEdit = !order.showEdit;"
   ></button>
   <button
     pButton

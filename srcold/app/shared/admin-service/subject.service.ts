@@ -20,7 +20,10 @@ export class SubjectService {
 
     public holdIdsForCreateShipment = new BehaviorSubject<any>(null);
     public holdIdsForCreateShipment$ = this.holdIdsForCreateShipment.asObservable();
-  
+
+    public holdBulkDataForNext = new BehaviorSubject<any>(null);
+    public holdBulkDataForNext$ = this.holdBulkDataForNext.asObservable();
+
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
     }
@@ -30,7 +33,7 @@ export class SubjectService {
     }
 
     public setOrderDetail(response: any): void {
-        this.orderDetail.next(response);
+        this.orderDetail.next(response``);
     }
 
     public setOrderDetailShipment(response: any): void {
@@ -43,5 +46,9 @@ export class SubjectService {
 
     public setHoldIdsForCreateShipment(response: any): void {
         this.holdIdsForCreateShipment.next(response);
+    }
+
+    public setHoldBulkDataForNext(response: any): void {
+        this.holdBulkDataForNext.next(response);
     }
 }

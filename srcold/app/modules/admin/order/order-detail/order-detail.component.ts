@@ -231,7 +231,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public changeAmountAsPerQuantity(quantity: number, order: any) {
     if (quantity) {
-      // order.NetAmount = order.SellingPrice * quantity;
+      order.TotalPrice = order.SellingPrice * quantity;
     }
   }
 

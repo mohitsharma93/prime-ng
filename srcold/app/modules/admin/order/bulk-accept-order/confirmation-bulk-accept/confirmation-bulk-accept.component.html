@@ -38,6 +38,7 @@
               >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
+                    <th [style]="{'width': '38px'}">S No.</th>
                     <th
                       *ngFor="let col of columns"
                     >
@@ -45,10 +46,23 @@
                     </th>
                   </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                   <tr>
-                    <td *ngFor="let col of columns">
-                      {{ rowData[col.field] }}
+                    <td>{{ index + 1}}</td>
+                    <td *ngFor="let col of columns" [ngClass]="{'justify-content-start': col.field === 'expandedRow'}">
+                      <ng-container *ngIf="col.field !== 'expandedRow' else showOrderWiseQuantity">
+                        {{ rowData[col.field] }}
+                      </ng-container>
+                      <ng-template #showOrderWiseQuantity>
+                        <div class="d-flex scroll-x">
+                          <div class="d-flex" *ngFor="let orderQuantity of rowData?.expandedRow">
+                            <div style="margin-top: 7px" class="mr-3">{{orderQuantity.OrderId}}</div>
+                            <div  class="box-catskill-white mr-4">
+                              {{orderQuantity.Quantity}}
+                            </div>
+                          </div>
+                        </div>
+                      </ng-template>
                     </td>
                   </tr>
                 </ng-template>

@@ -323,6 +323,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
   }
 
+ 
+
+
   public resetSearch(): void {
     this.searchControl.setValue('');
   }

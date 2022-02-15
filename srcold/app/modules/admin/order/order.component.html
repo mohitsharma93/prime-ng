@@ -22,18 +22,18 @@
           </div>
           <div class="col-md-3">
             <p-calendar
-              #dashboardCalendar
-              selectionMode="range"
-              [readonlyInput]="true"
-              inputId="range"
-              [maxDate]="maxDateValue"
-              (onSelect)="dateChange($event)"
-              [dateFormat]="dateFormat"
-              [formControl]="rangeDates"
-              [showIcon]="true"
-            >
-            </p-calendar>
-          </div>
+            #dashboardCalendar
+            selectionMode="range"
+            [readonlyInput]="true"
+            inputId="range"
+            [maxDate]="maxDateValue"
+            (onSelect)="dateChange($event)"
+            [dateFormat]="dateFormat"
+            [formControl]="rangeDates"
+            [showIcon]="true"
+          >
+          </p-calendar>   
+           </div>
         </ng-container>
         <div class="col-md-3">
           <div class="dashboard-dropdown"  *ngIf="orderRequestParam?.orderStatusId === 0">
