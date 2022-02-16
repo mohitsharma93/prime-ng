@@ -546,3 +546,20 @@ span.p-button-icon.pi.pi-minus, span.p-button-icon.pi.pi-plus {
 i.pi.pi-trash {
   color: red;
 }
+.p-datatable .p-datatable-tbody > tr > td {
+  text-align: left;
+  border: 1px solid #dee2e6;
+  border-width: 0 0 1px 0;
+  padding: 1rem 1rem;
+  text-align: center!important;
+}
+.p-datatable .p-datatable-thead > tr > th {
+  text-align: center !important;
+  padding: 1rem 1rem;
+  border: 1px solid #dee2e6;
+  border-width: 0 0 1px 0;
+  font-weight: 700;
+  color: #343a40;
+  background: #f8f9fa;
+  transition: box-shadow 0.2s;
+}
