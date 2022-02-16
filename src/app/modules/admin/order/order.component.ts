@@ -290,6 +290,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       orderStatusId: orderStatusId,
       urlMiddlePoint: urlMiddlePoint,
     };
+    this.selectedData = [];
     this.dt.first = 0;
     this.setColumById(orderStatusId);
     this.getOrders(this.orderRequestParam);
