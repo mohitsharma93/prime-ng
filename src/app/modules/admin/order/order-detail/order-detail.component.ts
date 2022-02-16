@@ -71,6 +71,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      console.log('orderDetail$', res)
       if (res && (res?.OrderID || res?.ShipmentId)) {
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
@@ -86,6 +87,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
             //   this.setMenuItem();
             // }
           }
+        } else {
+          this.showAction = false;
         }
       }
     })
@@ -249,23 +252,43 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public acceptOrder() {
-    this.adminOrderService.acceptOrderService(this.getCurrentOrder()?.OrderID).subscribe(res => {
+    const currentOrder = this.getCurrentOrder();
+    this.adminOrderService.acceptOrderService(currentOrder?.OrderID).subscribe(res => {
       if (res && res?.Status == 'OK') {
-        this.backClicked();
+        if (currentOrder && currentOrder.Status) {
+          currentOrder['Status'] ='Accepted';
+          currentOrder['orderStatusId'] = 2;
+          this.subjectService.setOrderDetail(currentOrder);
+        }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
     });
   }
 
-  public addToShipment() {
-    this.adminOrderService.addToShipmentService(this.getCurrentOrder()?.OrderID).subscribe(res => {
-      if (res && res?.Status == 'OK') {
-        this.backClicked();
-      } else {
-        this.toasterService.error(res?.ErrorMessage);
-      }
+  public getSaveFilterRedirection() {
+    let filter: any = null ;
+    this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
+      filter = res;
     });
+    return filter;
+  }
+
+  public addToShipment() {
+    // this.adminOrderService.addToShipmentService(this.getCurrentOrder()?.OrderID).subscribe(res => {
+    //   if (res && res?.Status == 'OK') {
+    //     this.backClicked();
+    //   } else {
+    //     this.toasterService.error(res?.ErrorMessage);
+    //   }
+    // });
+    this.subjectService.setHoldAcceptedOrderForSelected(this.getCurrentOrder()?.OrderID);
+    let filter = this.getSaveFilterRedirection();
+    if (filter && Object.keys(filter).length) {
+      filter.topFilter.orderStatusId = 2
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      this.backClicked();
+    }
   }
 
   public deliveredSelected() {

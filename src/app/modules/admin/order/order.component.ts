@@ -130,6 +130,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       .pipe(take(1))
       .subscribe((res) => {
         if (res?.topFilter) {
+          console.log('res.top', res)
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.orderStatusId);
           this.getOrders(this.orderRequestParam);
@@ -153,6 +154,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (newAddress?.length) p['newAddress'] = newAddress;
     });
     this.products = newProduct;
+    this.subjectService.holdAcceptedOrderForSelected$
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.selectedData = [...this.selectedData, ...newProduct.filter((p: any) => p.OrderID === res)]
+        })
   }
 
   public setColumById(id: number) {
@@ -335,6 +341,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public createShipment() {
+    console.log('this.selectedData', this.selectedData);
+    return
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map((p) => p.OrderID);
       this.subjectService.setHoldIdsForCreateShipment(allId);
