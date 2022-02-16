@@ -216,7 +216,7 @@
                       </ng-container>
                       <ng-template #showString>
                         {{ 
-                          (col.field === 'OrderDate') ? (rowData[col.field] | date: "MMM. d, y") : rowData[col.field]
+                          (col.field === 'OrderDate' || col.field === 'DeliveryDate') ? (rowData[col.field] | date: "MMM. d, y") : rowData[col.field]
                         }}
                       </ng-template>
                     </td>
