@@ -41,9 +41,10 @@
                 <br /><br />
                 <p>
                   Status
-                  <span class="ml-2">{{
-                    (selectedOrderDetail | async)?.Status
-                  }}</span>
+                  <span class="ml-2">
+                    <ng-container *ngTemplateOutlet="statusCol context: { $implicit: (selectedOrderDetail | async)?.Status }">
+                    </ng-container>
+                  </span>
                 </p>
                 <br /><br />
                 <div class="d-flex">
@@ -215,3 +216,8 @@
     </div>
   </p-dialog>
 </div>
+
+<ng-template #statusCol let-status>
+  <span class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</span>
+  <span class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</span>
+</ng-template>

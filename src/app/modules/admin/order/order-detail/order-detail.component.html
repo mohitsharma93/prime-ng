@@ -396,9 +396,9 @@
   <div></div>
 </ng-template>
 <ng-template #statusCol let-status>
-  <span class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</span>
-  <span class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</span>
-  <span class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</span>
-  <span class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</span>
-  <span class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{status}}</span>
+  <label class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</label>
+  <label class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</label>
+  <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>
+  <label class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</label>
+  <label class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{status}}</label>
 </ng-template>

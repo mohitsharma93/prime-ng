@@ -32,7 +32,6 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
       if (res && res?.length) {
         this.allIds = res;
         this.getReviewShipmentData(res);
-        console.log("res",res)
       }
     })
   }
@@ -60,10 +59,24 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
     })
   }
 
+  public getSaveFilterRedirection() {
+    let filter: any = null ;
+    this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
+      filter = res;
+    });
+    return filter;
+  }
+
   public createShipment(): void {
     this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
       console.log(res);
       if (res && res.Status == 'OK') {
+        let filter = this.getSaveFilterRedirection();
+        if (filter && Object.keys(filter).length) {
+          filter.topFilter.orderStatusId = 2
+          this.subjectService.setSaveFilterOnRedirection(filter);
+          this.backClicked();
+        }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }

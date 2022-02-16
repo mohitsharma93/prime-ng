@@ -85,7 +85,6 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .getBulkAcceptedOrderService()
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
-          console.log('res bulk', res)
           const item1 = res?.Data?.Item1
           if (item1 && item1.length) {
             item1.forEach((item: any) => {
@@ -93,7 +92,6 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
             });
           }
           this.orders$ = of(item1)
-          console.log('item1', item1)
         } else {
           this.toasterService.error(res?.ErrorMessage);
           this.setLoader(false);
