@@ -33,7 +33,7 @@ export class SubjectService {
     }
 
     public setOrderDetail(response: any): void {
-        this.orderDetail.next(response``);
+        this.orderDetail.next(response);
     }
 
     public setOrderDetailShipment(response: any): void {

@@ -154,7 +154,7 @@ export class AdminOrderService {
 
   public getReviewShipmentService(allIds: number[]): Observable<any> {
     return this.http
-      .get(AdminOrderUrls.getReviewShipment(this.adminBaseUrl),{"name[]":allIds})
+      .post(AdminOrderUrls.getReviewShipment(this.adminBaseUrl),allIds)
       .pipe(
         map(res => {
           const data: any = res;

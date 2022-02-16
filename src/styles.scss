@@ -540,3 +540,6 @@ span.p-button-icon.pi.pi-minus, span.p-button-icon.pi.pi-plus {
   padding: 0.65625rem 1.09375rem;
   font-size: 0.875rem;
 }
+.p-datepicker:not(.p-datepicker-inline) {
+  top: 40px !important;
+}

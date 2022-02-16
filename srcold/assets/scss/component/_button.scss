@@ -43,6 +43,7 @@
       border-bottom: 1px solid #dee2e6 !important;
       text-align: center;
       padding: 0;
+      width: 60px;
     }
     .p-inputtext:enabled:focus {
       border-color: none !important;
@@ -58,9 +59,11 @@
     }
     .p-button[ng-reflect-icon="pi pi-plus"] {
       border-left: none !important;
+      width: 20px;
     }
     .p-button[ng-reflect-icon="pi pi-minus"] {
       border-right: none !important;
+      width: 20px;
     }
     .p-button:hover {
       background: none !important;
