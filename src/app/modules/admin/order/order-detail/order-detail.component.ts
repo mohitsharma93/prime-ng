@@ -170,6 +170,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.getOrderDetailRecordService(orderId, apiMiddleStr).subscribe(res => {
       if (res && res.Status == 'OK') {
         let changeRes = res?.Data;
+        console.log('changeRes before change', changeRes)
         if (this.getCurrentOrder()?.Status === 'Pending') {
           changeRes.getShowOrderDetailList.map((order: any) => {
             order['showEdit'] = true;
