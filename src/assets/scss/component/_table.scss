@@ -22,3 +22,11 @@
       }
   }
 }
+
+.order-table {
+  .p-datatable-scrollable {
+    .p-datatable-tbody tr{
+      height: 50px;
+    }
+  }
+}
