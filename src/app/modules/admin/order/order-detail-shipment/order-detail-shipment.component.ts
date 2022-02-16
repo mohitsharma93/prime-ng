@@ -97,7 +97,6 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     this.adminOrderService.getOrderDetailRecordService(orderId, 'GetOrderDetailRecord').subscribe(res => {
       if (res && res.Status == 'OK') {
         let changeRes = res?.Data
-        console.log('changeRes after change', changeRes)
         this.orders$ = of(changeRes);
       } else {
         this.toasterService.error(res?.ErrorMessage);

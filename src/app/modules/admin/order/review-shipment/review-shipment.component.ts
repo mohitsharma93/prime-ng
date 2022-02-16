@@ -32,7 +32,6 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
       if (res && res?.length) {
         this.allIds = res;
         this.getReviewShipmentData(res);
-        console.log("res",res)
       }
     })
   }

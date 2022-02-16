@@ -71,7 +71,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      console.log('res orderDetail', res);
       if (res && (res?.OrderID || res?.ShipmentId)) {
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
@@ -168,7 +167,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.getOrderDetailRecordService(orderId, apiMiddleStr).subscribe(res => {
       if (res && res.Status == 'OK') {
         let changeRes = res?.Data;
-        console.log("before",changeRes)
         if (this.getCurrentOrder()?.Status === 'Pending') {
           changeRes.getShowOrderDetailList.map((order: any) => {
             order['showEdit'] = true;
