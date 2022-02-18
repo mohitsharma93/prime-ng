@@ -182,8 +182,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
             changeRes = changeRes.shipMentOrderDataListDTO
           }
           if( apiMiddleStr === 'GetShipmentdeliveredOrderData' ) {
-            // changeRes = changeRes.deliveredOrderDataListDTO
-            changeRes = changeRes.shipMentOrderDataListDTO
+            changeRes = changeRes.deliveredOrderDataListDTO
+            // changeRes = changeRes.shipMentOrderDataListDTO
           }
           changeRes.map((p: any) => {
             let newAddress = ''

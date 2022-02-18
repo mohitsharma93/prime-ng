@@ -218,6 +218,6 @@
 </div>
 
 <ng-template #statusCol let-status>
-  <span class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</span>
-  <span class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</span>
+  <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>
+  <label class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</label>
 </ng-template>
