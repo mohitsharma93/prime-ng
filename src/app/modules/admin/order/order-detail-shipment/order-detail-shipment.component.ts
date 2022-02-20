@@ -89,7 +89,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       { field: 'Moq', header: 'MOQ' },
       { field: 'Mrp', header: 'MRP' },
       { field: 'SellingPrice', header: 'SELLING PRICE' },
-      { field: 'SellingPrice', header: 'NET AMOUNT' },
+      { field: 'TotalPrice', header: 'NET AMOUNT' },
     ]
   }
 

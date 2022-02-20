@@ -45,7 +45,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public showPrint: boolean = false;
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
-  public status = ['Pending', 'Shipped', 'Accepted'];
+  public status = ['Pending', 'Shipped', 'Delivered'];
   public menuItems: MenuItem[] = [
     {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
     {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
@@ -121,7 +121,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public redirectToDetail(order: any): void {
     if (order) {
       this.subjectService.setOrderDetailShipment(order);
-      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId, 's', order.OrderId]);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
     }
   }
 
@@ -265,6 +265,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       Quantity: order.Quantity
     }
     this.adminOrderService.updateQuantityService(obj).subscribe(res => {
+      console.log(res);
       if (res && res?.Status == 'OK') {
         order['showEdit'] = true;
       } else {
@@ -329,7 +330,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public warningCancel() {
-    this.toasterService.info('Please select order through checkbox for canceled')
+    this.toasterService.info('Please select order through checkbox for cancelled')
   }
 
   public cancelSelected() {
@@ -343,7 +344,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         }
       });
     } else {
-      this.toasterService.info('Please select order through checkbox for canceled')
+      this.toasterService.info('Please select order through checkbox for cancelled')
     }
   }
 }

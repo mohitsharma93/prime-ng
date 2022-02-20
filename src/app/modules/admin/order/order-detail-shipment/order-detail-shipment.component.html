@@ -75,6 +75,15 @@
                     (selectedOrderDetail | async)?.DeliveryCharges
                   }}</span>
                 </p>
+                <!-- <h5 class="d-flex justify-content-end">
+                  Grant Total:
+                  <span
+                    ><b>{{
+                      (selectedOrderDetail | async)?.OrderAmount +
+                        (selectedOrderDetail | async)?.DeliveryCharges
+                    }}</b></span
+                  >
+                </h5> -->
                 <h5 class="d-flex justify-content-end">
                   Grant Total:
                   <span
@@ -84,6 +93,7 @@
                     }}</b></span
                   >
                 </h5>
+                
                 <p
                   class="outlined-button d-flex justify-content-end"
                   *ngIf="
@@ -104,11 +114,11 @@
               </div>
             </div>
             <div>
+              <!-- scrollHeight="700px" -->
               <p-table
                 responsiveLayout="scroll"
                 [value]="(orders$ | async)?.getShowOrderDetailList || []"
                 [scrollable]="true"
-                scrollHeight="700px"
                 [columns]="columns"
               >
                 <ng-template pTemplate="header" let-columns>

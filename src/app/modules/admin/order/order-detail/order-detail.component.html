@@ -396,6 +396,7 @@
   <div></div>
 </ng-template>
 <ng-template #statusCol let-status>
+  {{status}}
   <label class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</label>
   <label class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</label>
   <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>

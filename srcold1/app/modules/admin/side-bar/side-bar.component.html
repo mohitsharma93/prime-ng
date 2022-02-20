@@ -1,0 +1,41 @@
+<div class="side-bar">
+  <p-sidebar [visible]="visible" [baseZIndex]="10000" [modal]="false" [showCloseIcon]="false"
+  [styleClass]="dynamicOpenClass"
+  >
+    <div class="l-sidebar">
+     
+      <div class="l-sidebar__content">
+        <div class="c-menu">
+          <ul class="u-list">
+            <li 
+              class="c-menu__item"
+              data-toggle="tooltip"
+              title="Dashboard"
+              [ngClass]="{'is-active': router.url.includes('/admin/dashboard')}"
+            >
+              <a [routerLink]="['/admin', 'dashboard']">
+                <div class="c-menu__item__inner" [ngClass]="{'admin-a-active': router.url.includes('/admin/dashboard')}">
+                  <i class="fa fa-home"></i>
+                  Home
+                </div>
+              </a>
+            </li>
+            <li
+              class="c-menu__item"
+              data-toggle="tooltip"
+              title="Order"
+              [ngClass]="{'is-active': router.url.includes('/admin/order')}"
+            >
+              <a [routerLink]="['/admin', 'order']">
+                <div class="c-menu__item__inner" [ngClass]="{'admin-a-active': router.url.includes('/admin/order')}">
+                  <i class="fa fa-chart-bar"></i>
+                  Order
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </p-sidebar>
+</div>

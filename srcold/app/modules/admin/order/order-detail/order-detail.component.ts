@@ -45,6 +45,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public showPrint: boolean = false;
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
+  public status = ['Pending', 'Shipped', 'Accepted'];
   public menuItems: MenuItem[] = [
     {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
     {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
@@ -72,6 +73,25 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
+      // if (res && (res?.OrderID || res?.ShipmentId)) {
+      //   if (this.routeParam && this.routeParam['orderId']) {
+      //     const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
+      //     this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+      //   }
+      //   this.selectedOrderDetail = of(res);
+      //   this.setColumById(res?.orderStatusId);
+      //   if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
+      //     this.showAction = true;
+      //     if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
+      //       this.showPrint = true;
+      //       // if (res.orderStatusId === 3) {
+      //       //   this.setMenuItem();
+      //       // }
+      //     }
+      //   } else {
+      //     this.showAction = false;
+      //   }
+      // }
       if (res && (res?.OrderID || res?.ShipmentId)) {
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
@@ -79,9 +99,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         }
         this.selectedOrderDetail = of(res);
         this.setColumById(res?.orderStatusId);
-        if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
+        if (this.status.includes(res?.Status)) {
           this.showAction = true;
-          if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
+          if (res.Status === 'Shipped' || res.orderStatusId === 'Accepted' ) {
             this.showPrint = true;
             // if (res.orderStatusId === 3) {
             //   this.setMenuItem();
@@ -101,7 +121,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public redirectToDetail(order: any): void {
     if (order) {
       this.subjectService.setOrderDetailShipment(order);
-      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId, 's', order.OrderId]);
     }
   }
 

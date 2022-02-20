@@ -1,0 +1,124 @@
+<div class="content-wrapper">
+  <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Bulk Accept Orders
+  </h4>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="">
+        <p-card>
+          <div class="d-flex flex-column">
+            <h4 class="page-title">Do you want to cancel these orders?</h4>
+            <div>
+              <p-table
+                responsiveLayout="scroll"
+                [value]="(orders$ | async) || []"
+                [scrollable]="true"
+                scrollHeight="700px"
+                [columns]="columns"
+                [(selection)]="selectedData"
+              >
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th></th>
+                    <th
+                      *ngFor="let col of columns"
+                    >
+                      {{ col.header }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                  <tr>
+                    <td>
+                      <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
+                    </td>
+                    <td *ngFor="let col of columns">
+                      {{ rowData[col.field] }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="d-flex justify-content-center mt-3 outlined-button">
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Cancel"
+                class="p-button-outlined order-detail-action h-40"
+                style="width: 140px"
+                (click)="cancelOrder()"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Next"
+                class="p-button-outlined h-40 success-next"
+                style="width: 140px"
+                (click)="next()"
+              ></button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="custom-dialog">
+  <p-dialog
+    [(visible)]="cancelModelShow"
+    [position]="'center'"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [baseZIndex]="10000"
+    [draggable]="false"
+    [resizable]="false"
+    [closeOnEscape]="true"
+    [closable]="false"
+  >
+    <div class="d-flex flex-column text-center justify-content-center">
+      <p>Are you sure you <br />want to cancel the order?</p>
+      <div class="content">
+        <span class="p-float-label">
+          <input
+            pInputText
+            class="mb-2"
+            id="float-input"
+            [formControl]="cancelReasonControl"
+          />
+          <label for="float-input">Reason</label>
+          <ng-container *ngIf="cancelReasonControl?.touched">
+            <small
+              *ngIf="cancelReasonControl.errors?.['required']"
+              class="p-error"
+            >
+              Reason field is required.
+            </small>
+          </ng-container>
+        </span>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center outlined-button">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="No"
+        class="p-button-outlined outlined-border  h-40"
+        style="width: 150px"
+        (click)="rejectCancelPopUp(false); cancelReasonControl.setValue('')"
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Yes"
+        class="p-button-outlined h-40 success-next ml-2"
+        style="width: 150px"
+        (click)="checkReason()"
+      ></button>
+    </div>
+  </p-dialog>
+</div>
