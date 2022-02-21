@@ -15,7 +15,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public allIds: number[] = [];
   public columns: any[] = [];
-  public orders$: Observable<any[]>;
+  public orders$: Observable<{ Item1: any[], Item2: any}>;
 
   constructor(
     private _location: Location,
