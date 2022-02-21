@@ -268,6 +268,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       console.log(res);
       if (res && res?.Status == 'OK') {
         order['showEdit'] = true;
+        const orders = this.getLocalOrder();
+        const sum = orders?.reduce((acc: number, order: any) => acc += order.TotalPrice, 0)
+        console.log('sum', sum);
+        if (sum && sum > 0) {
+          const orderDetail = this.getOrderDetailUpSide();
+          orderDetail['OrderAmount'] = sum;
+          this.subjectService.setOrderDetail(orderDetail)
+        }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -346,5 +354,21 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     } else {
       this.toasterService.info('Please select order through checkbox for cancelled')
     }
+  }
+
+  public getLocalOrder():  any[] | null {
+    let order: any[] | null = null;
+    this.orders$.pipe(take(1)).subscribe(res => {
+      order = res
+    });
+    return order;
+  }
+
+  public getOrderDetailUpSide(): any {
+    let upSideOrderDetail: any;
+    this.selectedOrderDetail.pipe(take(1)).subscribe(res => {
+      upSideOrderDetail = res;
+    });
+    return upSideOrderDetail
   }
 }

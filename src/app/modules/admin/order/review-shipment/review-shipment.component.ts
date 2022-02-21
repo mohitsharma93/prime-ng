@@ -80,7 +80,12 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
         //   this.subjectService.setSaveFilterOnRedirection(filter);
         //   this.backClicked();
         // }
-        this.subjectService.setOrderDetail({...res.Data, orderStatusId: 3});
+        this.subjectService.setOrderDetail({
+          ...res.Data,
+          orderStatusId: 3,
+          showElse: true,
+          Status: 'Shipped'
+        });
         this.router.navigate([
           '/admin',
           'order',

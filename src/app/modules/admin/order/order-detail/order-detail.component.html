@@ -216,8 +216,15 @@
                       </ng-container>
                       <ng-template #showString>
                         {{ 
-                          (col.field === 'OrderDate' || col.field === 'DeliveryDate') ? (rowData[col.field] | date: "MMM. d, y") : rowData[col.field]
+                          (col.field === 'OrderDate' || col.field === 'DeliveryDate') 
+                            ? (rowData[col.field] | date: "MMM. d, y")
+                            : (col.field === 'Status') 
+                              ?  ''
+                              : rowData[col.field]
                         }}
+                        <ng-container *ngIf="col.field === 'Status'">
+                          <ng-container *ngTemplateOutlet="statusCol context: { $implicit:  rowData[col.field] }" ></ng-container>
+                        </ng-container>
                       </ng-template>
                     </td>
                     <td class="outlined-button" *ngIf="showAction">
@@ -396,7 +403,6 @@
   <div></div>
 </ng-template>
 <ng-template #statusCol let-status>
-  {{status}}
   <label class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</label>
   <label class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</label>
   <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>
