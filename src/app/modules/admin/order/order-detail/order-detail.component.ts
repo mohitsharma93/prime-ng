@@ -101,7 +101,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.setColumById(res?.orderStatusId);
         if (this.status.includes(res?.Status)) {
           this.showAction = true;
-          if (res.Status === 'Shipped' || res.orderStatusId === 'Accepted' ) {
+          if (res.Status === 'Shipped' || res.Status === 'Delivered' ) {
             this.showPrint = true;
             // if (res.orderStatusId === 3) {
             //   this.setMenuItem();

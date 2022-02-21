@@ -31,6 +31,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public products: any[] = [];
   public status = [
+    { name: 'All', code: 0},
     { name: 'Pending', code: 1 },
     { name: 'Accepted', code: 2 },
     { name: 'In-transit', code: 3 },
