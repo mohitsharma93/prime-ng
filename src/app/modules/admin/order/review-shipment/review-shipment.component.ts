@@ -71,12 +71,12 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
     this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
       console.log(res);
       if (res && res.Status == 'OK') {
-        let filter = this.getSaveFilterRedirection();
-        if (filter && Object.keys(filter).length) {
-          filter.topFilter.orderStatusId = 2
-          this.subjectService.setSaveFilterOnRedirection(filter);
-          this.backClicked();
-        }
+        // let filter = this.getSaveFilterRedirection();
+        // if (filter && Object.keys(filter).length) {
+        //   filter.topFilter.orderStatusId = 2
+        //   this.subjectService.setSaveFilterOnRedirection(filter);
+        //   this.backClicked();
+        // }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }

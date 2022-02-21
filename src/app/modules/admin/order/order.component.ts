@@ -208,7 +208,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(orderDetail: any): void {
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
-      if ( orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered' ) {
+      const shippedOrDelivered = orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered';
+      if ( shippedOrDelivered ) {
         orderDetail['showElse'] = true;
       } else {
         orderDetail['showElse'] = false;
@@ -226,12 +227,24 @@ export class OrderComponent extends BaseComponent implements OnInit {
           searchString: this.searchControl.value,
         }),
       });
-      this.router.navigate([
-        '/admin',
-        'order',
-        'detail',
-        orderDetail?.OrderID || orderDetail?.ShipmentId,
-      ]);
+      // this.router.navigate([
+      //   '/admin',
+      //   'order',
+      //   'detail',
+      //   orderDetail?.OrderID || orderDetail?.ShipmentId,
+      // ]);
+      if (shippedOrDelivered && this.orderRequestParam?.orderStatusId === 0) {
+        this.subjectService.setOrderDetailShipment(orderDetail);
+        this.router.navigate(['/admin', 'order', 'detail', orderDetail?.ShipmentId, 's', orderDetail.OrderID]);
+      } else {
+        this.subjectService.setOrderDetail(orderDetail);
+        this.router.navigate([
+          '/admin',
+          'order',
+          'detail',
+          orderDetail?.OrderID || orderDetail?.ShipmentId,
+        ]);
+      }
     }
   }
 
