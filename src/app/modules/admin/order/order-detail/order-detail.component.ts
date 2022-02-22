@@ -327,7 +327,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.backClicked();
+         this.redirectToOrder();
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -346,7 +346,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.backClicked();
+          this.redirectToOrder()
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -370,5 +370,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       upSideOrderDetail = res;
     });
     return upSideOrderDetail
+  }
+
+  public redirectToOrder() {
+    let filter = this.getSaveFilterRedirection();
+    if (filter && Object.keys(filter).length) {
+      filter.topFilter.orderStatusId = 2
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      this.router.navigate(['/admin', 'order'])
+    }
   }
 }
