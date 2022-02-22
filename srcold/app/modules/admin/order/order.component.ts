@@ -31,6 +31,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public products: any[] = [];
   public status = [
+    { name: 'All', code: 0},
     { name: 'Pending', code: 1 },
     { name: 'Accepted', code: 2 },
     { name: 'In-transit', code: 3 },
@@ -219,12 +220,19 @@ export class OrderComponent extends BaseComponent implements OnInit {
           : orderDetail?.Status === 'Delivered'
           ? 4
           : this.orderRequestParam?.orderStatusId;
+      this.subjectService.setOrderDetail(orderDetail);
       this.subjectService.setSaveFilterOnRedirection({
         topFilter: this.orderRequestParam,
         ...(this.searchControl.value && {
           searchString: this.searchControl.value,
         }),
       });
+      // this.router.navigate([
+      //   '/admin',
+      //   'order',
+      //   'detail',
+      //   orderDetail?.OrderID || orderDetail?.ShipmentId,
+      // ]);
       if (shippedOrDelivered && this.orderRequestParam?.orderStatusId === 0) {
         this.subjectService.setOrderDetailShipment(orderDetail);
         this.router.navigate(['/admin', 'order', 'detail', orderDetail?.ShipmentId, 's', orderDetail.OrderID]);

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core"
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 
 import { BaseComponent } from "../../../base.component";
 import { dummyData } from "./dummy";
@@ -8,6 +8,9 @@ import { FormControl, Validators } from "@angular/forms";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 import { ToasterService } from "src/app/shared/services/toaster.service";
 import { SubjectService } from "src/app/shared/admin-service/subject.service";
+import { DataService } from "src/app/shared/services/data.service";
+import { DialogService } from "primeng/dynamicdialog";
+import { PrintModelComponent } from "src/app/modules/print-model/print-model.component";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -19,14 +22,16 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   public columns: any[] = [];
   public orders$: Observable<any[]>;
   public selectedData: any[] = [];
-  public cancelReasonControl: FormControl = new FormControl('', [ Validators.required ]);
+  public cancelReasonControl: FormControl = new FormControl('', [Validators.required]);
   public cancelModelShow: boolean = false;
 
   constructor(
     private _location: Location,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private dialogService: DialogService,
+    private ds: DataService
   ) {
     super();
     this.setColumById();
@@ -48,9 +53,9 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
   public setColumById() {
     this.columns = [
-      { field: 'ItemName', header: 'ITEM NAME'},
-      { field: 'NetQuantity', header: 'QUANTITY'},
-      { field: 'expandedRow', header: 'ORDER WISE QUANTITY'},
+      { field: 'ItemName', header: 'ITEM NAME' },
+      { field: 'NetQuantity', header: 'QUANTITY' },
+      { field: 'expandedRow', header: 'ORDER WISE QUANTITY' },
     ]
   }
 
@@ -66,7 +71,7 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   }
 
   public rejectCancelPopUp(hideShowCancelModel: boolean): void {
-  this.cancelModelShow = hideShowCancelModel
+    this.cancelModelShow = hideShowCancelModel
   }
 
   public hitCancelOrderApi() {
@@ -82,6 +87,23 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
+    });
+  }
+
+  show() {
+    const req = {
+      url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+      }
+
     });
   }
 }

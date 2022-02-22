@@ -45,7 +45,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public showPrint: boolean = false;
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
-  public status = ['Pending', 'Shipped', 'Accepted'];
+  public status = ['Pending', 'Shipped', 'Delivered'];
   public menuItems: MenuItem[] = [
     {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
     {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
@@ -101,7 +101,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.setColumById(res?.orderStatusId);
         if (this.status.includes(res?.Status)) {
           this.showAction = true;
-          if (res.Status === 'Shipped' || res.orderStatusId === 'Accepted' ) {
+          if (res.Status === 'Shipped' || res.Status === 'Delivered' ) {
             this.showPrint = true;
             // if (res.orderStatusId === 3) {
             //   this.setMenuItem();
@@ -121,7 +121,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public redirectToDetail(order: any): void {
     if (order) {
       this.subjectService.setOrderDetailShipment(order);
-      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId, 's', order.OrderId]);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
     }
   }
 
@@ -265,8 +265,17 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       Quantity: order.Quantity
     }
     this.adminOrderService.updateQuantityService(obj).subscribe(res => {
+      console.log(res);
       if (res && res?.Status == 'OK') {
         order['showEdit'] = true;
+        const orders = this.getLocalOrder();
+        const sum = orders?.reduce((acc: number, order: any) => acc += order.TotalPrice, 0)
+        console.log('sum', sum);
+        if (sum && sum > 0) {
+          const orderDetail = this.getOrderDetailUpSide();
+          orderDetail['OrderAmount'] = sum;
+          this.subjectService.setOrderDetail(orderDetail)
+        }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -318,7 +327,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.backClicked();
+         this.redirectToOrder();
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -329,7 +338,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public warningCancel() {
-    this.toasterService.info('Please select order through checkbox for canceled')
+    this.toasterService.info('Please select order through checkbox for cancelled')
   }
 
   public cancelSelected() {
@@ -337,13 +346,38 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.backClicked();
+          this.redirectToOrder()
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
       });
     } else {
-      this.toasterService.info('Please select order through checkbox for canceled')
+      this.toasterService.info('Please select order through checkbox for cancelled')
+    }
+  }
+
+  public getLocalOrder():  any[] | null {
+    let order: any[] | null = null;
+    this.orders$.pipe(take(1)).subscribe(res => {
+      order = res
+    });
+    return order;
+  }
+
+  public getOrderDetailUpSide(): any {
+    let upSideOrderDetail: any;
+    this.selectedOrderDetail.pipe(take(1)).subscribe(res => {
+      upSideOrderDetail = res;
+    });
+    return upSideOrderDetail
+  }
+
+  public redirectToOrder() {
+    let filter = this.getSaveFilterRedirection();
+    if (filter && Object.keys(filter).length) {
+      filter.topFilter.orderStatusId = 2
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      this.router.navigate(['/admin', 'order'])
     }
   }
 }

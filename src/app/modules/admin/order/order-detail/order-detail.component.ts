@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {Location} from '@angular/common';
-import {data} from '../product-dummy';
+import { Location } from '@angular/common';
+import { data } from '../product-dummy';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { Observable, of, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
@@ -9,16 +9,20 @@ import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
-import {MenuItem} from 'primeng/api';
+import { MenuItem } from 'primeng/api';
+import { PrintInvoiceModelComponent } from 'src/app/modules/print-invoice-model/print-invoice-model.component';
+import { PrintShipmentModelComponent } from 'src/app/modules/print-shipment-model/print-shipment-model.component';
+import { DialogService } from 'primeng/dynamicdialog';
+import { DataService } from 'src/app/shared/services/data.service';
 
 interface Products {
-  id?:string;
-  name?:string;
-  address?:string;
-  mobile?:string;
-  order_amt?:string;
-  order_date?:string;
-  status?:string;
+  id?: string;
+  name?: string;
+  address?: string;
+  mobile?: string;
+  order_amt?: string;
+  order_date?: string;
+  status?: string;
 }
 
 interface Product {
@@ -40,15 +44,15 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public columns: any[] = [];
   public cancelModelShow: boolean = false;
-  public cancelReasonControl: FormControl = new FormControl('', [ Validators.required ]);
+  public cancelReasonControl: FormControl = new FormControl('', [Validators.required]);
   public selectedOrderDetail: Observable<any>;
   public showPrint: boolean = false;
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
   public status = ['Pending', 'Shipped', 'Delivered'];
   public menuItems: MenuItem[] = [
-    {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
-    {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
+    { label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
+    { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
   ];
   public selectedData: any[] = [];
 
@@ -58,7 +62,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     private _location: Location,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private ds: DataService,
+    public dialogService: DialogService
+
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -101,7 +108,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.setColumById(res?.orderStatusId);
         if (this.status.includes(res?.Status)) {
           this.showAction = true;
-          if (res.Status === 'Shipped' || res.Status === 'Delivered' ) {
+          if (res.Status === 'Shipped' || res.Status === 'Delivered') {
             this.showPrint = true;
             // if (res.orderStatusId === 3) {
             //   this.setMenuItem();
@@ -166,8 +173,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public setMenuItem() {
     this.menuItems = [
-      {label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
-      {label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
+      { label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
+      { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
     ]
   }
 
@@ -197,11 +204,11 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           });
         }
         if (apiMiddleStr === 'GetShipmentOrderData' || apiMiddleStr === 'GetShipmentdeliveredOrderData') {
-          if(apiMiddleStr === 'GetShipmentOrderData'){
+          if (apiMiddleStr === 'GetShipmentOrderData') {
 
             changeRes = changeRes.shipMentOrderDataListDTO
           }
-          if( apiMiddleStr === 'GetShipmentdeliveredOrderData' ) {
+          if (apiMiddleStr === 'GetShipmentdeliveredOrderData') {
             changeRes = changeRes.deliveredOrderDataListDTO
             // changeRes = changeRes.shipMentOrderDataListDTO
           }
@@ -224,7 +231,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public getCurrentOrder() {
-    let order = {} as any | null ;
+    let order = {} as any | null;
     this.selectedOrderDetail.pipe(take(1)).subscribe(res => {
       order = res;
     })
@@ -287,7 +294,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.acceptOrderService(currentOrder?.OrderID).subscribe(res => {
       if (res && res?.Status == 'OK') {
         if (currentOrder && currentOrder.Status) {
-          currentOrder['Status'] ='Accepted';
+          currentOrder['Status'] = 'Accepted';
           currentOrder['orderStatusId'] = 2;
           this.subjectService.setOrderDetail(currentOrder);
         }
@@ -298,7 +305,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public getSaveFilterRedirection() {
-    let filter: any = null ;
+    let filter: any = null;
     this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
       filter = res;
     });
@@ -327,7 +334,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-         this.redirectToOrder();
+          this.redirectToOrder();
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -346,7 +353,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.redirectToOrder()
+          this.redirectToOrder();
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -356,7 +363,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     }
   }
 
-  public getLocalOrder():  any[] | null {
+  public getLocalOrder(): any[] | null {
     let order: any[] | null = null;
     this.orders$.pipe(take(1)).subscribe(res => {
       order = res
@@ -370,6 +377,44 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       upSideOrderDetail = res;
     });
     return upSideOrderDetail
+  }
+
+
+  show() {
+    {
+      const req = {
+        url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
+        params: '',
+      };
+      this.ds.get(req).subscribe((res: any) => {
+        if (res.Status === 'OK') {
+          const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+            width: '70%',
+            height: '70%'
+          });
+          return (res);
+        }
+      });
+    }
+  }
+
+  shipmentModel() {
+    {
+      const req = {
+        url: '/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/2',
+        params: '',
+      };
+      this.ds.get(req).subscribe((res: any) => {
+        if (res.Status === 'OK') {
+          const ref = this.dialogService.open(PrintShipmentModelComponent, {
+            data: res.Data,
+            width: '70%',
+            height: '70%'
+          });
+          return (res);
+        }
+      });
+    }
   }
 
   public redirectToOrder() {

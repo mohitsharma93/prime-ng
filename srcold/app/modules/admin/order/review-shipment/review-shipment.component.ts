@@ -5,6 +5,7 @@ import { BaseComponent } from "../../base.component";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 import { ToasterService } from "src/app/shared/services/toaster.service";
 import { SubjectService } from "src/app/shared/admin-service/subject.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -15,13 +16,14 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public allIds: number[] = [];
   public columns: any[] = [];
-  public orders$: Observable<any[]>;
+  public orders$: Observable<{ Item1: any[], Item2: any}>;
 
   constructor(
     private _location: Location,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private router: Router
   ) {
     super();
     this.setColumById();
@@ -62,6 +64,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
   public getSaveFilterRedirection() {
     let filter: any = null ;
     this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
+      console.log('res saveFilterOnRedirection', res)
       filter = res;
     });
     return filter;
@@ -71,12 +74,24 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
     this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
       console.log(res);
       if (res && res.Status == 'OK') {
-        let filter = this.getSaveFilterRedirection();
-        if (filter && Object.keys(filter).length) {
-          filter.topFilter.orderStatusId = 2
-          this.subjectService.setSaveFilterOnRedirection(filter);
-          this.backClicked();
-        }
+        // let filter = this.getSaveFilterRedirection();
+        // if (filter && Object.keys(filter).length) {
+        //   filter.topFilter.orderStatusId = 2
+        //   this.subjectService.setSaveFilterOnRedirection(filter);
+        //   this.backClicked();
+        // }
+        this.subjectService.setOrderDetail({
+          ...res.Data,
+          orderStatusId: 3,
+          showElse: true,
+          Status: 'Shipped'
+        });
+        this.router.navigate([
+          '/admin',
+          'order',
+          'detail',
+          res.Data?.ShipmentId,
+        ]);
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
