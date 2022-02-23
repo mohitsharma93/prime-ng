@@ -95,7 +95,7 @@
     </div>
     <div class="d-flex justify-content-center outlined-button">
       <button pButton pRipple type="button" label="No" class="p-button-outlined outlined-border" style="width: 150px"
-        (click)="cancelOrder(false); goCancel = null;"></button>
+        (click)="cancelOrder(false); goCancel = []; this.cancelModelShow = false"></button>
       <button pButton pRipple type="button" label="Yes" class="p-button-outlined is_active ml-2" style="width: 150px"
         (click)="cancelOrder(false)"></button>
     </div>

@@ -31,7 +31,7 @@ export class SubjectService {
         this.apiCallStatusWise.next(response);
     }
 
-    public setSearchStringFromTobBar(response: string| null): void {
+    public setSearchStringFromTobBar(response: string | null): void {
         this.searchStringFromTobBar.next(response);
     }
 

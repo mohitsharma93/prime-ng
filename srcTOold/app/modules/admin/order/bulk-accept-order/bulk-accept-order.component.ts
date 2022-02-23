@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core"
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import { animate, state, style, transition, trigger } from "@angular/animations";
 
 
@@ -9,6 +9,9 @@ import { Router } from "@angular/router";
 import { ToasterService } from "src/app/shared/services/toaster.service";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 import { SubjectService } from "src/app/shared/admin-service/subject.service";
+import { PrintModelComponent } from "src/app/modules/print-model/print-model.component";
+import { DataService } from "src/app/shared/services/data.service";
+import { DialogService } from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -16,15 +19,15 @@ import { SubjectService } from "src/app/shared/admin-service/subject.service";
   styleUrls: ['./bulk-accept-order.component.scss'],
   animations: [
     trigger('rowExpansionTrigger', [
-        state('void', style({
-            transform: 'translateX(-10%)',
-            opacity: 0
-        })),
-        state('active', style({
-            transform: 'translateX(0)',
-            opacity: 1
-        })),
-        transition('* <=> *', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
+      state('void', style({
+        transform: 'translateX(-10%)',
+        opacity: 0
+      })),
+      state('active', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      transition('* <=> *', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
     ])
   ]
 })
@@ -43,6 +46,8 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     private toasterService: ToasterService,
     private adminOrderService: AdminOrderService,
     private subjectService: SubjectService,
+    private ds: DataService,
+    private dialogService: DialogService
   ) {
     super();
     this.setColumById();
@@ -58,15 +63,15 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   public setColumById() {
     this.columns = [
-      { field: 'ItemName', header: 'ITEM NAME'},
-      { field: 'NetQuantity', header: 'NET QUANTITY'},
-      { field: 'Orders', header: 'ORDERS'},
+      { field: 'ItemName', header: 'ITEM NAME' },
+      { field: 'NetQuantity', header: 'NET QUANTITY' },
+      { field: 'Orders', header: 'ORDERS' },
       { field: 'DispatchQuantity', header: 'DISPATCH QUANTITY' },
     ]
   }
 
   public expandAll() {
-    if(!this.isExpanded){
+    if (!this.isExpanded) {
       this.orders$.pipe(take(1)).subscribe(res => {
         if (res && res.length) {
           res.forEach(order => {
@@ -75,7 +80,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
         }
       })
     } else {
-      this.expandedRows={};
+      this.expandedRows = {};
     }
     this.isExpanded = !this.isExpanded;
   }
@@ -123,7 +128,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
     }
   }
-  
+
   public getBulkOrder() {
     let orders: any = null;
     this.orders$.pipe(take(1)).subscribe(res => {
@@ -131,4 +136,26 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     });
     return orders;
   }
+
+  show() {
+    const req = {
+      url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+      }
+
+    });
+  }
+
+  onRemoveOk() {
+    // const index = this.prod
+  }
 }
+

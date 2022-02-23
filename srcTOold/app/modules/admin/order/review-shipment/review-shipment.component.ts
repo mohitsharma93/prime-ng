@@ -1,11 +1,14 @@
 import { Component, OnInit } from "@angular/core"
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import { Observable, of, take } from "rxjs";
 import { BaseComponent } from "../../base.component";
 import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
 import { ToasterService } from "src/app/shared/services/toaster.service";
 import { SubjectService } from "src/app/shared/admin-service/subject.service";
 import { Router } from "@angular/router";
+import { PrintShipmentModelComponent } from "src/app/modules/print-shipment-model/print-shipment-model.component";
+import { DialogService } from "primeng/dynamicdialog";
+import { DataService } from "src/app/shared/services/data.service";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -16,20 +19,23 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public allIds: number[] = [];
   public columns: any[] = [];
-  public orders$: Observable<{ Item1: any[], Item2: any}>;
+  public orders$: Observable<{ Item1: any[], Item2: any }>;
 
   constructor(
     private _location: Location,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
     private subjectService: SubjectService,
-    private router: Router
+    private router: Router,
+    private ds: DataService,
+    public dialogService: DialogService
+
   ) {
     super();
     this.setColumById();
   }
 
-  ngOnInit() {  
+  ngOnInit() {
     this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
       if (res && res?.length) {
         this.allIds = res;
@@ -44,13 +50,13 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
 
   public setColumById() {
     this.columns = [
-      { field: 'ItemName', header: 'ITEM NAME'},
-      { field: 'Quantity', header: 'QUANTITY'},
-      { field: 'OrderQuantityList', header: 'ORDER WISE QUANTITY'},
+      { field: 'ItemName', header: 'ITEM NAME' },
+      { field: 'Quantity', header: 'QUANTITY' },
+      { field: 'OrderQuantityList', header: 'ORDER WISE QUANTITY' },
     ]
   }
 
-  public getReviewShipmentData(allIds:number[]): void {
+  public getReviewShipmentData(allIds: number[]): void {
     this.adminOrderService.getReviewShipmentService(allIds).subscribe(res => {
       console.log('getReviewShipmentData', res);
       if (res && res.Status == 'OK') {
@@ -62,7 +68,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
   }
 
   public getSaveFilterRedirection() {
-    let filter: any = null ;
+    let filter: any = null;
     this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
       console.log('res saveFilterOnRedirection', res)
       filter = res;
@@ -96,5 +102,24 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
         this.toasterService.error(res?.ErrorMessage);
       }
     })
+  }
+
+  shipmentModel() {
+    {
+      const req = {
+        url: '/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/2',
+        params: '',
+      };
+      this.ds.get(req).subscribe((res: any) => {
+        if (res.Status === 'OK') {
+          const ref = this.dialogService.open(PrintShipmentModelComponent, {
+            data: res.Data,
+            width: '70%',
+            height: '70%'
+          });
+          return (res);
+        }
+      });
+    }
   }
 }

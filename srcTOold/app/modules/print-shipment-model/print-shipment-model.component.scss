@@ -7,10 +7,10 @@
     position: relative;
   
     /* background image add */
-    // background:#fff url(img/direct_sign.png) center no-repeat;
+    // background:#fff url(img/loginbg.png) center no-repeat;
     background-size:contain;
   
-   
+    /* background-color: #fff; */
   }
   
   .invoice-number {
@@ -20,7 +20,7 @@
   
   .pdf-body {
     position: absolute;
-    top: 5.4in;
+    top: 4.5in;
     bottom: 1.2in;
     left: .5in;
     right: .5in;
@@ -37,16 +37,16 @@
   }
   .for {
     position: absolute;
-    top: 0.2in;
+    top: 1.5in;
     left: .5in;
     width: 3.5in;
   }
   .from {
     position: absolute;
-    top: 0.3in;
+    top: 0.8in;
     right: .5in;
     width: 3.5in;
-    /* text-align: right; */
+    text-align: right;
   }
   .from p, .for p {
     color: #000;
@@ -98,7 +98,6 @@
       text-overflow: ellipsis;
   
   }
-   
   @media screen and (max-width: 900px) {
     .box-col {
       display: none;

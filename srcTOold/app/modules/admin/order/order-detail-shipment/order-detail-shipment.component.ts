@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {Location} from '@angular/common';
-import {data} from '../product-dummy';
+import { Location } from '@angular/common';
+import { data } from '../product-dummy';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { Observable, of, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
@@ -9,16 +9,19 @@ import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
-import {MenuItem} from 'primeng/api';
+import { MenuItem } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
+import { DataService } from 'src/app/shared/services/data.service';
+import { PrintInvoiceModelComponent } from 'src/app/modules/print-invoice-model/print-invoice-model.component';
 
 interface Product {
-  id?:string;
-  name?:string;
-  address?:string;
-  mobile?:string;
-  order_amt?:string;
-  order_date?:string;
-  status?:string;
+  id?: string;
+  name?: string;
+  address?: string;
+  mobile?: string;
+  order_amt?: string;
+  order_date?: string;
+  status?: string;
 }
 
 interface Order {
@@ -40,7 +43,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
 
   public columns: any[] = [];
   public cancelModelShow: boolean = false;
-  public cancelReasonControl: FormControl = new FormControl('', [ Validators.required ]);
+  public cancelReasonControl: FormControl = new FormControl('', [Validators.required]);
   public selectedOrderDetail: Observable<any>;
   public showPrint: boolean = false;
   public showAction: boolean = false;
@@ -51,7 +54,9 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     private _location: Location,
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private ds: DataService,
+    public dialogService: DialogService
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -105,7 +110,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   }
 
   public getCurrentOrder() {
-    let order = {} as any | null ;
+    let order = {} as any | null;
     this.selectedOrderDetail.pipe(take(1)).subscribe(res => {
       order = res;
     })
@@ -142,5 +147,31 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       }
       this.cancelReasonControl.setValue('')
     });
+  }
+
+  show() {
+    {
+      const req = {
+        url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
+        params: '',
+      };
+      this.ds.get(req).subscribe((res: any) => {
+        if (res.Status === 'OK') {
+          const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+            data: {
+              type: 'demand_sheet',
+              data: {
+                name: 'Test',
+                address: 'Test Address',
+                number: '5252525252',
+                item: res.Data
+              }
+            },
+            width: '70%',
+            height: '70%'
+          });
+        }
+      });
+    }
   }
 }

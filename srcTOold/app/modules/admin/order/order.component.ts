@@ -31,7 +31,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public products: any[] = [];
   public status = [
-    { name: 'All', code: 0},
+    { name: 'All', code: 0 },
     { name: 'Pending', code: 1 },
     { name: 'Accepted', code: 2 },
     { name: 'In-transit', code: 3 },
@@ -156,10 +156,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
     });
     this.products = newProduct;
     this.subjectService.holdAcceptedOrderForSelected$
-        .pipe(take(1))
-        .subscribe((res) => {
-          this.selectedData = [...this.selectedData, ...newProduct.filter((p: any) => p.OrderID === res)]
-        })
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.selectedData = [...this.selectedData, ...newProduct.filter((p: any) => p.OrderID === res)]
+      })
   }
 
   public setColumById(id: number) {
@@ -209,7 +209,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public redirectToDetail(orderDetail: any): void {
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
       const shippedOrDelivered = orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered';
-      if ( shippedOrDelivered ) {
+      if (shippedOrDelivered) {
         orderDetail['showElse'] = true;
       } else {
         orderDetail['showElse'] = false;
@@ -218,8 +218,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
         orderDetail?.Status === 'Shipped'
           ? 3
           : orderDetail?.Status === 'Delivered'
-          ? 4
-          : this.orderRequestParam?.orderStatusId;
+            ? 4
+            : this.orderRequestParam?.orderStatusId;
       this.subjectService.setOrderDetail(orderDetail);
       this.subjectService.setSaveFilterOnRedirection({
         topFilter: this.orderRequestParam,
@@ -344,7 +344,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
   }
 
- 
+
 
 
   public resetSearch(): void {

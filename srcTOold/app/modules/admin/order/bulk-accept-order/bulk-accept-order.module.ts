@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {TableModule} from 'primeng/table';
-import {DropdownModule} from 'primeng/dropdown';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { DropdownModule } from 'primeng/dropdown';
 import { BulkAcceptOrderComponent } from './bulk-accept-order.component';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
 const routes: Routes = [
-  { 
-    path: '', 
+  {
+    path: '',
     component: BulkAcceptOrderComponent,
   },
   {
@@ -39,7 +40,10 @@ const routes: Routes = [
     TableModule,
     DropdownModule,
     DialogModule,
-    InputNumberModule
-  ]
+    InputNumberModule,
+    DynamicDialogModule
+  ],
+  providers: [DialogService]
+
 })
 export class BulkAcceptOrderModule { }

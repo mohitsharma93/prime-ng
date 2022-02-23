@@ -6,6 +6,9 @@ import { dummyData } from "./dummy";
 import { Observable, of, take } from "rxjs";
 import { Router } from "@angular/router";
 import { FormControl, Validators } from "@angular/forms";
+import { AdminOrderService } from "src/app/shared/admin-service/order/order.service";
+import { ToasterService } from "src/app/shared/services/toaster.service";
+import { SubjectService } from "src/app/shared/admin-service/subject.service";
 
 @Component({
   selector: 'app-admin-bulk-accept-cancel-order',
@@ -22,7 +25,10 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
 
   constructor(
     private _location: Location,
-    private router: Router
+    private router: Router,
+    private adminOrderService: AdminOrderService,
+    private toasterService: ToasterService,
+    private subjectService: SubjectService
   ) {
     super();
     this.setColumById();
@@ -59,7 +65,6 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   }
 
   public next() {
-   
     this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
   }
 
@@ -73,9 +78,26 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
 
   public checkReason() {
     if (this.cancelReasonControl.value.length) {
-      this.rejectCancelPopUp(false)
+      this.cancelSelected();
     } else {
       this.cancelReasonControl.markAllAsTouched();
+    }
+  }
+
+  public cancelSelected() {
+    if (this.selectedData && this.selectedData.length) {
+      console.log('this.selectedData', this.selectedData)
+      const allOrderId = this.selectedData.map(o => o.OrderId);
+      this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
+        if (res && res?.Status == 'OK') {
+          this.rejectCancelPopUp(false);
+          this.next();
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      });
+    } else {
+      this.toasterService.info('Please select order through checkbox for cancelled')
     }
   }
 }
