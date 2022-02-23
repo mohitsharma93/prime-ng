@@ -1,0 +1,93 @@
+<div class="content-wrapper">
+  <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Accepted Orders
+  </h4>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="">
+        <p-card>
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-between ">
+              <div>
+                <div>Order Id's</div>
+                <div class="d-flex order-id-width">
+                  <div *ngFor="let id of allIds" class="box-catskill-white mr-2">
+                    {{id}}
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column justify-content-end">
+                <p class="p-inline"> Order count: {{(orders$ | async)?.Item2.orderCount}}</p>
+                <p> Total Shipment Value: {{(orders$ | async)?.Item2.orderValue}}</p>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="outlined-button d-flex justify-content-between">
+                <h4>
+                  Review Shipment
+                </h4>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  label="Print Shipment Detail"
+                  class="p-button-outlined p-button-sm order-detail-action h-40"
+                  icon="pi pi-print"
+                ></button>
+              </div>
+            </div>
+            <div>
+              <p-table
+                responsiveLayout="scroll"
+                [value]="(orders$ | async)?.Item1 || []"
+                [scrollable]="true"
+                scrollHeight="700px"
+                [columns]="columns"
+              >
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th>S NO.</th>
+                    <th
+                      *ngFor="let col of columns"
+                    >
+                      {{ col.header }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
+                  <tr>
+                    <td>{{index + 1}}</td>
+                    <td *ngFor="let col of columns">
+                      <ng-container *ngIf="col.field !== 'OrderQuantityList' else showThroughArray">
+                        {{ rowData[col.field] }}
+                      </ng-container>
+                      <ng-template #showThroughArray>
+                        <div class="d-flex" *ngFor="let orderQuantity of rowData?.OrderQuantityList">
+                          <div style="margin-top: 7px" class="mr-3" >{{orderQuantity.OrderId}}</div>
+                          <div  class="box-catskill-white mr-4">
+                            {{orderQuantity.Quantity}}
+                          </div>
+                        </div>
+                      </ng-template>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Create Shipment"
+                class="p-button-raised p-button-success h-40"
+                style="width: 150px"
+                (click)="createShipment()"
+              ></button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>

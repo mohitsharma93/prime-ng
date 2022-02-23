@@ -1,0 +1,115 @@
+<div id="main">
+
+    <div class="page-container hidden-on-narrow">
+        <!-- <div class="box-col">
+                        <select id="paper" style="width: 100px;">
+                            <option value="size-a4" selected>A4</option>
+                            <option value="size-letter">Letter</option>
+                            <option value="size-executive">Executive</option>
+                        </select>
+                    </div> -->
+        <div class="box-col">
+            <button class="export-pdf k-button" (click)="exportData()">Export</button>
+        </div>
+        <div class="box-col">
+            <button class="export-pdf k-button" (click)="getPrint()">Print</button>
+        </div>
+        <div id="print-docs" class="pdf-page size-a4" style="background-image:url(../../../assets/icon1.svg)">
+            <div class="for">
+                <img src="../../../assets/img/direct_sign.png">
+                <p style="padding: 25px 0;">Sold By: <span></span></p>
+                <p>Pan No.: <span></span></p>
+                <p style="padding-bottom: 90px;">GST Registration No.: <span></span></p>
+                <p>Order Number: <span></span></p>
+                <p>Order Date: <span></span></p>
+
+            </div>
+            <div class="from">
+                <h5>Tax Invoice/ Bill of Supply/ Cash Memo ( Original for Recipient )</h5>
+                <p style="padding: 96px 0 30px;">Bill to: <span></span></p>
+                <p>State / UT Code: <span></span></p>
+                <p>Place of supply: <span></span></p>
+                <p>Place of delivery: <span></span></p>
+                <p>Invoice Number: <span></span></p>
+                <p>Invoice Details: <span></span></p>
+                <p>Invoice Date: <span></span></p>
+
+            </div>
+            <div class="pdf-body">
+                <!-- <div id="grid"></div> -->
+                <div id="grid">
+                    <div class="k-grid-content">
+                        <table role="grid">
+                            <!-- <colgroup>
+                  <col style="width:80px">
+                  <col>
+                  <col style="width:80px">
+                  <col>
+                  <col style="width:80px">
+                  <col style="width:80px">
+                  <col style="width:80px">
+                  
+                </colgroup> -->
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th scope="col"> SL. No. </th>
+                                    <th scope="col"> Description</th>
+                                    <th scope="col">HSN CODE</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Tax Rate</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody role="rowgroup">
+                                <tr role="row">
+                                    <td role="gridcell">1</td>
+                                    <td role="gridcell">Tax Invoice/ Bill of Supply/ Cash Memo ( Original for
+                                        Recipient
+                                        )</td>
+                                    <td role="gridcell">ABC </td>
+                                    <td role="gridcell">5000/-</td>
+                                    <td role="gridcell">12%</td>
+                                    <td role="gridcell">600/-</td>
+                                    <td role="gridcell">4400</td>
+                                </tr>
+                                <tr role="row">
+                                    <td style="vertical-align: top;" colspan="2" rowspan="5" role="gridcell">Remark:
+                                    </td>
+                                    <td colspan="5" role="gridcell">Txable Amount </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="5" role="gridcell">SGST 9% </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="5" role="gridcell">CGST 9% </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="5" role="gridcell">IGST 18% </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="5" role="gridcell">Round Off</td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="2" role="gridcell">Amount in Words: <span><b>Two Hundred Sixty
+                                                Only</b></span></td>
+                                    <td colspan="5" role="gridcell">Total Amount: <span>₹260</span></td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="4" role="gridcell"></td>
+                                    <td style="border-width: 0 0 1px;" colspan="3" role="gridcell">For Solution
+                                        Unlimited: <br>
+                                        Authorized Signatory
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>Whether tax is payable under reverse charge - No</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

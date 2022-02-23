@@ -1,0 +1,9 @@
+.order-id-width {
+  max-width: 500px;
+  overflow-x: scroll !important;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+.order-id-width::-webkit-scrollbar { 
+  width: 0 !important
+}

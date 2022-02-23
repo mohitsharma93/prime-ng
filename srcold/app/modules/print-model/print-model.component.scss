@@ -1,0 +1,110 @@
+.pdf-page {
+    margin: 0 auto;
+    box-sizing: border-box;
+    box-shadow: 0 5px 10px 0 rgba(0,0,0,.3);
+    color: #000;
+    position: relative;
+  
+    /* background image add */
+    // background:#fff url(img/loginbg.png) center no-repeat;
+    background-size:contain;
+  
+    /* background-color: #fff; */
+  }
+  
+  .invoice-number {
+    padding-top: .17in;
+    float: right;
+  }
+  .print-backgruond{
+    background-image:url(../../../assets/icon1.svg)
+  }
+  
+  .pdf-body {
+    position: absolute;
+    top: 3.7in;
+    bottom: 1.2in;
+    left: .5in;
+    right: .5in;
+  }
+  
+  .size-a4 { width: 8.3in; height: 11.7in; }
+  .size-letter { width: 8.5in; height: 11in; }
+  .size-executive { width: 7.25in; height: 10.5in; }
+  
+  .company-logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #3aabf0;
+  }
+  .for {
+    position: absolute;
+    top: 1.5in;
+    left: .5in;
+    width: 2.5in;
+  }
+  .from {
+    position: absolute;
+    top: 0.8in;
+    right: .5in;
+    width: 3.5in;
+    text-align: right;
+  }
+  .from p, .for p {
+    color: #000;
+  }
+  .signature {
+    padding-top: .5in;
+  }
+  .box-col {
+    float: left;
+  }
+  /* table css */
+   table {
+      width: 100%;
+      margin: 0;
+      max-width: none;
+      border-collapse: separate;
+      border-spacing: 0;
+      empty-cells: show;
+      border-width: 0;
+      outline: 0;
+      border: 1px solid #000;
+  }
+  tr:hover {
+      background-color: #ebebeb;
+  }
+   th {
+      overflow: hidden;
+      border-style: solid;
+      border-width: 0 0 1px 1px;
+      border-color: #000;
+      padding: .786em .6em;
+      font-weight: 400;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      text-align: left;
+      color: #000;
+      font-weight: bold;
+      
+  }
+  td {
+      padding: 0.929em 1.286em !important;
+      border-style: solid;
+      border-width: 0 0 1px 1px;
+      border-color: #000;
+  
+      overflow: hidden;
+      line-height: 1.6em;
+      vertical-align: middle;
+      text-overflow: ellipsis;
+  
+  }
+
+  @media screen and (max-width: 900px) {
+    .box-col {
+      display: none;
+    }
+  }
+
+ 

@@ -9,9 +9,16 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthGuardService } from './shared/guards/auth-guard.service';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { PrintModelComponent } from './modules/print-model/print-model.component';
+import { PrintShipmentModelComponent } from './modules/print-shipment-model/print-shipment-model.component';
+import { PrintInvoiceModelComponent } from './modules/print-invoice-model/print-invoice-model.component';
+
 @NgModule({
   declarations: [
     AppComponent,
+    PrintModelComponent,
+    PrintShipmentModelComponent,
+    PrintInvoiceModelComponent,
   ],
   imports: [
     BrowserModule,
