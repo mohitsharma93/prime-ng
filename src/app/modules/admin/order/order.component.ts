@@ -46,6 +46,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public selectOrderStatusId$: Observable<number | null>;
   public selectTopBarSearchString$: Observable<string>;
   public searchControl: FormControl = new FormControl('');
+  public loadMorePage: number | null;
+  public dateChangeByUser: boolean = false;
 
   constructor(
     private router: Router,
@@ -73,6 +75,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.rangeDates.valid) {
+          
           this.orderRequestParam = cloneDeep({
             ...this.orderRequestParam,
             // endPoint: this.dateConvection(res),
@@ -80,6 +83,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
             PageNo: 1,
             PageSize: 25
           });
+          if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
+            this.dateChangeByUser = true;
+          } else {
+            this.dateChangeByUser = false;
+          }
           this.getOrders(this.orderRequestParam);
         }
       });
@@ -264,6 +272,18 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.getOrders(orderRequestParam);
   }
 
+  public loadMore() {
+    const data = this.getOrdersLocal();
+    if (data && data.Next) {
+      this.loadMorePage = (this.loadMorePage) ? this.loadMorePage + 1 : 1;
+      this.orderRequestParam = {
+        ...this.orderRequestParam,
+        PageNo: this.loadMorePage
+      }
+      this.getOrders(this.orderRequestParam)
+    }
+  }
+
   public statusChange(statusId: number): void {
     const forAll = {
       Status: 0,
@@ -277,8 +297,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public export(tableId: string): void {
     const data = this.getOrdersLocal();
-    if (data && data.length) {
-      this.exportExcel(data);
+    if (data && data?.lstorderDetails?.length) {
+      this.exportExcel(data?.lstorderDetails);
     }
   }
 
@@ -297,8 +317,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
-          this.orders$ = of(res?.Data);
-          this.setProduct(res?.Data);
+          const data = res?.Data
+          const localData = this.getOrdersLocal()
+          if (localData && localData?.lstorderDetails?.length) {
+            data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
+          }
+          this.orders$ = of(data);
+          this.setProduct(data);
           this.setLoader(false);
         } else {
           this.toasterService.error(res?.ErrorMessage);
@@ -318,6 +343,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
     this.dt.rows = 25;
+    if (orderStatusId === 1 || orderStatusId === 2) {
+      this.loadMorePage = 1;
+    } else {
+      this.loadMorePage = null;
+    }
     this.setColumById(orderStatusId);
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {
