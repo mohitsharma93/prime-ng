@@ -29,7 +29,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 
-  public products: any[] = [];
+  public products: any = {};
   public status = [
     { name: 'All', code: 0 },
     { name: 'Pending', code: 1 },
@@ -39,7 +39,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     { name: 'Cancelled', code: 6 },
   ];
   public orderRequestParam: IOrderRequestModel | any;
-  public orders$: Observable<any[]> = of([]);
+  public orders$: Observable<any> = of({});
   public columns: any[] = [];
   public showPrint = false;
   public selectedData: any[] = [];
@@ -75,28 +75,31 @@ export class OrderComponent extends BaseComponent implements OnInit {
         if (this.rangeDates.valid) {
           this.orderRequestParam = cloneDeep({
             ...this.orderRequestParam,
-            endPoint: this.dateConvection(res),
+            // endPoint: this.dateConvection(res),
+            searchTimeRange: this.dateConvection(res),
+            PageNo: 1,
+            PageSize: 25
           });
           this.getOrders(this.orderRequestParam);
         }
       });
 
-    this.subjectService.apiCallStatusWise$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        if (res && res?.statusId) {
-          if (res?.statusId === 3 || res?.statusId === 4) {
-            this.setColumById(res?.statusId);
-          }
-          this.orderRequestParam = {
-            ...this.orderRequestParam,
-            orderStatusId: res?.statusId,
-            urlMiddlePoint: this.getApiCallStatusWise(res?.statusId),
-          };
-          this.getOrders(this.orderRequestParam);
-          this.subjectService.setApiCallStatusWise(null);
-        }
-      });
+    // this.subjectService.apiCallStatusWise$
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe((res) => {
+    //     if (res && res?.statusId) {
+    //       if (res?.statusId === 3 || res?.statusId === 4) {
+    //         this.setColumById(res?.statusId);
+    //       }
+    //       this.orderRequestParam = {
+    //         ...this.orderRequestParam,
+    //         orderStatusId: res?.statusId,
+    //         urlMiddlePoint: this.getApiCallStatusWise(res?.statusId),
+    //       };
+    //       this.getOrders(this.orderRequestParam);
+    //       this.subjectService.setApiCallStatusWise(null);
+    //     }
+    //   });
 
     this.searchControl.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -109,7 +112,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
                 this.products = orders;
               }
               if (+res) {
-                this.products = orders.filter((f) => {
+                this.products = orders.lstorderDetails.filter((f: any) => {
                   return (
                     f?.OrderID?.toString()?.includes(res) ||
                     f?.Mobile?.toString()?.includes(res) ||
@@ -117,7 +120,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   );
                 });
               } else {
-                this.products = orders.filter((f) => {
+                this.products = orders.lstorderDetails.filter((f: any) => {
                   return f?.ShopName?.toLowerCase()?.includes(
                     res.toLowerCase()
                   );
@@ -133,7 +136,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         if (res?.topFilter) {
           console.log('res.top', res)
           this.orderRequestParam = res.topFilter;
-          this.setColumById(this.orderRequestParam.orderStatusId);
+          this.setColumById(this.orderRequestParam.Status);
           this.getOrders(this.orderRequestParam);
         } else {
           this.getOrders(this.orderRequestParam);
@@ -147,7 +150,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public setProduct(res: any): void {
     const newProduct = cloneDeep(res);
-    newProduct.map((p: any) => {
+    newProduct.lstorderDetails.map((p: any) => {
       let newAddress = '';
       if (p.ShopAddressOne) newAddress += ' ' + p.ShopAddressOne;
       if (p.ShopAddressTwo) newAddress += ' ' + p.ShopAddressTwo;
@@ -158,7 +161,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.holdAcceptedOrderForSelected$
       .pipe(take(1))
       .subscribe((res) => {
-        this.selectedData = [...this.selectedData, ...newProduct.filter((p: any) => p.OrderID === res)]
+        this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
       })
   }
 
@@ -192,11 +195,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public setOrderRequestParam() {
+    // this.orderRequestParam = {
+    //   endPoint: 'OverAll',
+    //   orderStatusId: 0,
+    //   urlMiddlePoint: 'GetAllOrderDetails',
+    // };
     this.orderRequestParam = {
-      endPoint: 'OverAll',
-      orderStatusId: 0,
-      urlMiddlePoint: 'GetAllOrderDetails',
-    };
+      Status: 0,
+      searchTimeRange: 'OverAll',
+      PageNo: 1,
+      PageSize: 25
+    }
   }
 
   public dateChange(event: any): void {
@@ -219,7 +228,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           ? 3
           : orderDetail?.Status === 'Delivered'
             ? 4
-            : this.orderRequestParam?.orderStatusId;
+            : this.orderRequestParam?.Status;
       this.subjectService.setOrderDetail(orderDetail);
       this.subjectService.setSaveFilterOnRedirection({
         topFilter: this.orderRequestParam,
@@ -233,7 +242,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       //   'detail',
       //   orderDetail?.OrderID || orderDetail?.ShipmentId,
       // ]);
-      if (shippedOrDelivered && this.orderRequestParam?.orderStatusId === 0) {
+      if (shippedOrDelivered && this.orderRequestParam?.Status === 0) {
         orderDetail['OrderId']=orderDetail.OrderID
 
         this.subjectService.setOrderDetailShipment(orderDetail);
@@ -252,13 +261,22 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public paginate(event: any): void {
     console.log('event', event);
+    const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
+    const orderRequestParam = {
+      Status: this.orderRequestParam.Status,
+      searchTimeRange: this.orderRequestParam.searchTimeRange,
+      PageNo: pageNo,
+      PageSize: event.rows
+    };
+    this.getOrders(orderRequestParam);
   }
 
   public statusChange(statusId: number): void {
     const forAll = {
-      endPoint: 'OverAll',
-      orderStatusId: statusId,
-      urlMiddlePoint: this.getApiCallStatusWise(statusId),
+      Status: 0,
+      searchTimeRange: 'OverAll',
+      PageNo: 1,
+      PageSize: 25
     };
     this.setColumById(statusId);
     this.getOrders(forAll);
@@ -279,14 +297,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
     return data;
   }
 
-  public getOrders(requestParam: IOrderRequestModel) {
+  public getOrders(requestParam: any) {
     this.setLoader(true);
     this.adminOrderService
-      .getOrdersService(
-        requestParam.endPoint,
-        requestParam.orderStatusId,
-        requestParam.urlMiddlePoint
-      )
+      .getOrdersServiceSingle(requestParam)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
@@ -302,12 +316,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
     this.orderRequestParam = {
-      endPoint: 'OverAll',
-      orderStatusId: orderStatusId,
-      urlMiddlePoint: urlMiddlePoint,
+      Status: orderStatusId,
+      searchTimeRange: 'OverAll',
+      PageNo: 1,
+      PageSize: 25
     };
     this.selectedData = [];
     this.dt.first = 0;
+    this.dt.rows = 25;
     this.setColumById(orderStatusId);
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {

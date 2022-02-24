@@ -32,6 +32,18 @@ export class AdminOrderService {
       );
   }
 
+  public getOrdersServiceSingle(params: any): Observable<any> {
+    let url = this.adminBaseUrl + '/' + 'GetAllOrderDetails'
+    return this.http
+      .get(url, params)
+      .pipe(
+        map((res) => {
+          const data: any = res;
+          return data;
+        })
+      );
+  }
+
   public getOrderDetailRecordService(orderId: number, urlMiddlePoint: string): Observable<any> {
     return this.http
       .get(AdminOrderUrls.getOrderDetailRecord(this.adminBaseUrl+ '/' + urlMiddlePoint).replace(':orderId', orderId.toString()))
