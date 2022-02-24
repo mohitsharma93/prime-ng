@@ -32,11 +32,15 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   ) {
     super();
     this.setColumById();
-    this.orders$ = of(dummyData)
+    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
-
+    this.subjectService.holdBulkOrderIdsForCancel$.subscribe(res => {
+      if (res && res?.length) {
+        this.getBulkCancelOrderDetail(res);
+      }
+    })
   }
 
   public backClicked(): void {
@@ -45,13 +49,24 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
 
   public setColumById() {
     this.columns = [
-      { field: 'SNo', header: 'S.NO.'},
       { field: 'BuyerName', header: 'BUYER NAME'},
-      { field: 'OrderID', header: 'ORDER ID'},
-      { field: 'NoOfItem', header: 'NO. OF ITEMS'},
+      { field: 'OrderId', header: 'ORDER ID'},
+      { field: 'NOOfItem', header: 'NO. OF ITEMS'},
       { field: 'OrderAmount', header: 'ORDER AMOUNT' },
       { field: 'Status', header: 'STATUS' },
     ]
+  }
+
+  public getBulkCancelOrderDetail(ids: number[]) {
+    this.adminOrderService
+      .bulkCancelOrderDetail(ids)
+      .subscribe((res) => {
+        if (res && res.Status == 'OK') {
+          this.orders$ = of(res?.Data)
+        } else {
+          this.toasterService.error(res?.ErrorMessage);
+        }
+      });
   }
 
 
@@ -59,12 +74,14 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
     console.log('in cancel order');
     if (this.selectedData && this.selectedData.length) {
       console.log('reason cancel', this.cancelReasonControl.value);
-      // here call canceledSelectedService api for cancel and re
       this.rejectCancelPopUp(true);
+    } else {
+      this.toasterService.info('Select order first through checkbox for cancel');
     }
   }
 
   public next() {
+    this.subjectService.setHoldBulkOrderIdsForCancel(null)
     this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
   }
 
@@ -86,7 +103,6 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
 
   public cancelSelected() {
     if (this.selectedData && this.selectedData.length) {
-      console.log('this.selectedData', this.selectedData)
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {

@@ -185,4 +185,15 @@ export class AdminOrderService {
         })
       )
   }
+
+  public bulkCancelOrderDetail(ids: number[]): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.bulkCancelOrderDetail(this.adminBaseUrl), ids)
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
 }

@@ -140,6 +140,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       }
       console.log('after remove order', newItem1)
       this.subjectService.setHoldBulkDataForNext(newItem1);
+      this.subjectService.setHoldBulkOrderIdsForCancel(this.goCancel);
       this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
     }
   }
