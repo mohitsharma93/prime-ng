@@ -323,7 +323,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.subjectService.setHoldAcceptedOrderForSelected(this.getCurrentOrder()?.OrderID);
     let filter = this.getSaveFilterRedirection();
     if (filter && Object.keys(filter).length) {
-      filter.topFilter.orderStatusId = 2
+      filter.topFilter.Status = 2
       this.subjectService.setSaveFilterOnRedirection(filter);
       this.backClicked();
     }
@@ -419,8 +419,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public redirectToOrder() {
     let filter = this.getSaveFilterRedirection();
+    console.log('filter', filter)
     if (filter && Object.keys(filter).length) {
-      filter.topFilter.orderStatusId = 2
+      filter.topFilter.Status = 2
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      this.router.navigate(['/admin', 'order'])
+    } else {
+      const filter = {
+        topFilter: {
+          Status: 2,
+          searchTimeRange: 'OverAll',
+          PageNo: 1,
+          PageSize: 25
+        }
+      }
       this.subjectService.setSaveFilterOnRedirection(filter);
       this.router.navigate(['/admin', 'order'])
     }

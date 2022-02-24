@@ -236,15 +236,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
           searchString: this.searchControl.value,
         }),
       });
-      // this.router.navigate([
-      //   '/admin',
-      //   'order',
-      //   'detail',
-      //   orderDetail?.OrderID || orderDetail?.ShipmentId,
-      // ]);
       if (shippedOrDelivered && this.orderRequestParam?.Status === 0) {
-        orderDetail['OrderId']=orderDetail.OrderID
-
+        orderDetail['OrderId'] = orderDetail.OrderID
         this.subjectService.setOrderDetailShipment(orderDetail);
         this.router.navigate(['/admin', 'order', 'detail', orderDetail?.ShipmentId, 's', orderDetail.OrderID]);
       } else {
@@ -322,6 +315,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageSize: 25
     };
     this.selectedData = [];
+    this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
     this.dt.rows = 25;
     this.setColumById(orderStatusId);

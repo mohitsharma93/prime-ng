@@ -114,9 +114,10 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   public redirectToOrder() {
     const obj = {
       topFilter: {
-        endPoint: 'OverAll',
-        orderStatusId: 2,
-        urlMiddlePoint: 'GetAllOrderDetails',
+        Status: 2,
+        searchTimeRange: 'OverAll',
+        PageNo: 1,
+        PageSize: 25
       }
     }
     this.subjectService.setSaveFilterOnRedirection(obj);
