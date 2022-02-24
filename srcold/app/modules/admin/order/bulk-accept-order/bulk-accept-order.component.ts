@@ -12,6 +12,7 @@ import { SubjectService } from "src/app/shared/admin-service/subject.service";
 import { PrintModelComponent } from "src/app/modules/print-model/print-model.component";
 import { DataService } from "src/app/shared/services/data.service";
 import { DialogService } from "primeng/dynamicdialog";
+import { cloneDeep, forEach, remove } from "lodash-es";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -38,7 +39,8 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   public orders$: Observable<any[]>;
   public expandedRows: any = {};
   public isExpanded: boolean = false;
-  public goCancel: number | null;
+  public goCancel: number[] = [];
+  public holdOrder: any;
 
   constructor(
     private _location: Location,
@@ -90,7 +92,9 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .getBulkAcceptedOrderService()
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
-          const item1 = res?.Data?.Item1
+          this.holdOrder = res?.Data;
+          const item1 = res?.Data?.Item1;
+          console.log('item1', item1)
           if (item1 && item1.length) {
             item1.forEach((item: any) => {
               item.expandedRow = res?.Data?.Item2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
@@ -106,8 +110,9 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   public showCancelPopUp(showHideModel: boolean, orderId: number | null = null) {
     this.cancelModelShow = showHideModel;
-    if (orderId) {
-      this.goCancel = orderId;
+    if (orderId && !this.goCancel?.includes(orderId)) {
+      this.goCancel.push(orderId);
+      console.log('this.go', this.goCancel);
     }
   }
 
@@ -116,8 +121,8 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   }
 
   public next(): void {
-    if (!this.goCancel) {
-      const orders = this.getBulkOrder();
+    const orders = this.getBulkOrder();
+    if (this.goCancel && !this.goCancel?.length) {
       if (orders && orders.length) {
         this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
         this.subjectService.setHoldBulkDataForNext(orders);
@@ -125,6 +130,16 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
         this.toasterService.info('There is no order to proceed.')
       }
     } else {
+      console.log('goCancel', this.goCancel)
+      const newItem1 = cloneDeep(this.holdOrder.Item1)
+      const newItem2 = remove(cloneDeep(this.holdOrder.Item2), (obj: any) => !this.goCancel?.includes(obj.OrderId));
+      if (newItem1 && newItem1.length) {
+        newItem1.forEach((item: any) => {
+          item.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
+        });
+      }
+      console.log('after remove order', newItem1)
+      this.subjectService.setHoldBulkDataForNext(newItem1);
       this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
     }
   }

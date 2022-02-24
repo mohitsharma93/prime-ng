@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { data } from '../product-dummy';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { Observable, of, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
@@ -55,6 +54,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
   ];
   public selectedData: any[] = [];
+  id: any;
 
   constructor(
     private router: Router,
@@ -70,9 +70,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     super();
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
-      // if (res && res['orderId']) {
-      //   this.getOrderDetailRecord(res['orderId']);
-      // }
+      if (res && res['orderId']) {
+        this.id = res['orderId']
+      }
     })
     // this.setMenuItem();
   }
@@ -401,7 +401,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public shipmentModel() {
     {
       const req = {
-        url: '/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/2',
+        url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
         params: '',
       };
       this.ds.get(req).subscribe((res: any) => {

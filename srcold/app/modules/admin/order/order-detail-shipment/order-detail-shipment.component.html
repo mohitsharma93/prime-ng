@@ -96,8 +96,9 @@
             </div>
             <div>
               <!-- scrollHeight="700px" -->
+              <!-- scrollHeight="700px" -->
               <p-table responsiveLayout="scroll" [value]="(orders$ | async)?.getShowOrderDetailList || []"
-                [scrollable]="true" scrollHeight="700px" [columns]="columns">
+                [scrollable]="true"  [columns]="columns">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">

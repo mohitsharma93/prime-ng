@@ -380,7 +380,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
 
-  show() {
+   public show() {
     {
       const req = {
         url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
@@ -398,7 +398,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     }
   }
 
-  shipmentModel() {
+  public shipmentModel() {
     {
       const req = {
         url: '/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/2',

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { data } from '../product-dummy';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { Observable, of, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
@@ -9,7 +8,6 @@ import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
-import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { DataService } from 'src/app/shared/services/data.service';
 import { PrintInvoiceModelComponent } from 'src/app/modules/print-invoice-model/print-invoice-model.component';
@@ -95,6 +93,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       { field: 'Mrp', header: 'MRP' },
       { field: 'SellingPrice', header: 'SELLING PRICE' },
       { field: 'TotalPrice', header: 'NET AMOUNT' },
+     
     ]
   }
 

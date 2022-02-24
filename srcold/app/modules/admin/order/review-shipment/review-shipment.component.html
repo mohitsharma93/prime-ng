@@ -31,9 +31,10 @@
                   (click)=" shipmentModel()"></button>
               </div>
             </div>
+            <!-- scrollHeight="700px" -->
             <div>
               <p-table responsiveLayout="scroll" [value]="(orders$ | async)?.Item1 || []" [scrollable]="true"
-                scrollHeight="700px" [columns]="columns">
+                [columns]="columns">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th>S NO.</th>
