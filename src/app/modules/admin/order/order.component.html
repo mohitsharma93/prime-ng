@@ -173,10 +173,12 @@
                       col.field === "OrderDate" || col.field === "CloseDate"
                         ? (rowData[col.field] | date: "MMM. d, y")
                         : col.field === "ShopAddressOne"
-                        ? rowData["newAddress"]
-                        : col.field === "Status"
-                        ? ""
-                        : (col.field === 'OrderAmount') ? rowData[col.field] + rowData['DeliveryCharges'] : rowData[col.field]
+                          ? rowData["newAddress"]
+                          : col.field === "Status"
+                            ? ""
+                            : (col.field === 'OrderAmount' || col.field === 'ShipmentAmount')
+                              ? rowData[col.field] + rowData['DeliveryCharges']
+                              : rowData[col.field]
                     }}
                     <ng-container *ngIf="col.field === 'Status'">
                       <ng-container
