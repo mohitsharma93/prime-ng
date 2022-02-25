@@ -334,7 +334,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.redirectToOrder();
+          const localOrder = this.getLocalOrder();
+          if (localOrder && localOrder.length === this.selectedData.length) {
+            // this.redirectToOrder();
+          }
+          this.selectedData = [];
+          const orderDetail = this.getCurrentOrder();
+          const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
+          this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -353,7 +360,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
-          this.redirectToOrder();
+          const localOrder = this.getLocalOrder();
+          if (localOrder && localOrder.length === this.selectedData.length) {
+            // this.redirectToOrder();
+          }
+          this.selectedData = [];
+          const orderDetail = this.getCurrentOrder();
+          const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
+          this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
