@@ -117,6 +117,7 @@
           </div>
           
           <div class="order-table">
+            <!-- [rowsPerPageOptions]="[5, 10, 25, 50]" -->
             <p-table
               responsiveLayout="scroll"
               scrollHeight="700px" 
@@ -130,7 +131,6 @@
               "
               [rows]="orderRequestParam.PageSize"
               [showCurrentPageReport]="true"
-              [rowsPerPageOptions]="[5, 10, 25, 50]"
               [totalRecords]="products?.TotalOrderCount"
               [columns]="columns"
               [(selection)]="selectedData"

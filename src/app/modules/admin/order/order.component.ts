@@ -81,7 +81,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
             // endPoint: this.dateConvection(res),
             searchTimeRange: this.dateConvection(res),
             PageNo: 1,
-            PageSize: 25
+            PageSize: 10
           });
           if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
             this.dateChangeByUser = true;
@@ -92,22 +92,21 @@ export class OrderComponent extends BaseComponent implements OnInit {
         }
       });
 
-    // this.subjectService.apiCallStatusWise$
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((res) => {
-    //     if (res && res?.statusId) {
-    //       if (res?.statusId === 3 || res?.statusId === 4) {
-    //         this.setColumById(res?.statusId);
-    //       }
-    //       this.orderRequestParam = {
-    //         ...this.orderRequestParam,
-    //         orderStatusId: res?.statusId,
-    //         urlMiddlePoint: this.getApiCallStatusWise(res?.statusId),
-    //       };
-    //       this.getOrders(this.orderRequestParam);
-    //       this.subjectService.setApiCallStatusWise(null);
-    //     }
-    //   });
+    this.subjectService.apiCallStatusWise$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res && res?.statusId) {
+          if (res?.statusId === 3 || res?.statusId === 4) {
+            this.setColumById(res?.statusId);
+          }
+          this.orderRequestParam = {
+            ...this.orderRequestParam,
+            Status: res?.statusId,
+          };
+          this.getOrders(this.orderRequestParam);
+          this.subjectService.setApiCallStatusWise(null);
+        }
+      });
 
     this.searchControl.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -118,9 +117,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
             .subscribe((orders) => {
               console.log(orders);
               console.log(res);
-              if (res.length === 0) {
-                this.products = orders;
-              }
+              // if (res.length === 0) {
+              //   this.products = orders;
+              // }
               if (+res) {
                 this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
                   return (
@@ -231,7 +230,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: 0,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 25
+      PageSize: 10
     }
   }
 
@@ -308,7 +307,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: statusId,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 25
+      PageSize: 10
     };
     this.setColumById(statusId);
     this.getOrders(forAll);
@@ -356,12 +355,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: orderStatusId,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 25
+      PageSize: 10
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
-    this.dt.rows = 25;
+    this.dt.rows = 10;
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {
