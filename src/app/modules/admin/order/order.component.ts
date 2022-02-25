@@ -417,8 +417,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public createShipment() {
-    console.log('this.selectedData', this.selectedData);
-    return
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map((p) => p.OrderID);
       this.subjectService.setHoldIdsForCreateShipment(allId);
