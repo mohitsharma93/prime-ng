@@ -176,7 +176,7 @@
                         ? rowData["newAddress"]
                         : col.field === "Status"
                         ? ""
-                        : rowData[col.field]
+                        : (col.field === 'OrderAmount') ? rowData[col.field] + rowData['DeliveryCharges'] : rowData[col.field]
                     }}
                     <ng-container *ngIf="col.field === 'Status'">
                       <ng-container
