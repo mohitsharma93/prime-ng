@@ -168,11 +168,28 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (newAddress?.length) p['newAddress'] = newAddress;
     });
     this.products = newProduct;
-    this.subjectService.holdAcceptedOrderForSelected$
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
-      })
+    console.log('this.orderRequestParam', this.orderRequestParam)
+    if (this.orderRequestParam.Status === 2) {
+      this.subjectService.holdAcceptedOrderForSelected$
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
+        })
+      this.subjectService.holdAcceptedOrderIdsForSelcted$
+        .pipe(take(1), filter(p => p && p.length))
+        .subscribe((res) => {
+          this.selectedData = [];
+          res.forEach((ids: number) => {
+            const find = newProduct.lstorderDetails.find((item: any) => item.OrderID === ids);
+            if (find) {
+              this.selectedData.push(find);
+            }
+          })
+          this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
+        })
+    }
+    
+    
   }
 
   public setColumById(id: number) {
@@ -400,8 +417,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public createShipment() {
-    // console.log('this.selectedData', this.selectedData);
-    // return
+    console.log('this.selectedData', this.selectedData);
+    return
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map((p) => p.OrderID);
       this.subjectService.setHoldIdsForCreateShipment(allId);

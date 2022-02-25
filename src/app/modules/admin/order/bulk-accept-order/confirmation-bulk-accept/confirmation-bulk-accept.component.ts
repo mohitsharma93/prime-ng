@@ -64,11 +64,12 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
   public acceptBulkOrder() {
     console.log('in accept bulk order')
-    const allOrderId: number[] = this.getUniqueOrderIds();;
+    const allOrderId: number[] = this.getUniqueOrderIds();
     this.adminOrderService.bulkOrderAddtoAcceptService(allOrderId).subscribe(res => {
       console.log('res', res)
       if (res && res?.Status == 'OK') {
         // this.backClicked();
+        this.subjectService.setHoldAcceptedOrderIdsForSelcted(allOrderId);
         this.redirectToOrder();
       } else {
         this.toasterService.error(res?.ErrorMessage);
