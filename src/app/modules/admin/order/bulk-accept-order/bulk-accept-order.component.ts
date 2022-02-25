@@ -49,7 +49,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     private adminOrderService: AdminOrderService,
     private subjectService: SubjectService,
     private ds: DataService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
   ) {
     super();
     this.setColumById();
@@ -181,6 +181,11 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   onRemoveOk() {
     // const index = this.prod
+  }
+
+  public itemQuantityChange(product: any) {
+    console.log('product', product);
+    product.DispatchQuantity = product.expandedRow.reduce((sum: number, row: any) => sum + row.Quantity, 0);
   }
 }
 

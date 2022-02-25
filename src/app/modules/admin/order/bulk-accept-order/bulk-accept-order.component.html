@@ -50,7 +50,14 @@
                       {{index + 1}}
                     </td>
                     <td *ngFor="let col of columns" [ngClass]="{'tr-border-bottom': expandedRows[rowData.ItemName]}">
-                      {{ rowData[col.field] }}
+                      <ng-container *ngIf="col.field !== 'DispatchQuantity' else DispatchQuantity">
+                        {{ rowData[col.field] }}
+                      </ng-container>
+                      <ng-template #DispatchQuantity>
+                        <div class="box-catskill-white mr-4">
+                          {{ rowData['DispatchQuantity'] }}
+                        </div>
+                      </ng-template>
                     </td>
                   </tr>
                 </ng-template>
@@ -64,7 +71,9 @@
                         <div class="arrow-left-right-button">
                           <p-inputNumber inputId="integerOnly" [(ngModel)]="item.Quantity" [showButtons]="true"
                             buttonLayout="horizontal" [step]="1" incrementButtonIcon="pi pi-caret-right"
-                            decrementButtonIcon="pi pi-caret-left">
+                            decrementButtonIcon="pi pi-caret-left" [min]="0" 
+                            (onInput)="itemQuantityChange(product)"
+                          >
                           </p-inputNumber>
                         </div>
                         <i class="pi pi-trash ml-2" (click)="showCancelPopUp(true, item.OrderId)"
