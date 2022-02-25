@@ -93,6 +93,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           this.holdOrder = res?.Data;
+          console.log("bulkdata",res.Data)
           const item1 = res?.Data?.Item1;
           console.log('item1', item1)
           if (item1 && item1.length) {
@@ -134,8 +135,16 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       const newItem1 = cloneDeep(this.holdOrder.Item1)
       const newItem2 = remove(cloneDeep(this.holdOrder.Item2), (obj: any) => !this.goCancel?.includes(obj.OrderId));
       if (newItem1 && newItem1.length) {
-        newItem1.forEach((item: any) => {
-          item.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
+        newItem1.forEach((item: any, index: any, object: any) => {
+          // item.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
+          const rowData = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName);
+          if (rowData.length) {
+            item.expandedRow = rowData;
+          } else {
+            if (rowData.length === 0) {
+              object.splice(index, 1);
+            }
+          }
         });
       }
       console.log('after remove order', newItem1)

@@ -27,6 +27,9 @@ export class SubjectService {
     public holdAcceptedOrderForSelected = new BehaviorSubject<any>(null);
     public holdAcceptedOrderForSelected$ = this.holdAcceptedOrderForSelected.asObservable();
 
+    public holdBulkOrderIdsForCancel = new BehaviorSubject<any>(null);
+    public holdBulkOrderIdsForCancel$ = this.holdBulkOrderIdsForCancel.asObservable();
+
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
     }
@@ -57,5 +60,9 @@ export class SubjectService {
 
     public setHoldAcceptedOrderForSelected(response: any): void {
         this.holdAcceptedOrderForSelected.next(response);
+    }
+
+    public setHoldBulkOrderIdsForCancel(response: any): void {
+        this.holdBulkOrderIdsForCancel.next(response);
     }
 }

@@ -12,6 +12,7 @@ import { DataService } from "src/app/shared/services/data.service";
 import { DialogService } from "primeng/dynamicdialog";
 import { PrintModelComponent } from "src/app/modules/print-model/print-model.component";
 import { Router } from "@angular/router";
+import { uniq } from "lodash-es";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -61,28 +62,9 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     ]
   }
 
-
-  public cancelOrder(): void {
-    this.backClicked();
-  }
-
-  public next() {
-    if (this.selectedData && this.selectedData.length) {
-      this.rejectCancelPopUp(true);
-    }
-  }
-
-  public rejectCancelPopUp(hideShowCancelModel: boolean): void {
-    this.cancelModelShow = hideShowCancelModel
-  }
-
-  public hitCancelOrderApi() {
-    console.log('in bulk-accept cancel order')
-  }
-
   public acceptBulkOrder() {
     console.log('in accept bulk order')
-    const allOrderId: number[] = [];
+    const allOrderId: number[] = this.getUniqueOrderIds();;
     this.adminOrderService.bulkOrderAddtoAcceptService(allOrderId).subscribe(res => {
       console.log('res', res)
       if (res && res?.Status == 'OK') {
@@ -114,20 +96,26 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   public redirectToOrder() {
     const obj = {
       topFilter: {
-        endPoint: 'OverAll',
-        orderStatusId: 2,
-        urlMiddlePoint: 'GetAllOrderDetails',
+        Status: 2,
+        searchTimeRange: 'OverAll',
+        PageNo: 1,
+        PageSize: 25
       }
     }
     this.subjectService.setSaveFilterOnRedirection(obj);
     this.router.navigate(['/admin', 'order'])
   }
 
-  public getSaveFilterRedirection() {
-    let filter: any = null;
-    this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
-      filter = res;
-    });
-    return filter;
+  public getUniqueOrderIds() {
+    let ids: number[] = [];
+    this.orders$.pipe(take(1)).subscribe(res => {
+      if (res && res?.length) {
+        ids = res.reduce((acc, { expandedRow }) => {
+          const ids = expandedRow.map(({ OrderId }: { OrderId: number }) => OrderId);
+          return [...acc, ...ids];
+        }, []);
+      }
+    })
+    return uniq(ids);
   }
 }

@@ -109,6 +109,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     if (this.rangeDates.value[1]) {
       this.dashboardCalendar.overlayVisible = false;
     }
+
   }
 
   public setChartData(data: any) {
@@ -147,17 +148,18 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     this.subjectService.setApiCallStatusWise({ statusId: statusId });
   }
 
-updateMaxDateRange(d: Date) {
-  let sDate = new Date(d);
-  let sMonth = sDate.getMonth();
-  let sYear = sDate.getFullYear();
-  this.maxDateRange.setDate(sDate.getDate());
-  this.maxDateRange.setMonth(sMonth + 3);
-  if (sMonth == 11 || sMonth == 22) {
-    this.maxDateRange.setFullYear(sYear + 1);
-  } else {
-    this.maxDateRange.setFullYear(sYear);
+  updateMaxDateRange(d: Date) {
+    let sDate = new Date(d);
+    let sMonth = sDate.getMonth();
+    let sYear = sDate.getFullYear();
+    this.maxDateRange.setDate(sDate.getDate());
+    this.maxDateRange.setMonth(sMonth + 3);
+    if (sMonth == 11 || sMonth == 22) {
+      this.maxDateRange.setFullYear(sYear + 1);
+    } else {
+      this.maxDateRange.setFullYear(sYear);
+    }
+
   }
-}
 }
 

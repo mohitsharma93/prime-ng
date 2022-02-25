@@ -31,11 +31,7 @@ export class PrintShipmentModelComponent implements OnInit {
 
   }
 
-  exportData() {
-    window.print();
-  }
-
-  getPrint() {
+   public getPrint() {
     var printHtml: any = this.document.getElementById('print-docs');
     var currentPage = document.body.innerHTML;
     let elementPage = `
@@ -47,11 +43,10 @@ export class PrintShipmentModelComponent implements OnInit {
     document.body.innerHTML = elementPage;
     window.print();
     document.body.innerHTML = currentPage;
-    ;
     window.location.reload();
   }
 
-  getOrderIdAndQuantity(data: any[]): any[] {
+   public getOrderIdAndQuantity(data: any[]): any[] {
     let value: any[] = [];
     data.forEach((item: any) => {
       value.push(`${item.OrderId}-${item.Quantity}`)

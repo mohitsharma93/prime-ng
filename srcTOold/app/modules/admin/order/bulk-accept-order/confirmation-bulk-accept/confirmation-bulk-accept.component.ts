@@ -11,6 +11,7 @@ import { SubjectService } from "src/app/shared/admin-service/subject.service";
 import { DataService } from "src/app/shared/services/data.service";
 import { DialogService } from "primeng/dynamicdialog";
 import { PrintModelComponent } from "src/app/modules/print-model/print-model.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-admin-confirmation-bulk-accept',
@@ -31,7 +32,8 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     private toasterService: ToasterService,
     private subjectService: SubjectService,
     private dialogService: DialogService,
-    private ds: DataService
+    private ds: DataService,
+    private router: Router
   ) {
     super();
     this.setColumById();
@@ -82,8 +84,10 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     console.log('in accept bulk order')
     const allOrderId: number[] = [];
     this.adminOrderService.bulkOrderAddtoAcceptService(allOrderId).subscribe(res => {
+      console.log('res', res)
       if (res && res?.Status == 'OK') {
-        this.backClicked();
+        // this.backClicked();
+        this.redirectToOrder();
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -103,7 +107,27 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
           height: '70%'
         });
       }
-
     });
+  }
+
+
+  public redirectToOrder() {
+    const obj = {
+      topFilter: {
+        endPoint: 'OverAll',
+        orderStatusId: 2,
+        urlMiddlePoint: 'GetAllOrderDetails',
+      }
+    }
+    this.subjectService.setSaveFilterOnRedirection(obj);
+    this.router.navigate(['/admin', 'order'])
+  }
+
+  public getSaveFilterRedirection() {
+    let filter: any = null;
+    this.subjectService.saveFilterOnRedirection$.pipe(take(1)).subscribe(res => {
+      filter = res;
+    });
+    return filter;
   }
 }

@@ -116,11 +116,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.orders$
             .pipe(take(1), takeUntil(this.destroy$))
             .subscribe((orders) => {
+              console.log(orders);
+              console.log(res);
               if (res.length === 0) {
                 this.products = orders;
               }
               if (+res) {
-                this.products = orders.lstorderDetails.filter((f: any) => {
+                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
                   return (
                     f?.OrderID?.toString()?.includes(res) ||
                     f?.Mobile?.toString()?.includes(res) ||
@@ -128,7 +130,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   );
                 });
               } else {
-                this.products = orders.lstorderDetails.filter((f: any) => {
+                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
                   return f?.ShopName?.toLowerCase()?.includes(
                     res.toLowerCase()
                   );
@@ -286,7 +288,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public statusChange(statusId: number): void {
     const forAll = {
-      Status: 0,
+      Status: statusId,
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 25
@@ -318,10 +320,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
           const data = res?.Data
-          const localData = this.getOrdersLocal()
-          if (localData && localData?.lstorderDetails?.length) {
-            data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
-          }
+          // const localData = this.getOrdersLocal()
+          // if (localData && localData?.lstorderDetails?.length) {
+          //   data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
+          // }
           this.orders$ = of(data);
           this.setProduct(data);
           this.setLoader(false);

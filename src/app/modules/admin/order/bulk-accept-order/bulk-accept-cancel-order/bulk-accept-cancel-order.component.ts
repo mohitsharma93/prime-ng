@@ -36,7 +36,7 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   }
 
   ngOnInit() {
-    this.subjectService.holdBulkOrderIdsForCancel$.subscribe(res => {
+    this.subjectService.holdBulkOrderIdsForCancel$.pipe(take(1)).subscribe(res => {
       if (res && res?.length) {
         this.getBulkCancelOrderDetail(res);
       }
@@ -61,6 +61,7 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
     this.adminOrderService
       .bulkCancelOrderDetail(ids)
       .subscribe((res) => {
+        console.log("bulkcancelorder",res)
         if (res && res.Status == 'OK') {
           this.orders$ = of(res?.Data)
         } else {

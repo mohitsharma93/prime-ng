@@ -129,9 +129,10 @@
                 </div>
               </div>
             </ng-template>
+            <!-- scrollHeight="700px" -->
             <div>
-              <!-- scrollHeight="700px" -->
-              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
+
+              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true" 
                 [columns]="columns" [(selection)]="selectedData">
                 <ng-template pTemplate="header" let-columns>
                   <tr>

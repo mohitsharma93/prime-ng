@@ -234,6 +234,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       //   orderDetail?.OrderID || orderDetail?.ShipmentId,
       // ]);
       if (shippedOrDelivered && this.orderRequestParam?.orderStatusId === 0) {
+        orderDetail['OrderId']=orderDetail.OrderID
+
         this.subjectService.setOrderDetailShipment(orderDetail);
         this.router.navigate(['/admin', 'order', 'detail', orderDetail?.ShipmentId, 's', orderDetail.OrderID]);
       } else {

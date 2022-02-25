@@ -29,7 +29,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 
-  public products: any[] = [];
+  public products: any = {};
   public status = [
     { name: 'All', code: 0 },
     { name: 'Pending', code: 1 },
@@ -39,13 +39,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
     { name: 'Cancelled', code: 6 },
   ];
   public orderRequestParam: IOrderRequestModel | any;
-  public orders$: Observable<any[]> = of([]);
+  public orders$: Observable<any> = of({});
   public columns: any[] = [];
   public showPrint = false;
   public selectedData: any[] = [];
   public selectOrderStatusId$: Observable<number | null>;
   public selectTopBarSearchString$: Observable<string>;
   public searchControl: FormControl = new FormControl('');
+  public loadMorePage: number | null;
+  public dateChangeByUser: boolean = false;
 
   constructor(
     private router: Router,
@@ -73,30 +75,39 @@ export class OrderComponent extends BaseComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.rangeDates.valid) {
+          
           this.orderRequestParam = cloneDeep({
             ...this.orderRequestParam,
-            endPoint: this.dateConvection(res),
+            // endPoint: this.dateConvection(res),
+            searchTimeRange: this.dateConvection(res),
+            PageNo: 1,
+            PageSize: 25
           });
+          if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
+            this.dateChangeByUser = true;
+          } else {
+            this.dateChangeByUser = false;
+          }
           this.getOrders(this.orderRequestParam);
         }
       });
 
-    this.subjectService.apiCallStatusWise$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        if (res && res?.statusId) {
-          if (res?.statusId === 3 || res?.statusId === 4) {
-            this.setColumById(res?.statusId);
-          }
-          this.orderRequestParam = {
-            ...this.orderRequestParam,
-            orderStatusId: res?.statusId,
-            urlMiddlePoint: this.getApiCallStatusWise(res?.statusId),
-          };
-          this.getOrders(this.orderRequestParam);
-          this.subjectService.setApiCallStatusWise(null);
-        }
-      });
+    // this.subjectService.apiCallStatusWise$
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe((res) => {
+    //     if (res && res?.statusId) {
+    //       if (res?.statusId === 3 || res?.statusId === 4) {
+    //         this.setColumById(res?.statusId);
+    //       }
+    //       this.orderRequestParam = {
+    //         ...this.orderRequestParam,
+    //         orderStatusId: res?.statusId,
+    //         urlMiddlePoint: this.getApiCallStatusWise(res?.statusId),
+    //       };
+    //       this.getOrders(this.orderRequestParam);
+    //       this.subjectService.setApiCallStatusWise(null);
+    //     }
+    //   });
 
     this.searchControl.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -109,7 +120,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
                 this.products = orders;
               }
               if (+res) {
-                this.products = orders.filter((f) => {
+                this.products = orders.lstorderDetails.filter((f: any) => {
                   return (
                     f?.OrderID?.toString()?.includes(res) ||
                     f?.Mobile?.toString()?.includes(res) ||
@@ -117,7 +128,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   );
                 });
               } else {
-                this.products = orders.filter((f) => {
+                this.products = orders.lstorderDetails.filter((f: any) => {
                   return f?.ShopName?.toLowerCase()?.includes(
                     res.toLowerCase()
                   );
@@ -133,7 +144,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         if (res?.topFilter) {
           console.log('res.top', res)
           this.orderRequestParam = res.topFilter;
-          this.setColumById(this.orderRequestParam.orderStatusId);
+          this.setColumById(this.orderRequestParam.Status);
           this.getOrders(this.orderRequestParam);
         } else {
           this.getOrders(this.orderRequestParam);
@@ -147,7 +158,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public setProduct(res: any): void {
     const newProduct = cloneDeep(res);
-    newProduct.map((p: any) => {
+    newProduct.lstorderDetails.map((p: any) => {
       let newAddress = '';
       if (p.ShopAddressOne) newAddress += ' ' + p.ShopAddressOne;
       if (p.ShopAddressTwo) newAddress += ' ' + p.ShopAddressTwo;
@@ -158,7 +169,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.holdAcceptedOrderForSelected$
       .pipe(take(1))
       .subscribe((res) => {
-        this.selectedData = [...this.selectedData, ...newProduct.filter((p: any) => p.OrderID === res)]
+        this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
       })
   }
 
@@ -192,11 +203,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public setOrderRequestParam() {
+    // this.orderRequestParam = {
+    //   endPoint: 'OverAll',
+    //   orderStatusId: 0,
+    //   urlMiddlePoint: 'GetAllOrderDetails',
+    // };
     this.orderRequestParam = {
-      endPoint: 'OverAll',
-      orderStatusId: 0,
-      urlMiddlePoint: 'GetAllOrderDetails',
-    };
+      Status: 0,
+      searchTimeRange: 'OverAll',
+      PageNo: 1,
+      PageSize: 25
+    }
   }
 
   public dateChange(event: any): void {
@@ -219,7 +236,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           ? 3
           : orderDetail?.Status === 'Delivered'
             ? 4
-            : this.orderRequestParam?.orderStatusId;
+            : this.orderRequestParam?.Status;
       this.subjectService.setOrderDetail(orderDetail);
       this.subjectService.setSaveFilterOnRedirection({
         topFilter: this.orderRequestParam,
@@ -227,15 +244,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
           searchString: this.searchControl.value,
         }),
       });
-      // this.router.navigate([
-      //   '/admin',
-      //   'order',
-      //   'detail',
-      //   orderDetail?.OrderID || orderDetail?.ShipmentId,
-      // ]);
-      if (shippedOrDelivered && this.orderRequestParam?.orderStatusId === 0) {
-        orderDetail['OrderId']=orderDetail.OrderID
-
+      if (shippedOrDelivered && this.orderRequestParam?.Status === 0) {
+        orderDetail['OrderId'] = orderDetail.OrderID
         this.subjectService.setOrderDetailShipment(orderDetail);
         this.router.navigate(['/admin', 'order', 'detail', orderDetail?.ShipmentId, 's', orderDetail.OrderID]);
       } else {
@@ -252,13 +262,34 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public paginate(event: any): void {
     console.log('event', event);
+    const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
+    const orderRequestParam = {
+      Status: this.orderRequestParam.Status,
+      searchTimeRange: this.orderRequestParam.searchTimeRange,
+      PageNo: pageNo,
+      PageSize: event.rows
+    };
+    this.getOrders(orderRequestParam);
+  }
+
+  public loadMore() {
+    const data = this.getOrdersLocal();
+    if (data && data.Next) {
+      this.loadMorePage = (this.loadMorePage) ? this.loadMorePage + 1 : 1;
+      this.orderRequestParam = {
+        ...this.orderRequestParam,
+        PageNo: this.loadMorePage
+      }
+      this.getOrders(this.orderRequestParam)
+    }
   }
 
   public statusChange(statusId: number): void {
     const forAll = {
-      endPoint: 'OverAll',
-      orderStatusId: statusId,
-      urlMiddlePoint: this.getApiCallStatusWise(statusId),
+      Status: statusId,
+      searchTimeRange: 'OverAll',
+      PageNo: 1,
+      PageSize: 25
     };
     this.setColumById(statusId);
     this.getOrders(forAll);
@@ -266,8 +297,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public export(tableId: string): void {
     const data = this.getOrdersLocal();
-    if (data && data.length) {
-      this.exportExcel(data);
+    if (data && data?.lstorderDetails?.length) {
+      this.exportExcel(data?.lstorderDetails);
     }
   }
 
@@ -279,19 +310,20 @@ export class OrderComponent extends BaseComponent implements OnInit {
     return data;
   }
 
-  public getOrders(requestParam: IOrderRequestModel) {
+  public getOrders(requestParam: any) {
     this.setLoader(true);
     this.adminOrderService
-      .getOrdersService(
-        requestParam.endPoint,
-        requestParam.orderStatusId,
-        requestParam.urlMiddlePoint
-      )
+      .getOrdersServiceSingle(requestParam)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
-          this.orders$ = of(res?.Data);
-          this.setProduct(res?.Data);
+          const data = res?.Data
+          const localData = this.getOrdersLocal()
+          if (localData && localData?.lstorderDetails?.length) {
+            data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
+          }
+          this.orders$ = of(data);
+          this.setProduct(data);
           this.setLoader(false);
         } else {
           this.toasterService.error(res?.ErrorMessage);
@@ -302,12 +334,20 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
     this.orderRequestParam = {
-      endPoint: 'OverAll',
-      orderStatusId: orderStatusId,
-      urlMiddlePoint: urlMiddlePoint,
+      Status: orderStatusId,
+      searchTimeRange: 'OverAll',
+      PageNo: 1,
+      PageSize: 25
     };
     this.selectedData = [];
+    this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
+    this.dt.rows = 25;
+    if (orderStatusId === 1 || orderStatusId === 2) {
+      this.loadMorePage = 1;
+    } else {
+      this.loadMorePage = null;
+    }
     this.setColumById(orderStatusId);
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {
