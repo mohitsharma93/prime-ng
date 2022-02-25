@@ -113,7 +113,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res || res?.length === 0) {
           this.orders$
-            .pipe(take(1), takeUntil(this.destroy$))
+            .pipe(take(1))
             .subscribe((orders) => {
               console.log(orders);
               console.log(res);
@@ -129,11 +129,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   );
                 });
               } else {
-                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
-                  return f?.ShopName?.toLowerCase()?.includes(
-                    res.toLowerCase()
-                  );
-                });
+                if (res.length) {
+                  this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+                    return f?.ShopName?.toLowerCase()?.includes(
+                      res.toLowerCase()
+                    );
+                  });
+                }
               }
             });
         }
