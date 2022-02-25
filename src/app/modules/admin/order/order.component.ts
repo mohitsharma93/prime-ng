@@ -332,7 +332,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public getOrders(requestParam: any) {
     this.setLoader(true);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam)
+      .getOrdersServiceSingle(requestParam, this.getApiCallStatusWise(requestParam.Status))
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
