@@ -1,6 +1,11 @@
 <div class="content-wrapper">
   <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
-    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Order Details
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; 
+    {{
+      (this.selectedOrderDetail | async)?.orderStatusId === 3 || (this.selectedOrderDetail | async)?.orderStatusId === 4
+        ? 'View Shipment'
+        : 'Order Details'
+    }}
   </h4>
   <div class="page-content">
     <div class="page-inner-content">
