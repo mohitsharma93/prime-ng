@@ -159,9 +159,12 @@
                         <div class="inc-dec-button">
                           <p-inputNumber [disabled]="rowData['showEdit']" inputId="integerOnly"
                             [(ngModel)]="rowData[col.field]" [showButtons]="true" buttonLayout="horizontal" [step]="1"
-                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" (onInput)="
+                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" 
+                            (onInput)="
                               changeAmountAsPerQuantity($event.value, rowData)
-                            ">
+                            "
+                            [min]="0"
+                          >
                           </p-inputNumber>
                         </div>
                       </ng-container>
