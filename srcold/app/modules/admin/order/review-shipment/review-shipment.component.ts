@@ -27,8 +27,6 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
     private toasterService: ToasterService,
     private subjectService: SubjectService,
     private router: Router,
-    private ds: DataService,
-    public dialogService: DialogService
 
   ) {
     super();
@@ -80,7 +78,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
     this.adminOrderService.addBulkToShipmentService(this.allIds).subscribe(res => {
       console.log(res);
       if (res && res.Status == 'OK') {
-        // let filter = this.getSaveFilterRedirection();
+        let filter = this.getSaveFilterRedirection();
         // if (filter && Object.keys(filter).length) {
         //   filter.topFilter.orderStatusId = 2
         //   this.subjectService.setSaveFilterOnRedirection(filter);
@@ -102,24 +100,5 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
         this.toasterService.error(res?.ErrorMessage);
       }
     })
-  }
-
-  shipmentModel() {
-    {
-      const req = {
-        url: '/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/2',
-        params: '',
-      };
-      this.ds.get(req).subscribe((res: any) => {
-        if (res.Status === 'OK') {
-          const ref = this.dialogService.open(PrintShipmentModelComponent, {
-            data: res.Data,
-            width: '70%',
-            height: '70%'
-          });
-          return (res);
-        }
-      });
-    }
   }
 }

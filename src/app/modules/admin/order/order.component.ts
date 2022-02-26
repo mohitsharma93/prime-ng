@@ -281,15 +281,36 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public paginate(event: any): void {
-    console.log('event', event);
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
-    const orderRequestParam = {
-      Status: this.orderRequestParam.Status,
-      searchTimeRange: this.orderRequestParam.searchTimeRange,
-      PageNo: pageNo,
-      PageSize: event.rows
-    };
-    this.getOrders(orderRequestParam);
+    if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
+      const orderRequestParam = {
+        Status: this.orderRequestParam.Status,
+        searchTimeRange: this.orderRequestParam.searchTimeRange,
+        PageNo: pageNo,
+        PageSize: event.rows
+      };
+      this.getOrders(orderRequestParam);
+    } else {
+      const order = (event.sortOrder === 1) ? true : false;
+      this.customSort(event.sortField, order);
+    }
+  }
+  
+  public customSort(field: string, order: boolean) {
+    const localData = this.getOrdersLocal()
+    if (localData) {
+      const sortedData = this.ownSortCreate(cloneDeep(localData), field, order)
+      this.setProduct(sortedData);
+    }
+  }
+  
+  public ownSortCreate(data: any, key: string, isAscending: boolean) {
+    if(isAscending){ 
+      data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? 1 : -1);
+    }else{
+      data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? -1 : 1);
+    }
+    return data;
   }
 
   public loadMore() {

@@ -23,7 +23,6 @@ export class PrintModelComponent implements OnInit {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
-    debugger;
     this.migratePrintData(config.data);
     if (config.data.Item3) {
       this.headerData = config.data.Item3;
@@ -31,10 +30,6 @@ export class PrintModelComponent implements OnInit {
   }
 
   ngOnInit() { }
-
-  exportData() {
-    window.print();
-  }
 
   getPrint() {
     var printHtml: any = this.document.getElementById('print-docs');

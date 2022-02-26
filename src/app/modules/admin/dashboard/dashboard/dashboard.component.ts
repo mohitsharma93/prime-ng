@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, Observable, of, takeUntil } from 'rxjs';
 import { pick } from 'lodash-es';
 import { BaseComponent } from '../../base.component';
@@ -41,9 +41,11 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     }
   };
   public selectedFilter: string = 'Today'
-  public dashboardAnalytics$: Observable<any>;
+  public dashboardAnalytics$: Observable<any> = of({});
   totalPreviousOrder: number;
   totalPreviousSale: number;
+  PreviousOrder_perce:number;
+  PreviousSale_perce:number;
 
   constructor(
     private router: Router,
@@ -82,9 +84,11 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   public getDashboardAnalytics(filter: string): void {
     this.selectedFilter = filter;
     this.adminDashboardService.getDashboardAnalyticsService(filter).subscribe(res => {
+      console.log("dashboard" ,res)
       if (res && res.Status == 'OK') {
         // this.setGraphLabelDetail(res?.Data);
-        this.dashboardAnalytics$ = of(res?.Data);
+        this.dashboardAnalytics$ = of({});
+        this.dashboardAnalytics$ = of(res?.Data)
         this.totalPreviousSale = res?.Data['TotalPreviousSale'] || 0;
         this.totalPreviousOrder = res?.Data['TotalPreviousOrder'] || 0;
       } else {

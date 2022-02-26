@@ -1,5 +1,5 @@
 <div class="content-wrapper">
-  <!-- <loader *ngIf="(showLoader | async)"></loader> -->
+  <loader *ngIf="(showLoader | async)"></loader>
   <div class="">
     <div class="text-center justify-content-between">
       <div class="outlined-button order-outlinebtn">
@@ -115,10 +115,12 @@
               <b>Cancelled Shipments</b>
             </ng-container>
           </div>
-          <!-- scrollHeight="300px" -->
+          
           <div class="order-table">
+            <!-- [rowsPerPageOptions]="[5, 10, 25, 50]" -->
             <p-table
               responsiveLayout="scroll"
+              scrollHeight="700px" 
               [value]="products?.lstorderDetails"
               [scrollable]="false"
               [paginator]="
@@ -129,7 +131,6 @@
               "
               [rows]="orderRequestParam.PageSize"
               [showCurrentPageReport]="true"
-              [rowsPerPageOptions]="[5, 10, 25, 50]"
               [totalRecords]="products?.TotalOrderCount"
               [columns]="columns"
               [(selection)]="selectedData"
@@ -172,10 +173,12 @@
                       col.field === "OrderDate" || col.field === "CloseDate"
                         ? (rowData[col.field] | date: "MMM. d, y")
                         : col.field === "ShopAddressOne"
-                        ? rowData["newAddress"]
-                        : col.field === "Status"
-                        ? ""
-                        : rowData[col.field]
+                          ? rowData["newAddress"]
+                          : col.field === "Status"
+                            ? ""
+                            : (col.field === 'OrderAmount')
+                              ? rowData[col.field] + rowData['DeliveryCharges']
+                              : rowData[col.field]
                     }}
                     <ng-container *ngIf="col.field === 'Status'">
                       <ng-container

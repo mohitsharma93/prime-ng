@@ -22,7 +22,8 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   public selectedData: any[] = [];
   public cancelReasonControl: FormControl = new FormControl('', [ Validators.required ]);
   public cancelModelShow: boolean = false;
-
+  public disableNext: boolean = false;
+  
   constructor(
     private _location: Location,
     private router: Router,
@@ -39,6 +40,11 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
     this.subjectService.holdBulkOrderIdsForCancel$.pipe(take(1)).subscribe(res => {
       if (res && res?.length) {
         this.getBulkCancelOrderDetail(res);
+      }
+    })
+    this.subjectService.holdBulkDataForNext$.pipe(take(1)).subscribe(res => {
+      if (res && !res.length) {
+        this.disableNext = true;
       }
     })
   }

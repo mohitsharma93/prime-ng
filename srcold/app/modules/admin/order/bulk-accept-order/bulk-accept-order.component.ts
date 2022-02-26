@@ -41,6 +41,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   public isExpanded: boolean = false;
   public goCancel: number[] = [];
   public holdOrder: any;
+  public holdOrderIdToAddCancel: number | null = null;
 
   constructor(
     private _location: Location,
@@ -49,7 +50,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     private adminOrderService: AdminOrderService,
     private subjectService: SubjectService,
     private ds: DataService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
   ) {
     super();
     this.setColumById();
@@ -93,6 +94,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           this.holdOrder = res?.Data;
+          console.log("bulkdata",res.Data)
           const item1 = res?.Data?.Item1;
           console.log('item1', item1)
           if (item1 && item1.length) {
@@ -108,20 +110,42 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       });
   }
 
-  public showCancelPopUp(showHideModel: boolean, orderId: number | null = null) {
+  public showCancelPopUp(
+    showHideModel: boolean,
+    orderId: number | null = null,
+  ) {
     this.cancelModelShow = showHideModel;
-    if (orderId && !this.goCancel?.includes(orderId)) {
-      this.goCancel.push(orderId);
-      console.log('this.go', this.goCancel);
+    if (orderId) {
+      this.holdOrderIdToAddCancel = orderId;
     }
   }
 
-  public cancelOrder(showHideModel: boolean): void {
+  public cancelOrder(showHideModel: boolean, whereFrom: string = 'no'): void {
+    if (whereFrom === 'yes') {
+      if (this.holdOrderIdToAddCancel && !this.goCancel?.includes(this.holdOrderIdToAddCancel)) {
+        this.goCancel.push(this.holdOrderIdToAddCancel);
+        console.log('this.go', this.goCancel);
+      }
+      if (this.goCancel && this.goCancel.length) {
+        // const getLastId = this.goCancel[this.goCancel.length - 1];
+        const allOrders = this.getBulkOrder();
+        const newOrders = cloneDeep(allOrders).reduce((acc: any, obj: any) => {
+          const findRow = obj.expandedRow.findIndex((obj: any) => obj.OrderId === this.holdOrderIdToAddCancel)
+          if (findRow > -1) {
+            obj.expandedRow[findRow]['show'] = true;
+          }
+          return [...acc, obj];
+        }, []);
+        this.orders$ = of(newOrders);
+      }
+    }
+    this.holdOrderIdToAddCancel = null;
     this.showCancelPopUp(showHideModel);
   }
 
   public next(): void {
     const orders = this.getBulkOrder();
+    console.log('orders', orders)
     if (this.goCancel && !this.goCancel?.length) {
       if (orders && orders.length) {
         this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
@@ -137,6 +161,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
         newItem1.forEach((item: any, index: any, object: any) => {
           // item.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
           const rowData = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName);
+          console.log('rowData', rowData)
           if (rowData.length) {
             item.expandedRow = rowData;
           } else {
@@ -180,6 +205,10 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   onRemoveOk() {
     // const index = this.prod
+  }
+
+  public itemQuantityChange(product: any) {
+    product.DispatchQuantity = product.expandedRow.reduce((sum: number, row: any) => sum + row.Quantity, 0);
   }
 }
 

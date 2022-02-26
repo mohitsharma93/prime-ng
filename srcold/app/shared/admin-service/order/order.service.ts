@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+import { cloneDeep } from 'lodash-es';
 import { map, Observable } from 'rxjs';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
 import { HttpWrapperService } from '../httpWrapper';
@@ -32,10 +33,14 @@ export class AdminOrderService {
       );
   }
 
-  public getOrdersServiceSingle(params: any): Observable<any> {
-    let url = this.adminBaseUrl + '/' + 'GetAllOrderDetails'
+  public getOrdersServiceSingle(params: any, urlMiddlePoint: string): Observable<any> {
+    let newParam = cloneDeep(params)
+    let url = this.adminBaseUrl + '/' + urlMiddlePoint;
+    if (urlMiddlePoint === 'GetInTransitOrderDetails' || urlMiddlePoint === 'GetDeliveredOrderDetails') {
+      delete newParam['Status']
+    }
     return this.http
-      .get(url, params)
+      .get(url, newParam)
       .pipe(
         map((res) => {
           const data: any = res;

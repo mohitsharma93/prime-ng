@@ -137,14 +137,13 @@
             <!-- scrollHeight="700px" -->
             <div>
 
-              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true" 
+              <p-table responsiveLayout="scroll"   [value]="(orders$ | async) || []" [scrollable]="true" 
                 [columns]="columns" [(selection)]="selectedData">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
-                    <!-- <th *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
-                    </th> -->
-                    <th >
+                    <th *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
                     </th>
+                  
                     <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -154,10 +153,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                   <tr>
-                    <!-- <td *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
-                      <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
-                    </td> -->
-                    <td>
+                    <td *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
                       <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
                     </td>
                     <td *ngFor="let col of columns">
@@ -180,12 +176,15 @@
                       </ng-container>
                       <ng-template #showString>
                         {{
-                        (col.field === 'OrderDate' || col.field === 'DeliveryDate')
-                        ? (rowData[col.field] | date: "MMM. d, y")
-                        : (col.field === 'Status')
-                        ? ''
-                        : rowData[col.field]
+                          (col.field === 'OrderDate' || col.field === 'DeliveryDate')
+                            ? (rowData[col.field] | date: "MMM. d, y")
+                            : (col.field === 'Status')
+                              ? ''
+                              : ((selectedOrderDetail | async)?.ShipmentId && col.field === 'OrderAmount')
+                                ? rowData[col.field] + rowData['DeliveryCharges']
+                                : rowData[col.field]
                         }}
+                        
                         <ng-container *ngIf="col.field === 'Status'">
                           <ng-container *ngTemplateOutlet="statusCol context: { $implicit:  rowData[col.field] }">
                           </ng-container>
@@ -207,10 +206,8 @@
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted'" (click)="addToShipment()"></button>
               <button pButton pRipple type="button" label="Accept Order" class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'" (click)="acceptOrder()"></button>
-              <!-- <button pButton pRipple type="button" label="Delivered Selected" class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliveredSelected()"></button> -->
               <button pButton pRipple type="button" label="Delivered Selected" class="p-button-raised p-button-success"
-                 (click)="deliveredSelected()"></button>
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliveredSelected()"></button>
               <button pButton type="button" label="Cancel Order" class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)" *ngIf="
                   (selectedOrderDetail | async)?.Status !== 'Delivered' &&

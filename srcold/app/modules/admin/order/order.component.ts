@@ -81,7 +81,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
             // endPoint: this.dateConvection(res),
             searchTimeRange: this.dateConvection(res),
             PageNo: 1,
-            PageSize: 25
+            PageSize: 10
           });
           if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
             this.dateChangeByUser = true;
@@ -92,35 +92,36 @@ export class OrderComponent extends BaseComponent implements OnInit {
         }
       });
 
-    // this.subjectService.apiCallStatusWise$
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((res) => {
-    //     if (res && res?.statusId) {
-    //       if (res?.statusId === 3 || res?.statusId === 4) {
-    //         this.setColumById(res?.statusId);
-    //       }
-    //       this.orderRequestParam = {
-    //         ...this.orderRequestParam,
-    //         orderStatusId: res?.statusId,
-    //         urlMiddlePoint: this.getApiCallStatusWise(res?.statusId),
-    //       };
-    //       this.getOrders(this.orderRequestParam);
-    //       this.subjectService.setApiCallStatusWise(null);
-    //     }
-    //   });
+    this.subjectService.apiCallStatusWise$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res && res?.statusId) {
+          if (res?.statusId === 3 || res?.statusId === 4) {
+            this.setColumById(res?.statusId);
+          }
+          this.orderRequestParam = {
+            ...this.orderRequestParam,
+            Status: res?.statusId,
+          };
+          this.getOrders(this.orderRequestParam);
+          this.subjectService.setApiCallStatusWise(null);
+        }
+      });
 
     this.searchControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         if (res || res?.length === 0) {
           this.orders$
-            .pipe(take(1), takeUntil(this.destroy$))
+            .pipe(take(1))
             .subscribe((orders) => {
-              if (res.length === 0) {
-                this.products = orders;
-              }
+              console.log(orders);
+              console.log(res);
+              // if (res.length === 0) {
+              //   this.products = orders;
+              // }
               if (+res) {
-                this.products = orders.lstorderDetails.filter((f: any) => {
+                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
                   return (
                     f?.OrderID?.toString()?.includes(res) ||
                     f?.Mobile?.toString()?.includes(res) ||
@@ -128,11 +129,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   );
                 });
               } else {
-                this.products = orders.lstorderDetails.filter((f: any) => {
-                  return f?.ShopName?.toLowerCase()?.includes(
-                    res.toLowerCase()
-                  );
-                });
+                if (res.length) {
+                  this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+                    return f?.ShopName?.toLowerCase()?.includes(
+                      res.toLowerCase()
+                    );
+                  });
+                }
               }
             });
         }
@@ -166,11 +169,27 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (newAddress?.length) p['newAddress'] = newAddress;
     });
     this.products = newProduct;
-    this.subjectService.holdAcceptedOrderForSelected$
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
-      })
+    if (this.orderRequestParam.Status === 2) {
+      this.subjectService.holdAcceptedOrderForSelected$
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
+        })
+      this.subjectService.holdAcceptedOrderIdsForSelcted$
+        .pipe(take(1), filter(p => p && p.length))
+        .subscribe((res) => {
+          this.selectedData = [];
+          res.forEach((ids: number) => {
+            const find = newProduct.lstorderDetails.find((item: any) => item.OrderID === ids);
+            if (find) {
+              this.selectedData.push(find);
+            }
+          })
+          this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
+        })
+    }
+    
+    
   }
 
   public setColumById(id: number) {
@@ -212,7 +231,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: 0,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 25
+      PageSize: 10
     }
   }
 
@@ -261,15 +280,36 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public paginate(event: any): void {
-    console.log('event', event);
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
-    const orderRequestParam = {
-      Status: this.orderRequestParam.Status,
-      searchTimeRange: this.orderRequestParam.searchTimeRange,
-      PageNo: pageNo,
-      PageSize: event.rows
-    };
-    this.getOrders(orderRequestParam);
+    if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
+      const orderRequestParam = {
+        Status: this.orderRequestParam.Status,
+        searchTimeRange: this.orderRequestParam.searchTimeRange,
+        PageNo: pageNo,
+        PageSize: event.rows
+      };
+      this.getOrders(orderRequestParam);
+    } else {
+      const order = (event.sortOrder === 1) ? true : false;
+      this.customSort(event.sortField, order);
+    }
+  }
+
+  public customSort(field: string, order: boolean) {
+    const localData = this.getOrdersLocal()
+    if (localData) {
+      const sortedData = this.ownSortCreate(cloneDeep(localData), field, order)
+      this.setProduct(sortedData);
+    }
+  }
+
+  public ownSortCreate(data: any, key: string, isAscending: boolean) {
+    if(isAscending){ 
+      data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? 1 : -1);
+    }else{
+      data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? -1 : 1);
+    }
+    return data;
   }
 
   public loadMore() {
@@ -289,7 +329,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: statusId,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 25
+      PageSize: 10
     };
     this.setColumById(statusId);
     this.getOrders(forAll);
@@ -313,15 +353,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public getOrders(requestParam: any) {
     this.setLoader(true);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam)
+      .getOrdersServiceSingle(requestParam, this.getApiCallStatusWise(requestParam.Status))
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
           const data = res?.Data
-          const localData = this.getOrdersLocal()
-          if (localData && localData?.lstorderDetails?.length) {
-            data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
-          }
+          // const localData = this.getOrdersLocal()
+          // if (localData && localData?.lstorderDetails?.length) {
+          //   data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
+          // }
           this.orders$ = of(data);
           this.setProduct(data);
           this.setLoader(false);
@@ -337,12 +377,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: orderStatusId,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 25
+      PageSize: 10
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
-    this.dt.rows = 25;
+    this.dt.rows = 10;
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {
@@ -398,8 +438,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public createShipment() {
-    // console.log('this.selectedData', this.selectedData);
-    // return
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map((p) => p.OrderID);
       this.subjectService.setHoldIdsForCreateShipment(allId);

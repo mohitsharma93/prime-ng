@@ -33,10 +33,20 @@
                     <h3>{{(dashboardAnalytics$ | async)?.TotalOrder}} </h3>
                     <div class="widget-bottom" *ngIf="selectedFilter === 'Today' || selectedFilter === 'Month'">
                       <span class="widget-bottom-title"
-                        [ngClass]="{'text-success': totalPreviousOrder >= 0, 'text-danger': totalPreviousOrder < 0}">
-                        {{totalPreviousOrder}}
-                        <i class="fa fa-arrow-up" *ngIf="totalPreviousOrder >= 0"></i>
-                        <i class="fa fa-arrow-down" *ngIf="totalPreviousOrder < 0"></i>
+                        [ngClass]="{
+                          'text-success': (this.dashboardAnalytics$ | async)?.PreviousOrder_perce >= 0,
+                          'text-danger': (this.dashboardAnalytics$ | async)?.PreviousOrder_perce < 0
+                        }"
+                      >
+                        {{ (this.dashboardAnalytics$ | async)?.PreviousOrder_perce | number : '1.2-2'}} %
+                        <i 
+                          class="fa fa-arrow-up" 
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousOrder_perce >= 0"
+                        ></i>
+                        <i 
+                          class="fa fa-arrow-down" 
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousOrder_perce < 0"
+                        ></i>
                       </span>
                       <span class="ml-1 shop-des" >
                         {{selectedFilter === 'Today'? 'than yesterday': 'than last Month'}}
@@ -54,10 +64,20 @@
                     <h3><i class="fas fa-rupee-sign"></i> {{(dashboardAnalytics$ | async)?.TotalSale}} </h3>
                     <div class="widget-bottom" *ngIf="selectedFilter === 'Today' || selectedFilter === 'Month'">
                       <span class="widget-bottom-title"
-                        [ngClass]="{'text-success': totalPreviousSale >= 0, 'text-danger': totalPreviousSale < 0}">
-                        {{totalPreviousSale}}
-                        <i class="fa fa-arrow-up " *ngIf="totalPreviousSale >= 0"></i>
-                        <i class="fa fa-arrow-down" *ngIf="totalPreviousSale < 0"></i>
+                        [ngClass]="{
+                          'text-success': (this.dashboardAnalytics$ | async)?.PreviousSale_perce >= 0,
+                          'text-danger': (this.dashboardAnalytics$ | async)?.PreviousSale_perce < 0
+                        }"
+                      >
+                        {{ (this.dashboardAnalytics$ | async)?.PreviousSale_perce | number : '1.2-2'}} %
+                        <i 
+                          class="fa fa-arrow-up" 
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousSale_perce >= 0"
+                        ></i>
+                        <i 
+                          class="fa fa-arrow-down" 
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousSale_perce < 0"
+                        ></i>
                       </span>
                       <span class="ml-1 shop-des" >
                         {{selectedFilter === 'Today'? ' than yesterday': 'than last Month'}}

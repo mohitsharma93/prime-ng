@@ -13,8 +13,6 @@ export class PrintInvoiceModelComponent implements OnInit {
   modelData: any;
   printData: any[] = [];
 
-
-
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
@@ -24,11 +22,7 @@ export class PrintInvoiceModelComponent implements OnInit {
 
   }
 
-  exportData() {
-    window.print();
-  }
-
-  getPrint() {
+   public getPrint() {
     var printHtml: any = this.document.getElementById('print-docs');
     var currentPage = document.body.innerHTML;
     let elementPage = `

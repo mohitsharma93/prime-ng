@@ -12,7 +12,7 @@ import { SubjectService } from "src/app/shared/admin-service/subject.service";
 import { PrintModelComponent } from "src/app/modules/print-model/print-model.component";
 import { DataService } from "src/app/shared/services/data.service";
 import { DialogService } from "primeng/dynamicdialog";
-import { cloneDeep, forEach, remove } from "lodash-es";
+import { clone, cloneDeep, forEach, remove } from "lodash-es";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -41,6 +41,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   public isExpanded: boolean = false;
   public goCancel: number[] = [];
   public holdOrder: any;
+  public holdOrderIdToAddCancel: number | null = null;
 
   constructor(
     private _location: Location,
@@ -109,15 +110,36 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       });
   }
 
-  public showCancelPopUp(showHideModel: boolean, orderId: number | null = null) {
+  public showCancelPopUp(
+    showHideModel: boolean,
+    orderId: number | null = null,
+  ) {
     this.cancelModelShow = showHideModel;
-    if (orderId && !this.goCancel?.includes(orderId)) {
-      this.goCancel.push(orderId);
-      console.log('this.go', this.goCancel);
+    if (orderId) {
+      this.holdOrderIdToAddCancel = orderId;
     }
   }
-
-  public cancelOrder(showHideModel: boolean): void {
+  
+  public cancelOrder(showHideModel: boolean, whereFrom: string = 'no'): void {
+    if (whereFrom === 'yes') {
+      if (this.holdOrderIdToAddCancel && !this.goCancel?.includes(this.holdOrderIdToAddCancel)) {
+        this.goCancel.push(this.holdOrderIdToAddCancel);
+        console.log('this.go', this.goCancel);
+      }
+      if (this.goCancel && this.goCancel.length) {
+        // const getLastId = this.goCancel[this.goCancel.length - 1];
+        const allOrders = this.getBulkOrder();
+        const newOrders = cloneDeep(allOrders).reduce((acc: any, obj: any) => {
+          const findRow = obj.expandedRow.findIndex((obj: any) => obj.OrderId === this.holdOrderIdToAddCancel)
+          if (findRow > -1) {
+            obj.expandedRow[findRow]['show'] = true;
+          }
+          return [...acc, obj];
+        }, []);
+        this.orders$ = of(newOrders);
+      }
+    }
+    this.holdOrderIdToAddCancel = null;
     this.showCancelPopUp(showHideModel);
   }
 
@@ -134,16 +156,22 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       console.log('goCancel', this.goCancel)
       const newItem1 = cloneDeep(this.holdOrder.Item1)
       const newItem2 = remove(cloneDeep(this.holdOrder.Item2), (obj: any) => !this.goCancel?.includes(obj.OrderId));
+      console.log("newitem2", newItem2)
+      console.log("newitem1", newItem1)
       if (newItem1 && newItem1.length) {
         newItem1.forEach((item: any, index: any, object: any) => {
           // item.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
           const rowData = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName);
+          // console.log("rowdata", rowData)
           if (rowData.length) {
             item.expandedRow = rowData;
           } else {
+            console.log("index",index)
+            
             if (rowData.length === 0) {
               object.splice(index, 1);
             }
+            console.log("object",cloneDeep(object))
           }
         });
       }

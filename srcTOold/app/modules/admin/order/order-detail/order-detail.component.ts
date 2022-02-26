@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { data } from '../product-dummy';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { Observable, of, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
@@ -55,6 +54,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
   ];
   public selectedData: any[] = [];
+  id: any;
 
   constructor(
     private router: Router,
@@ -70,9 +70,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     super();
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
-      // if (res && res['orderId']) {
-      //   this.getOrderDetailRecord(res['orderId']);
-      // }
+      if (res && res['orderId']) {
+        this.id = res['orderId']
+      }
     })
     // this.setMenuItem();
   }
@@ -323,7 +323,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.subjectService.setHoldAcceptedOrderForSelected(this.getCurrentOrder()?.OrderID);
     let filter = this.getSaveFilterRedirection();
     if (filter && Object.keys(filter).length) {
-      filter.topFilter.orderStatusId = 2
+      filter.topFilter.Status = 2
       this.subjectService.setSaveFilterOnRedirection(filter);
       this.backClicked();
     }
@@ -401,7 +401,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public shipmentModel() {
     {
       const req = {
-        url: '/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/2',
+        url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
         params: '',
       };
       this.ds.get(req).subscribe((res: any) => {
@@ -419,8 +419,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
 
   public redirectToOrder() {
     let filter = this.getSaveFilterRedirection();
+    console.log('filter', filter)
     if (filter && Object.keys(filter).length) {
-      filter.topFilter.orderStatusId = 2
+      filter.topFilter.Status = 2
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      this.router.navigate(['/admin', 'order'])
+    } else {
+      const filter = {
+        topFilter: {
+          Status: 2,
+          searchTimeRange: 'OverAll',
+          PageNo: 1,
+          PageSize: 25
+        }
+      }
       this.subjectService.setSaveFilterOnRedirection(filter);
       this.router.navigate(['/admin', 'order'])
     }

@@ -12,8 +12,8 @@
                 <b> Overall Demand </b>
               </div>
               <div class="d-flex flex-column justify-content-end">
-                <p class="p-inline"> Order count: dummy-data</p>
-                <p> Total Order Value: dummy-data</p>
+                <p class="p-inline"> Order count: {{holdOrder?.Item3?.OrderCount}}</p>
+                <p> Total Order Value: {{holdOrder?.Item3?.TotalOrder}}</p>
               </div>
             </div>
             <div class="mb-3 mt-3">
@@ -27,8 +27,9 @@
             </div>
             <div class="bulk-accept-table">
               <!-- responsiveLayout="scroll" -->
+              <!-- scrollHeight="700px" -->
               <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
-                scrollHeight="700px" [columns]="columns" dataKey="ItemName" [expandedRowKeys]="expandedRows">
+                 [columns]="columns" dataKey="ItemName" [expandedRowKeys]="expandedRows">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th></th>
@@ -50,26 +51,37 @@
                       {{index + 1}}
                     </td>
                     <td *ngFor="let col of columns" [ngClass]="{'tr-border-bottom': expandedRows[rowData.ItemName]}">
-                      {{ rowData[col.field] }}
+                      <ng-container *ngIf="col.field !== 'DispatchQuantity' else DispatchQuantity">
+                        {{ rowData[col.field] }}
+                      </ng-container>
+                      <ng-template #DispatchQuantity>
+                        <div class="box-catskill-white mr-4">
+                          {{ rowData['DispatchQuantity'] }}
+                        </div>
+                      </ng-template>
                     </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="rowexpansion" let-product>
                   <tr style="min-width: 100wh">
                     <div class="d-flex justify-content-start bulk-hor-scroll" style="margin-left: 100px">
-                      <div *ngFor="let item of product.expandedRow" class="d-flex" style="margin-left: 100px">
-                        <div style="margin-top: 7px" class="ml-2">
-                          {{item.OrderId}}
+                      <ng-container *ngFor="let item of product.expandedRow; let currentIndex = index">
+                        <div *ngIf="!item?.show" class="d-flex" style="margin-left: 100px">
+                          <div style="margin-top: 7px" class="ml-2">
+                            {{item.OrderId}}
+                          </div>
+                          <div class="arrow-left-right-button">
+                            <p-inputNumber inputId="integerOnly" [(ngModel)]="item.Quantity" [showButtons]="true"
+                              buttonLayout="horizontal" [step]="1" incrementButtonIcon="pi pi-caret-right"
+                              decrementButtonIcon="pi pi-caret-left" [min]="0" 
+                              (onInput)="itemQuantityChange(product)"
+                            >
+                            </p-inputNumber>
+                          </div>
+                          <i class="pi pi-trash ml-2" (click)="showCancelPopUp(true, item.OrderId)"
+                            style="margin-top: 7px"></i>
                         </div>
-                        <div class="arrow-left-right-button">
-                          <p-inputNumber inputId="integerOnly" [(ngModel)]="item.Quantity" [showButtons]="true"
-                            buttonLayout="horizontal" [step]="1" incrementButtonIcon="pi pi-caret-right"
-                            decrementButtonIcon="pi pi-caret-left">
-                          </p-inputNumber>
-                        </div>
-                        <i class="pi pi-trash ml-2" (click)="showCancelPopUp(true, item.OrderId)"
-                          style="margin-top: 7px"></i>
-                      </div>
+                      </ng-container>
                     </div>
                   </tr>
                 </ng-template>
@@ -95,9 +107,9 @@
     </div>
     <div class="d-flex justify-content-center outlined-button">
       <button pButton pRipple type="button" label="No" class="p-button-outlined outlined-border" style="width: 150px"
-        (click)="cancelOrder(false); goCancel = []; this.cancelModelShow = false"></button>
+        (click)="cancelOrder(false, 'no'); goCancel = []; this.cancelModelShow = false"></button>
       <button pButton pRipple type="button" label="Yes" class="p-button-outlined is_active ml-2" style="width: 150px"
-        (click)="cancelOrder(false)"></button>
+        (click)="cancelOrder(false, 'yes')"></button>
     </div>
   </p-dialog>
 </div>

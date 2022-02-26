@@ -43,8 +43,9 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
 
   ngOnInit() {
     this.subjectService.holdBulkDataForNext$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+
       if (res && res?.length) {
-        console.log('res', res);
+        console.log('holdBulkDataForNext', res);
         this.orders$ = of(res);
       }
     })
@@ -57,7 +58,7 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   public setColumById() {
     this.columns = [
       { field: 'ItemName', header: 'ITEM NAME' },
-      { field: 'NetQuantity', header: 'QUANTITY' },
+      { field: 'DispatchQuantity', header: 'QUANTITY' },
       { field: 'expandedRow', header: 'ORDER WISE QUANTITY' },
     ]
   }

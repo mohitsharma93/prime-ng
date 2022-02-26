@@ -44,7 +44,7 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   ngOnInit() {
     this.subjectService.holdBulkDataForNext$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res && res?.length) {
-        console.log('res', res);
+        console.log('res holdBulkDataForNext', res);
         this.orders$ = of(res);
       }
     })
@@ -57,18 +57,19 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   public setColumById() {
     this.columns = [
       { field: 'ItemName', header: 'ITEM NAME' },
-      { field: 'NetQuantity', header: 'QUANTITY' },
+      { field: 'DispatchQuantity', header: 'QUANTITY' },
       { field: 'expandedRow', header: 'ORDER WISE QUANTITY' },
     ]
   }
 
   public acceptBulkOrder() {
     console.log('in accept bulk order')
-    const allOrderId: number[] = this.getUniqueOrderIds();;
+    const allOrderId: number[] = this.getUniqueOrderIds();
     this.adminOrderService.bulkOrderAddtoAcceptService(allOrderId).subscribe(res => {
       console.log('res', res)
       if (res && res?.Status == 'OK') {
         // this.backClicked();
+        this.subjectService.setHoldAcceptedOrderIdsForSelcted(allOrderId);
         this.redirectToOrder();
       } else {
         this.toasterService.error(res?.ErrorMessage);

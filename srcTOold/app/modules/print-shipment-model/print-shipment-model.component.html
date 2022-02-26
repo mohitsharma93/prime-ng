@@ -7,9 +7,7 @@
                             <option value="size-executive">Executive</option>
                         </select>
                     </div> -->
-        <div class="box-col">
-            <button class="export-pdf k-button" (click)="exportData()">Export</button>
-        </div>
+
         <div class="box-col">
             <button class="export-pdf k-button" (click)="getPrint()">Print</button>
         </div>
@@ -40,12 +38,12 @@
                         <table role="grid">
                             <thead role="rowgroup">
                                 <tr role="row">
-                                    <th scope="col"> S. No. </th>
-                                    <th scope="col"> Order Id</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Order Id</th>
                                     <th scope="col">Buyer Store Name</th>
                                     <th scope="col">Buyer Mobile</th>
                                     <th scope="col">Buyer Address</th>
-                                    <th scope="col">Dispatch Amount</th>
+                                    <th scope="col">Dis. Amount</th>
                                     <th scope="col">Remarks</th>
                                 </tr>
                             </thead>
@@ -74,7 +72,7 @@
                             </colgroup>
                             <thead role="rowgroup">
                                 <tr role="row">
-                                    <th scope="col"> S. No. </th>
+                                    <th scope="col">#</th>
                                     <th scope="col">Item Name</th>
                                     <th scope="col">Net Quantity</th>
                                     <th scope="col">Order ID and Quantity</th>
