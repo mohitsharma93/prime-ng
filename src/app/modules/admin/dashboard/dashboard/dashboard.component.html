@@ -40,11 +40,11 @@
                       >
                         {{ (this.dashboardAnalytics$ | async)?.PreviousOrder_perce | number : '1.2-2'}} %
                         <i 
-                          class="fa fa-arrow-up" 
+                          class="pi pi-arrow-up" 
                           *ngIf="(this.dashboardAnalytics$ | async)?.PreviousOrder_perce >= 0"
                         ></i>
                         <i 
-                          class="fa fa-arrow-down" 
+                          class="pi pi-arrow-down"
                           *ngIf="(this.dashboardAnalytics$ | async)?.PreviousOrder_perce < 0"
                         ></i>
                       </span>
@@ -71,11 +71,11 @@
                       >
                         {{ (this.dashboardAnalytics$ | async)?.PreviousSale_perce | number : '1.2-2'}} %
                         <i 
-                          class="fa fa-arrow-up" 
+                          class="pi pi-arrow-up" 
                           *ngIf="(this.dashboardAnalytics$ | async)?.PreviousSale_perce >= 0"
                         ></i>
                         <i 
-                          class="fa fa-arrow-down" 
+                          class="pi pi-arrow-down" 
                           *ngIf="(this.dashboardAnalytics$ | async)?.PreviousSale_perce < 0"
                         ></i>
                       </span>
