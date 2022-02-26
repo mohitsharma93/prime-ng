@@ -93,10 +93,9 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .getBulkAcceptedOrderService()
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
-          this.holdOrder = res?.Data;
-          console.log("bulkdata",res.Data)
+          this.holdOrder = cloneDeep(res?.Data);
+          console.log("this.holdOrder",this.holdOrder)
           const item1 = res?.Data?.Item1;
-          console.log('item1', item1)
           if (item1 && item1.length) {
             item1.forEach((item: any) => {
               item.expandedRow = res?.Data?.Item2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
@@ -156,27 +155,19 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       console.log('goCancel', this.goCancel)
       const newItem1 = cloneDeep(this.holdOrder.Item1)
       const newItem2 = remove(cloneDeep(this.holdOrder.Item2), (obj: any) => !this.goCancel?.includes(obj.OrderId));
-      console.log("newitem2", newItem2)
-      console.log("newitem1", newItem1)
+      let newOne: any[] = []
       if (newItem1 && newItem1.length) {
-        newItem1.forEach((item: any, index: any, object: any) => {
-          // item.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName)
-          const rowData = newItem2.filter((sameItem: any) => sameItem.ItemName === item.ItemName);
-          // console.log("rowdata", rowData)
-          if (rowData.length) {
-            item.expandedRow = rowData;
-          } else {
-            console.log("index",index)
-            
-            if (rowData.length === 0) {
-              object.splice(index, 1);
-            }
-            console.log("object",cloneDeep(object))
+        newOne = newItem1.reduce((pre: any, curr: any) => {
+          curr.expandedRow = newItem2.filter((sameItem: any) => sameItem.ItemName === curr.ItemName);
+          if (curr.expandedRow.length === 0) {
+            return pre;
           }
-        });
+          pre.push(curr);
+          return pre;
+        }, [])
       }
-      console.log('after remove order', newItem1)
-      this.subjectService.setHoldBulkDataForNext(newItem1);
+      console.log('after remove order', newOne)
+      this.subjectService.setHoldBulkDataForNext(newOne);
       this.subjectService.setHoldBulkOrderIdsForCancel(this.goCancel);
       this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
     }
