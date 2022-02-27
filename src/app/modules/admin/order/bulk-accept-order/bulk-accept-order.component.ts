@@ -94,7 +94,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           this.holdOrder = cloneDeep(res?.Data);
-          console.log("this.holdOrder",this.holdOrder)
+          console.log("this.holdOrder", this.holdOrder)
           const item1 = res?.Data?.Item1;
           if (item1 && item1.length) {
             item1.forEach((item: any) => {
@@ -118,7 +118,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       this.holdOrderIdToAddCancel = orderId;
     }
   }
-  
+
   public cancelOrder(showHideModel: boolean, whereFrom: string = 'no'): void {
     if (whereFrom === 'yes') {
       if (this.holdOrderIdToAddCancel && !this.goCancel?.includes(this.holdOrderIdToAddCancel)) {
@@ -136,6 +136,12 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
           return [...acc, obj];
         }, []);
         this.orders$ = of(newOrders);
+      }
+      const sumToRemove = cloneDeep(this.holdOrder.Item2)
+        .filter((f: any) => f.OrderId === this.holdOrderIdToAddCancel).reduce((acc: number, item: any) =>  acc += item.Orderamount, 0);
+      this.holdOrder.Item3 = {
+        OrderCount: this.holdOrder.Item3.OrderCount - 1,
+        TotalOrder: this.holdOrder.Item3.TotalOrder - sumToRemove
       }
     }
     this.holdOrderIdToAddCancel = null;
@@ -169,6 +175,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       console.log('after remove order', newOne)
       this.subjectService.setHoldBulkDataForNext(newOne);
       this.subjectService.setHoldBulkOrderIdsForCancel(this.goCancel);
+      this.subjectService.setHoldOrderCountSumForConfirmScreen(this.holdOrder.Item3)
       this.router.navigate(['/admin', 'order', 'bulk-accept', 'cancel']);
     }
   }

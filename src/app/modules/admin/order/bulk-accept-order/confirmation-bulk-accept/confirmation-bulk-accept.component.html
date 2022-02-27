@@ -9,8 +9,8 @@
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-end ">
               <div class="d-flex flex-column justify-content-end">
-                <p class="p-inline"> Order count: dummy</p>
-                <p> Total Order Value: dummy</p>
+                <p class="p-inline"> Order count: {{(this.orderValue$ | async)?.OrderCount}}</p>
+                <p> Total Order Value: {{(this.orderValue$ | async)?.TotalOrder}}</p>
               </div>
             </div>
             <div class="mb-3">
