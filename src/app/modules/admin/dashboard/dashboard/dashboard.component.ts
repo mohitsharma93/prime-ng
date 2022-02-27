@@ -42,7 +42,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     }
   };
   public selectedFilter: string = 'Today'
-  public dashboardAnalytics$: Observable<IDashboardAnalytics> = of({} as IDashboardAnalytics);
+  public dashboardAnalytics$: Observable<any> = of({} as IDashboardAnalytics);
   totalPreviousOrder: number;
   totalPreviousSale: number;
   PreviousOrder_perce:number;
