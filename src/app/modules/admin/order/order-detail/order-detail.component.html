@@ -147,8 +147,7 @@
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
                     </th>
-                    <!-- <th *ngIf="showAction">ACTION</th> -->
-                    <th>ACTION</th>
+                    <th *ngIf="showAction">ACTION</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -188,13 +187,7 @@
                         </ng-container>
                       </ng-template>
                     </td>
-                    <!-- <td class="outlined-button" *ngIf="showAction">
-                      <ng-container *ngTemplateOutlet="
-                          actionButton;
-                          context: { $implicit: rowData }
-                        "></ng-container>
-                    </td> -->
-                    <td class="outlined-button">
+                    <td class="outlined-button" *ngIf="showAction">
                       <ng-container *ngTemplateOutlet="
                           actionButton;
                           context: { $implicit: rowData }
@@ -275,7 +268,7 @@
     *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliverOrder(order.OrderId)"></button>
   <button pButton pRipple type="button" label="C"
     class="p-element p-button-raised p-button-danger ml-2 p-button p-component c"
-    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="singleCancelOnStatusShipped = true;cancelOrder(true)"></button>
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="rowSingleCancel(true, order.OrderId)"></button>
   <div></div>
 </ng-template>
 <ng-template #statusCol let-status>

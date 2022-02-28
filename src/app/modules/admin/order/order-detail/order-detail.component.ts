@@ -52,6 +52,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public selectedData: any[] = [];
   id: any;
   public singleCancelOnStatusShipped: boolean = false;
+  public singleCancelOrderId: any = null;
 
   constructor(
     private router: Router,
@@ -204,7 +205,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
       const obj: IOrderCancelModel = {
-        OrderID: this.getCurrentOrder()?.OrderID,
+        OrderID: (this.singleCancelOnStatusShipped) ? this.singleCancelOrderId  : this.getCurrentOrder()?.OrderID,
         DetailID: null,
         Remark: this.cancelReasonControl.value
       }
@@ -212,8 +213,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         if (res && res?.Status == 'OK') {
           if (this.singleCancelOnStatusShipped) {
             this.singleCancelOnStatusShipped = false;
+            this.singleCancelOrderId = null;
             this.cancelReasonControl.setValue('')
             this.cancelOrder(hideShowCancelModel);
+            const order = this.getCurrentOrder()
+            const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
+            this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
             return
           }
           this.backClicked();
@@ -221,6 +226,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           this.toasterService.error(res?.ErrorMessage);
           if (this.singleCancelOnStatusShipped) {
             this.singleCancelOnStatusShipped = false;
+            this.singleCancelOrderId = null;
           }
         }
         this.cancelReasonControl.setValue('')
@@ -450,13 +456,19 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       console.log(res)
       if (res && res?.Status == 'OK') {
         // this.backClicked();
-        const orderId = this.getCurrentOrder()?.OrderID
-        const apiMiddleStr = this.getApiCallStatusWise(orderId);
+        const order = this.getCurrentOrder()
+        const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
         this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
       this.cancelReasonControl.setValue('')
     });
+  }
+
+  public rowSingleCancel(cancel: boolean, orderId: any) {
+    this.singleCancelOrderId = orderId;
+    this.singleCancelOnStatusShipped = cancel;
+    this.cancelOrder(cancel)
   }
 }
