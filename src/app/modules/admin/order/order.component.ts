@@ -435,6 +435,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToBulkAccept() {
+    this.subjectService.setSaveFilterOnRedirection({
+      topFilter: this.orderRequestParam,
+      ...(this.searchControl.value && {
+        searchString: this.searchControl.value,
+      }),
+    });
     this.router.navigate(['/admin', 'order', 'bulk-accept']);
   }
 
