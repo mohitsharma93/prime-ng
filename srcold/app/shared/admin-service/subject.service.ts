@@ -32,6 +32,10 @@ export class SubjectService {
 
     public holdAcceptedOrderIdsForSelcted = new BehaviorSubject<any>(null);
     public holdAcceptedOrderIdsForSelcted$ = this.holdAcceptedOrderIdsForSelcted.asObservable();
+    
+    public oldOrderCountSumForConfirmScreen = new BehaviorSubject<any>(null);
+    public oldOrderCountSumForConfirmScreen$ = this.oldOrderCountSumForConfirmScreen.asObservable();
+    
 
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
@@ -71,5 +75,9 @@ export class SubjectService {
 
     public setHoldAcceptedOrderIdsForSelcted(response: any): void {
         this.holdAcceptedOrderIdsForSelcted.next(response);
+    }
+
+    public setHoldOrderCountSumForConfirmScreen(response: any): void {
+        this.oldOrderCountSumForConfirmScreen.next(response);
     }
 }

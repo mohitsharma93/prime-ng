@@ -169,6 +169,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (newAddress?.length) p['newAddress'] = newAddress;
     });
     this.products = newProduct;
+    console.log('this.orderRequestParam', this.orderRequestParam)
     if (this.orderRequestParam.Status === 2) {
       this.subjectService.holdAcceptedOrderForSelected$
         .pipe(take(1))
@@ -294,7 +295,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.customSort(event.sortField, order);
     }
   }
-
+  
   public customSort(field: string, order: boolean) {
     const localData = this.getOrdersLocal()
     if (localData) {
@@ -302,7 +303,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.setProduct(sortedData);
     }
   }
-
+  
   public ownSortCreate(data: any, key: string, isAscending: boolean) {
     if(isAscending){ 
       data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? 1 : -1);

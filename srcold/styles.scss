@@ -563,3 +563,30 @@ i.pi.pi-trash {
   background: #f8f9fa;
   transition: box-shadow 0.2s;
 }
+thead.p-datatable-thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2.5rem !important;
+  height: 2.5rem !important;
+}
+.p-button.p-button-icon-only {
+  width: 2rem !important;
+}
+button.p-element.p-inputnumber-button.p-inputnumber-button-down.p-button.p-component.p-button-icon-only.ng-star-inserted {
+  border-right: none !important;
+}
+button.p-element.p-inputnumber-button.p-inputnumber-button-up.p-button.p-component.p-button-icon-only.ng-star-inserted {
+  border-left: none !important;
+}
+.arrow-left-right-button {
+  margin-left: 5px;
+}
+.bulk-accept-table table tr td {
+  padding: 0.3rem !important;
+}
+.confirmtbl table tr td {
+  padding: 0.3rem !important;
+}

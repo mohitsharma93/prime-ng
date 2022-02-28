@@ -26,6 +26,7 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   public selectedData: any[] = [];
   public cancelReasonControl: FormControl = new FormControl('', [Validators.required]);
   public cancelModelShow: boolean = false;
+  public orderValue$: Observable<any>
 
   constructor(
     private _location: Location,
@@ -44,8 +45,14 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   ngOnInit() {
     this.subjectService.holdBulkDataForNext$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res && res?.length) {
-        console.log('res holdBulkDataForNext', res);
+        console.log('holdBulkDataForNext', res);
         this.orders$ = of(res);
+      }
+    })
+    this.subjectService.oldOrderCountSumForConfirmScreen$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res && Object.keys(res)?.length) {
+        this.orderValue$ = of(res);
+        this.subjectService.setHoldOrderCountSumForConfirmScreen(null)
       }
     })
   }

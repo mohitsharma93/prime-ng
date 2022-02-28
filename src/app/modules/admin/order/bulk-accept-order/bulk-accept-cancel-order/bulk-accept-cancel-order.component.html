@@ -81,7 +81,7 @@
     [(visible)]="cancelModelShow"
     [position]="'center'"
     [modal]="true"
-    [style]="{ width: '50vw' }"
+    [style]="{ width: '30vw' }"
     [baseZIndex]="10000"
     [draggable]="false"
     [resizable]="false"
@@ -117,7 +117,7 @@
         type="button"
         label="No"
         class="p-button-outlined outlined-border  h-40"
-        style="width: 150px"
+        style="width: 100px"
         (click)="rejectCancelPopUp(false); cancelReasonControl.setValue('')"
       ></button>
       <button
@@ -126,7 +126,7 @@
         type="button"
         label="Yes"
         class="p-button-outlined h-40 success-next ml-2"
-        style="width: 150px"
+        style="width: 100px"
         (click)="checkReason()"
       ></button>
     </div>

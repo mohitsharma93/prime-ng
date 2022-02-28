@@ -50,7 +50,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     private adminOrderService: AdminOrderService,
     private subjectService: SubjectService,
     private ds: DataService,
-    private dialogService: DialogService,
+    public dialogService: DialogService,
   ) {
     super();
     this.setColumById();
@@ -138,7 +138,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
         this.orders$ = of(newOrders);
       }
       const sumToRemove = cloneDeep(this.holdOrder.Item2)
-        .filter((f: any) => f.OrderId === this.holdOrderIdToAddCancel).reduce((acc: number, item: any) =>  acc += item.Orderamount, 0);
+        .filter((f: any) => f.OrderId === this.holdOrderIdToAddCancel).reduce((acc: number, item: any) => acc += item.Orderamount, 0);
       this.holdOrder.Item3 = {
         OrderCount: this.holdOrder.Item3.OrderCount - 1,
         TotalOrder: this.holdOrder.Item3.TotalOrder - sumToRemove
@@ -152,8 +152,9 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     const orders = this.getBulkOrder();
     if (this.goCancel && !this.goCancel?.length) {
       if (orders && orders.length) {
-        this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
         this.subjectService.setHoldBulkDataForNext(orders);
+        this.subjectService.setHoldOrderCountSumForConfirmScreen(this.holdOrder.Item3)
+        this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
       } else {
         this.toasterService.info('There is no order to proceed.')
       }
@@ -188,7 +189,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     return orders;
   }
 
-  show() {
+  public show() {
     const req = {
       url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
       params: '',
@@ -203,10 +204,6 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       }
 
     });
-  }
-
-  onRemoveOk() {
-    // const index = this.prod
   }
 
   public itemQuantityChange(product: any) {

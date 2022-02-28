@@ -23,7 +23,7 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   public cancelReasonControl: FormControl = new FormControl('', [ Validators.required ]);
   public cancelModelShow: boolean = false;
   public disableNext: boolean = false;
-
+  
   constructor(
     private _location: Location,
     private router: Router,

@@ -16,6 +16,9 @@ import { cloneDeep } from 'lodash-es';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
+import { PrintShipmentModelComponent } from '../../print-shipment-model/print-shipment-model.component';
+import { DialogService } from 'primeng/dynamicdialog';
+import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
   selector: 'app-admin-order',
@@ -54,7 +57,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
     private adminOrderService: AdminOrderService,
     private toasterService: ToasterService,
     private subjectService: SubjectService,
-    private cdn: ChangeDetectorRef
+    private cdn: ChangeDetectorRef,
+    private ds: DataService,
+    public dialogService: DialogService
   ) {
     super();
     this.setColumById(0);
@@ -75,7 +80,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       )
       .subscribe((res) => {
         if (this.rangeDates.valid) {
-          
+
           this.orderRequestParam = cloneDeep({
             ...this.orderRequestParam,
             // endPoint: this.dateConvection(res),
@@ -189,8 +194,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
         })
     }
-    
-    
   }
 
   public setColumById(id: number) {
@@ -295,7 +298,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.customSort(event.sortField, order);
     }
   }
-  
+
   public customSort(field: string, order: boolean) {
     const localData = this.getOrdersLocal()
     if (localData) {
@@ -303,11 +306,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.setProduct(sortedData);
     }
   }
-  
+
   public ownSortCreate(data: any, key: string, isAscending: boolean) {
-    if(isAscending){ 
+    if (isAscending) {
       data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? 1 : -1);
-    }else{
+    } else {
       data.lstorderDetails.sort((a: any, b: any) => (a[key] > b[key]) ? -1 : 1);
     }
     return data;
@@ -427,9 +430,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
   }
 
-
-
-
   public resetSearch(): void {
     this.searchControl.setValue('');
   }
@@ -446,5 +446,22 @@ export class OrderComponent extends BaseComponent implements OnInit {
     } else {
       this.toasterService.info('Select order first through checkbox.');
     }
+  }
+
+  public shipmentModel(order: any) {
+    const req = {
+      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${order.ShipmentId}`,
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintShipmentModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
   }
 }

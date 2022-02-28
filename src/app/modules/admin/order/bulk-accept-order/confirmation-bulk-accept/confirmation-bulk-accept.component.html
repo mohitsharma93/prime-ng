@@ -38,7 +38,7 @@
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                   <tr>
                     <td>{{ index + 1}}</td>
-                    <td *ngFor="let col of columns" [ngClass]="{'justify-content-start': col.field === 'expandedRow'}">
+                    <td *ngFor="let col of columns" [ngClass]="{'justify-content-center': col.field === 'expandedRow'}">
                       <ng-container *ngIf="col.field !== 'expandedRow' else showOrderWiseQuantity">
                         {{ rowData[col.field] }}
                       </ng-container>

@@ -48,12 +48,14 @@
                         {{ rowData[col.field] }}
                       </ng-container>
                       <ng-template #showThroughArray>
+                       <div class="d-flex scroll-x">
                         <div class="d-flex" *ngFor="let orderQuantity of rowData?.OrderQuantityList">
                           <div style="margin-top: 7px" class="mr-3">{{orderQuantity.OrderId}}</div>
                           <div class="box-catskill-white mr-4">
                             {{orderQuantity.Quantity}}
                           </div>
                         </div>
+                       </div>
                       </ng-template>
                     </td>
                   </tr>

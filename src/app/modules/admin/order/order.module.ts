@@ -5,18 +5,19 @@ import { OrderComponent } from './order.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
-import {CardModule} from 'primeng/card';
-import {TableModule} from 'primeng/table';
-import {DropdownModule} from 'primeng/dropdown';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { DropdownModule } from 'primeng/dropdown';
 import { LoaderModule } from '../../loader/loader.module';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
 const routes: Routes = [
-  { 
-    path: '', 
+  {
+    path: '',
     component: OrderComponent,
   },
-  { 
-    path: 'detail/:orderId', 
+  {
+    path: 'detail/:orderId',
     loadChildren: () => import('./order-detail/order-detail.module').then((m) => m.OrderDetailModule)
   },
   {
@@ -43,7 +44,9 @@ const routes: Routes = [
     CardModule,
     TableModule,
     DropdownModule,
-    LoaderModule
-  ]
+    LoaderModule,
+    DynamicDialogModule
+  ],
+  providers: [DialogService]
 })
 export class OrderModule { }

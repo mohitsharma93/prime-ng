@@ -137,12 +137,13 @@
             <!-- scrollHeight="700px" -->
             <div>
 
-              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true" 
+              <p-table responsiveLayout="scroll"   [value]="(orders$ | async) || []" [scrollable]="true" 
                 [columns]="columns" [(selection)]="selectedData">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
                     </th>
+                  
                     <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -183,6 +184,7 @@
                                 ? rowData[col.field] + rowData['DeliveryCharges']
                                 : rowData[col.field]
                         }}
+                        
                         <ng-container *ngIf="col.field === 'Status'">
                           <ng-container *ngTemplateOutlet="statusCol context: { $implicit:  rowData[col.field] }">
                           </ng-container>
@@ -205,7 +207,7 @@
               <button pButton pRipple type="button" label="Accept Order" class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'" (click)="acceptOrder()"></button>
               <button pButton pRipple type="button" label="Delivered Selected" class="p-button-raised p-button-success"
-                 (click)="deliveredSelected()"></button>
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliveredSelected()"></button>
               <button pButton type="button" label="Cancel Order" class="p-button-raised p-button-danger ml-2"
                 (click)="cancelOrder(true)" *ngIf="
                   (selectedOrderDetail | async)?.Status !== 'Delivered' &&

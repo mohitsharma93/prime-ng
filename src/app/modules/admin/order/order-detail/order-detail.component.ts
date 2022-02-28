@@ -396,41 +396,60 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
 
-   public show() {
-    {
-      const req = {
-        url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
-        params: '',
-      };
-      this.ds.get(req).subscribe((res: any) => {
-        if (res.Status === 'OK') {
-          const ref = this.dialogService.open(PrintInvoiceModelComponent, {
-            width: '70%',
-            height: '70%'
-          });
-          return (res);
-        }
-      });
-    }
+  public show() {
+    const req = {
+      url: '/api/sellerDashboard/ShopOverview/GetPrintInvoice/100',
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        debugger
+        const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
+
+  }
+
+  printInvoice(order: any) {
+    console.log(order);
+    const req = {
+      url: `/api/sellerDashboard/ShopOverview/GetPrintInvoice/${order.OrderId}`,
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      console.log(res.Data);
+      debugger;
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
   }
 
   public shipmentModel() {
-    {
-      const req = {
-        url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
-        params: '',
-      };
-      this.ds.get(req).subscribe((res: any) => {
-        if (res.Status === 'OK') {
-          const ref = this.dialogService.open(PrintShipmentModelComponent, {
-            data: res.Data,
-            width: '70%',
-            height: '70%'
-          });
-          return (res);
-        }
-      });
-    }
+    const req = {
+      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintShipmentModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
   }
 
   public redirectToOrder() {

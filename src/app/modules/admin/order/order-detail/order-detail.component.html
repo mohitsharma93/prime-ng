@@ -1,10 +1,10 @@
 <div class="content-wrapper">
   <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
-    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; 
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp;
     {{
-      (this.selectedOrderDetail | async)?.orderStatusId === 3 || (this.selectedOrderDetail | async)?.orderStatusId === 4
-        ? 'View Shipment'
-        : 'Order Details'
+    (this.selectedOrderDetail | async)?.orderStatusId === 3 || (this.selectedOrderDetail | async)?.orderStatusId === 4
+    ? 'View Shipment'
+    : 'Order Details'
     }}
   </h4>
   <div class="page-content">
@@ -137,13 +137,13 @@
             <!-- scrollHeight="700px" -->
             <div>
 
-              <p-table responsiveLayout="scroll"   [value]="(orders$ | async) || []" [scrollable]="true" 
+              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
                 [columns]="columns" [(selection)]="selectedData">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
                     </th>
-                  
+
                     <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
@@ -165,26 +165,23 @@
                         <div class="inc-dec-button">
                           <p-inputNumber [disabled]="rowData['showEdit']" inputId="integerOnly"
                             [(ngModel)]="rowData[col.field]" [showButtons]="true" buttonLayout="horizontal" [step]="1"
-                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" 
-                            (onInput)="
+                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" (onInput)="
                               changeAmountAsPerQuantity($event.value, rowData)
-                            "
-                            [min]="0"
-                          >
+                            " [min]="0">
                           </p-inputNumber>
                         </div>
                       </ng-container>
                       <ng-template #showString>
                         {{
-                          (col.field === 'OrderDate' || col.field === 'DeliveryDate')
-                            ? (rowData[col.field] | date: "MMM. d, y")
-                            : (col.field === 'Status')
-                              ? ''
-                              : ((selectedOrderDetail | async)?.ShipmentId && col.field === 'OrderAmount')
-                                ? rowData[col.field] + rowData['DeliveryCharges']
-                                : rowData[col.field]
+                        (col.field === 'OrderDate' || col.field === 'DeliveryDate')
+                        ? (rowData[col.field] | date: "MMM. d, y")
+                        : (col.field === 'Status')
+                        ? ''
+                        : ((selectedOrderDetail | async)?.ShipmentId && col.field === 'OrderAmount')
+                        ? rowData[col.field] + rowData['DeliveryCharges']
+                        : rowData[col.field]
                         }}
-                        
+
                         <ng-container *ngIf="col.field === 'Status'">
                           <ng-container *ngTemplateOutlet="statusCol context: { $implicit:  rowData[col.field] }">
                           </ng-container>
@@ -253,7 +250,7 @@
 </div>
 <ng-template #actionButton let-order>
   <button pButton pRipple type="button" class="p-button-outlined order-detail-action" icon="pi pi-print"
-    *ngIf="showPrint" style="width: 36px; height: 41px"></button>
+    *ngIf="showPrint" style="width: 36px; height: 41px" (click)="printInvoice(order)"></button>
   <button pButton pRipple type="button" label="View" class="p-button-outlined order-detail-action"
     (click)="redirectToDetail(order)" style="width: 85px"
     *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"></button>

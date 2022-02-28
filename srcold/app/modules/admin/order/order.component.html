@@ -1,5 +1,5 @@
 <div class="content-wrapper">
-  <loader *ngIf="(showLoader | async)"></loader>
+  <!-- <loader *ngIf="(showLoader | async)"></loader> -->
   <div class="">
     <div class="text-center justify-content-between">
       <div class="outlined-button order-outlinebtn">
@@ -120,7 +120,7 @@
             <!-- [rowsPerPageOptions]="[5, 10, 25, 50]" -->
             <p-table
               responsiveLayout="scroll"
-              scrollHeight="700px" 
+              scrollHeight="350px" 
               [value]="products?.lstorderDetails"
               [scrollable]="false"
               [paginator]="
@@ -176,7 +176,7 @@
                           ? rowData["newAddress"]
                           : col.field === "Status"
                             ? ""
-                            : (col.field === 'OrderAmount')
+                            : (col.field === 'OrderAmount' )
                               ? rowData[col.field] + rowData['DeliveryCharges']
                               : rowData[col.field]
                     }}

@@ -365,6 +365,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
             // this.redirectToOrder();
             this.cancelOrder(false);
           }
+
           this.selectedData = [];
           const orderDetail = this.getCurrentOrder();
           const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);

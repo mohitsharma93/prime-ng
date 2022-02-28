@@ -9,20 +9,50 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class PrintInvoiceModelComponent implements OnInit {
 
-  data: any;
-  modelData: any;
-  printData: any[] = [];
-
+  data: {
+    AmountInWord: string
+    BuyerAddress1: string
+    BuyerAddress2: string
+    BuyerContact: any
+    BuyerGSTNo: any
+    BuyerName: string
+    BuyerPanNO: any
+    BuyerState: string
+    CGST: any
+    IGST: any
+    InvoiceDate: string
+    InvoiceNo: any
+    OrderDate: string
+    OrderId: any
+    PlaceOfDelivery: any
+    PlaceOfSupply: any
+    Remarks: any
+    RoundOff: any
+    SGST: any
+    SellerAddress1: string
+    SellerAddress2: string
+    SellerAddress3: string
+    SellerContact: string
+    SellerGSTNo: any
+    SellerName: string
+    SellerPanNO: any
+    TaxableAmount: any
+    TotalAmount: any
+    _invoiceItemListDTO: any[],
+  };
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
+    if (config.data) {
+      this.data = config.data;
+    }
   }
 
   ngOnInit(): void {
 
   }
 
-   public getPrint() {
+  public getPrint() {
     var printHtml: any = this.document.getElementById('print-docs');
     var currentPage = document.body.innerHTML;
     let elementPage = `

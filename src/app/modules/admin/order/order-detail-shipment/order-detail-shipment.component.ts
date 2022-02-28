@@ -93,7 +93,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       { field: 'Mrp', header: 'MRP' },
       { field: 'SellingPrice', header: 'SELLING PRICE' },
       { field: 'TotalPrice', header: 'NET AMOUNT' },
-     
+
     ]
   }
 
@@ -148,29 +148,22 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     });
   }
 
-  show() {
-    {
-      const req = {
-        url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
-        params: '',
-      };
-      this.ds.get(req).subscribe((res: any) => {
-        if (res.Status === 'OK') {
-          const ref = this.dialogService.open(PrintInvoiceModelComponent, {
-            data: {
-              type: 'demand_sheet',
-              data: {
-                name: 'Test',
-                address: 'Test Address',
-                number: '5252525252',
-                item: res.Data
-              }
-            },
-            width: '70%',
-            height: '70%'
-          });
-        }
-      });
-    }
+  public show() {
+
+    const req = {
+      url: '/api/sellerDashboard/ShopOverview/GetPrintInvoice/100',
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
+
   }
 }
