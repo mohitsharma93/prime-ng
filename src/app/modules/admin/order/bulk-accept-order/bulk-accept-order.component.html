@@ -87,7 +87,7 @@
                           <div class="arrow-left-right-button">
                             <p-inputNumber inputId="integerOnly" [(ngModel)]="item.Quantity" [showButtons]="true"
                               buttonLayout="horizontal" [step]="1" incrementButtonIcon="pi pi-plus"
-                              decrementButtonIcon="pi pi-minus" [min]="0" (onInput)="itemQuantityChange(product)">
+                              decrementButtonIcon="pi pi-minus" [min]="0" (onInput)="itemQuantityChange(product, currentIndex)">
                             </p-inputNumber>
                           </div>
                           <i class="pi pi-trash ml-2" (click)="showCancelPopUp(true, item.OrderId)"

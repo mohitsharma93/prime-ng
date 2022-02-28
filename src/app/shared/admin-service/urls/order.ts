@@ -15,5 +15,6 @@ export const AdminOrderUrls = {
     deliveredOrder: (baseUrl: string) => createUrl(baseUrl, 'PostAddToDeliveredOrder/:orderId'),
     getReviewShipment: (baseUrl: string) => createUrl(baseUrl, 'getReviewShipmentData'),
     bulkOrderAddtoAccept: (baseUrl: string) => createUrl(baseUrl, 'PostBulkOrderAddtoAccept'),
-    bulkCancelOrderDetail: (baseUrl: string) => createUrl(baseUrl, 'GetBulkPendingOrderDataForCancel')
+    bulkCancelOrderDetail: (baseUrl: string) => createUrl(baseUrl, 'GetBulkPendingOrderDataForCancel'),
+    bulkOrderUpdaterQty: (baseUrl: string) => createUrl(baseUrl, 'PostBulkOrderUpdaterQty'),
 };

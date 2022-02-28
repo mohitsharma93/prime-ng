@@ -13,6 +13,7 @@ import { PrintModelComponent } from "src/app/modules/print-model/print-model.com
 import { DataService } from "src/app/shared/services/data.service";
 import { DialogService } from "primeng/dynamicdialog";
 import { clone, cloneDeep, forEach, remove } from "lodash-es";
+import { IBulkOrderQuantityUpdateModel } from "src/app/models/admin/order";
 
 @Component({
   selector: 'app-admin-bulk-accept-order',
@@ -42,6 +43,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   public goCancel: number[] = [];
   public holdOrder: any;
   public holdOrderIdToAddCancel: number | null = null;
+  public updateDispatchQuantityData: IBulkOrderQuantityUpdateModel[] = [] as IBulkOrderQuantityUpdateModel[]
 
   constructor(
     private _location: Location,
@@ -151,6 +153,10 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
   public next(): void {
     const orders = this.getBulkOrder();
     if (this.goCancel && !this.goCancel?.length) {
+      if (this.updateDispatchQuantityData && this.updateDispatchQuantityData.length) {
+        this.hitUpdateQuantityBulk(orders);
+        return;
+      }
       if (orders && orders.length) {
         this.subjectService.setHoldBulkDataForNext(orders);
         this.subjectService.setHoldOrderCountSumForConfirmScreen(this.holdOrder.Item3)
@@ -206,9 +212,38 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     });
   }
 
-  public itemQuantityChange(product: any) {
+  public itemQuantityChange(product: any, currentIndex: number) {
     console.log('product', product);
     product.DispatchQuantity = product.expandedRow.reduce((sum: number, row: any) => sum + row.Quantity, 0);
+    const currentChangeOrder = product.expandedRow[currentIndex];
+    if (currentChangeOrder && Object.keys(currentChangeOrder).length) {
+      const obj: IBulkOrderQuantityUpdateModel = {
+        OrderId: currentChangeOrder.OrderId,
+        DetailId: currentChangeOrder.DetailId,
+        Quantity: currentChangeOrder.Quantity
+      }
+      const indexAlreadyExistData = this.updateDispatchQuantityData.findIndex(f => f.OrderId == obj.OrderId && f.DetailId == obj.DetailId)
+      if (indexAlreadyExistData > -1) {
+        this.updateDispatchQuantityData[indexAlreadyExistData] = obj;
+      } else {
+        this.updateDispatchQuantityData.push(obj);
+      }
+      console.log('this.updateDispatchQuantityData',this.updateDispatchQuantityData)
+    }
+  }
+
+  public hitUpdateQuantityBulk(orders: any) {
+    this.setLoader(true);
+    this.adminOrderService.bulkOrderUpdaterQtyService(this.updateDispatchQuantityData).subscribe(res => {
+      if (res && res.Status == 'OK') {
+        this.subjectService.setHoldBulkDataForNext(orders);
+        this.subjectService.setHoldOrderCountSumForConfirmScreen(this.holdOrder.Item3)
+        this.router.navigate(['/admin', 'order', 'bulk-accept', 'confirm']);
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+        this.setLoader(false);
+      }
+    });
   }
 }
 

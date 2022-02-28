@@ -201,4 +201,15 @@ export class AdminOrderService {
         })
       )
   }
+
+  public bulkOrderUpdaterQtyService(data: any[]): Observable<any> {
+    return this.http
+      .post(AdminOrderUrls.bulkOrderUpdaterQty(this.adminBaseUrl), data)
+      .pipe(
+        map(res => {
+          const data: any = res;
+          return data;
+        })
+      )
+  }
 }

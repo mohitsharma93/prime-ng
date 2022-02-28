@@ -16,3 +16,9 @@ export interface IOrderCancelModel extends IOrderPostModel {
 export interface IOrderQuantityUpdateModel extends IOrderPostModel{
   Quantity: string
 }
+
+export interface IBulkOrderQuantityUpdateModel extends IOrderPostModel{
+  OrderId: string,
+  DetailId: string,
+  Quantity: string
+}
