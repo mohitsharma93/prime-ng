@@ -49,12 +49,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
   public status = ['Pending', 'Shipped', 'Delivered'];
-  public menuItems: MenuItem[] = [
-    { label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
-    { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
-  ];
   public selectedData: any[] = [];
   id: any;
+  public singleCancelOnStatusShipped: boolean = false;
 
   constructor(
     private router: Router,
@@ -74,31 +71,11 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.id = res['orderId']
       }
     })
-    // this.setMenuItem();
   }
 
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
-      // if (res && (res?.OrderID || res?.ShipmentId)) {
-      //   if (this.routeParam && this.routeParam['orderId']) {
-      //     const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
-      //     this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
-      //   }
-      //   this.selectedOrderDetail = of(res);
-      //   this.setColumById(res?.orderStatusId);
-      //   if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
-      //     this.showAction = true;
-      //     if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
-      //       this.showPrint = true;
-      //       // if (res.orderStatusId === 3) {
-      //       //   this.setMenuItem();
-      //       // }
-      //     }
-      //   } else {
-      //     this.showAction = false;
-      //   }
-      // }
       if (res && (res?.OrderID || res?.ShipmentId)) {
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
@@ -110,9 +87,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           this.showAction = true;
           if (res.Status === 'Shipped' || res.Status === 'Delivered') {
             this.showPrint = true;
-            // if (res.orderStatusId === 3) {
-            //   this.setMenuItem();
-            // }
           }
         } else {
           this.showAction = false;
@@ -169,17 +143,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         { field: 'TotalPrice', header: 'NET AMOUNT' },
       ]
     }
-  }
-
-  public setMenuItem() {
-    this.menuItems = [
-      { label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
-      { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
-    ]
-  }
-
-  public hitApiOnMenuItemClick() {
-
   }
 
   public getApiCallStatusWise(key: number): string {
@@ -247,9 +210,18 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
+          if (this.singleCancelOnStatusShipped) {
+            this.singleCancelOnStatusShipped = false;
+            this.cancelReasonControl.setValue('')
+            this.cancelOrder(hideShowCancelModel);
+            return
+          }
           this.backClicked();
         } else {
           this.toasterService.error(res?.ErrorMessage);
+          if (this.singleCancelOnStatusShipped) {
+            this.singleCancelOnStatusShipped = false;
+          }
         }
         this.cancelReasonControl.setValue('')
         this.cancelOrder(hideShowCancelModel);
@@ -471,5 +443,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       this.subjectService.setSaveFilterOnRedirection(filter);
       this.router.navigate(['/admin', 'order'])
     }
+  }
+
+  public deliverOrder(id: string): void {
+    this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
+      console.log(res)
+      if (res && res?.Status == 'OK') {
+        // this.backClicked();
+        const orderId = this.getCurrentOrder()?.OrderID
+        const apiMiddleStr = this.getApiCallStatusWise(orderId);
+        this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+      this.cancelReasonControl.setValue('')
+    });
   }
 }

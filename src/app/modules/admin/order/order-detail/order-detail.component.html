@@ -136,7 +136,6 @@
             </ng-template>
             <!-- scrollHeight="700px" -->
             <div>
-
               <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
                 [columns]="columns" [(selection)]="selectedData">
                 <ng-template pTemplate="header" let-columns>
@@ -148,7 +147,8 @@
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
                     </th>
-                    <th *ngIf="showAction">ACTION</th>
+                    <!-- <th *ngIf="showAction">ACTION</th> -->
+                    <th>ACTION</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -188,7 +188,13 @@
                         </ng-container>
                       </ng-template>
                     </td>
-                    <td class="outlined-button" *ngIf="showAction">
+                    <!-- <td class="outlined-button" *ngIf="showAction">
+                      <ng-container *ngTemplateOutlet="
+                          actionButton;
+                          context: { $implicit: rowData }
+                        "></ng-container>
+                    </td> -->
+                    <td class="outlined-button">
                       <ng-container *ngTemplateOutlet="
                           actionButton;
                           context: { $implicit: rowData }
@@ -241,28 +247,35 @@
     </div>
     <div class="d-flex justify-content-center outlined-button">
       <button pButton pRipple type="button" label="No" class="p-button-outlined outlined-border"
-        style="width: 90px; height: 40px;" (click)="cancelOrder(false); cancelReasonControl.setValue('')"></button>
+        style="width: 90px; height: 40px;"
+        (click)="cancelOrder(false); cancelReasonControl.setValue('');singleCancelOnStatusShipped = false;"></button>
       <button pButton pRipple type="button" label="Yes" class="p-button-outlined is_active ml-2"
         style="width: 90px; height: 40px;"
-        (click)="(getCurrentOrder()?.Status === 'Shipped') ? cancelSelected() : hitCancelOrderApi(false)"></button>
+        (click)="(getCurrentOrder()?.Status === 'Shipped' && !singleCancelOnStatusShipped) ? cancelSelected() : hitCancelOrderApi(false)"></button>
     </div>
   </p-dialog>
 </div>
 <ng-template #actionButton let-order>
-  <button pButton pRipple type="button" class="p-button-outlined order-detail-action" icon="pi pi-print"
-    *ngIf="showPrint" style="width: 36px; height: 41px" (click)="printInvoice(order)"></button>
+  <button pButton pRipple type="button" class="p-button-outlined order-detail-action" icon="pi pi-print" *ngIf="showPrint"
+    style="width: 36px; height: 41px" (click)="printInvoice(order)"></button>
   <button pButton pRipple type="button" label="View" class="p-button-outlined order-detail-action"
     (click)="redirectToDetail(order)" style="width: 85px"
     *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"></button>
   <button pButton pRipple type="button" label="Edit" class="p-button-outlined order-detail-action" style="width: 85px"
     *ngIf="
-      (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
-    " (click)="order.showEdit = !order.showEdit;"></button>
+        (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
+      " (click)="order.showEdit = !order.showEdit;"></button>
   <button pButton pRipple type="button" label="Save" class="p-button-outlined order-detail-action" style="width: 85px"
     *ngIf="
-      (selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit
-    " (click)="saveQuantity(order)"></button>
-  <i class="pi pi-ellipsis-h" style="font-size: 2rem" *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"></i>
+        (selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit
+      " (click)="saveQuantity(order)"></button>
+  <!-- <i class="pi pi-ellipsis-h" style="font-size: 2rem" *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"></i> -->
+  <button pButton pRipple type="button" label="D"
+    class="p-element p-button-raised p-button-success p-button p-component d"
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliverOrder(order.OrderId)"></button>
+  <button pButton pRipple type="button" label="C"
+    class="p-element p-button-raised p-button-danger ml-2 p-button p-component c"
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="singleCancelOnStatusShipped = true;cancelOrder(true)"></button>
   <div></div>
 </ng-template>
 <ng-template #statusCol let-status>
