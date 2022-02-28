@@ -218,8 +218,8 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
     const currentChangeOrder = product.expandedRow[currentIndex];
     if (currentChangeOrder && Object.keys(currentChangeOrder).length) {
       const obj: IBulkOrderQuantityUpdateModel = {
-        OrderId: currentChangeOrder.OrderId,
-        DetailId: currentChangeOrder.DetailId,
+        OrderId: currentChangeOrder?.OrderId,
+        DetailId: currentChangeOrder?.DetailId,
         Quantity: currentChangeOrder.Quantity
       }
       const indexAlreadyExistData = this.updateDispatchQuantityData.findIndex(f => f.OrderId == obj.OrderId && f.DetailId == obj.DetailId)
