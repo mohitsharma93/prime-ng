@@ -154,6 +154,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
           this.getOrders(this.orderRequestParam);
+          if (this.orderRequestParam.Status === 3) {
+            this.showPrint = true;
+          } else {
+            this.showPrint = false;
+          }
         } else {
           this.getOrders(this.orderRequestParam);
         }
