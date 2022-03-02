@@ -590,3 +590,13 @@ button.p-element.p-inputnumber-button.p-inputnumber-button-up.p-button.p-compone
 .confirmtbl table tr td {
   padding: 0.3rem !important;
 }
+
+td.bulk-tbl {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill,minmax(24%, 1fr));
+  gap: 1em;
+}
+.bulk-accept-table .p-datatable-tbody > tr > td {
+ 
+  border: 1px solid #fff !important;
+}

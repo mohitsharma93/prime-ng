@@ -63,7 +63,7 @@
                 </ng-template>
                 <ng-template pTemplate="rowexpansion" let-product>
                   <tr style="min-width: 100wh">
-                    <td class="d-flex justify-content-start bulk-hor-scroll" style="margin-left: 100px">
+                    <td class="justify-content-start bulk-hor-scroll bulk-tbl" style="margin-left: 30px">
                       <!-- <div *ngFor="let item of product.expandedRow" class="d-flex" style="margin-left: 80px">
                         <div style="margin-top: 7px" class="ml-2">
                           {{item.OrderId}}
@@ -87,9 +87,7 @@
                           <div class="arrow-left-right-button">
                             <p-inputNumber inputId="integerOnly" [(ngModel)]="item.Quantity" [showButtons]="true"
                               buttonLayout="horizontal" [step]="1" incrementButtonIcon="pi pi-plus"
-                              decrementButtonIcon="pi pi-minus" [min]="0" 
-                              (onInput)="itemQuantityChange(product)"
-                            >
+                              decrementButtonIcon="pi pi-minus" [min]="0" (onInput)="itemQuantityChange(product, currentIndex)">
                             </p-inputNumber>
                           </div>
                           <i class="pi pi-trash ml-2" (click)="showCancelPopUp(true, item.OrderId)"
@@ -111,7 +109,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="custom-dialog">
   <p-dialog [(visible)]="cancelModelShow" [position]="'center'" [modal]="true" [style]="{ width: '30vw' }"

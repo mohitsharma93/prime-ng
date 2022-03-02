@@ -569,8 +569,8 @@ thead.p-datatable-thead {
   z-index: 1;
 }
 .p-paginator .p-paginator-pages .p-paginator-page {
-  min-width: 2.5rem !important;
-  height: 2.5rem !important;
+  min-width: 2.3rem !important;
+  height: 2.3rem !important;
 }
 .p-button.p-button-icon-only {
   width: 2rem !important;
@@ -599,4 +599,10 @@ td.bulk-tbl {
 .bulk-accept-table .p-datatable-tbody > tr > td {
  
   border: 1px solid #fff !important;
+}
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #ff5722 !important;
+  border-color: #ff5722 !important;
+  color: #fff !important;
+  border-radius: 5px !important;
 }

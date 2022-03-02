@@ -49,12 +49,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public showAction: boolean = false;
   public statusWhereToShowActionColumn = [1, 3, 4];
   public status = ['Pending', 'Shipped', 'Delivered'];
-  public menuItems: MenuItem[] = [
-    { label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
-    { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
-  ];
   public selectedData: any[] = [];
   id: any;
+  public singleCancelOnStatusShipped: boolean = false;
+  public singleCancelOrderId: any = null;
 
   constructor(
     private router: Router,
@@ -74,31 +72,11 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.id = res['orderId']
       }
     })
-    // this.setMenuItem();
   }
 
   public ngOnInit(): void {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
-      // if (res && (res?.OrderID || res?.ShipmentId)) {
-      //   if (this.routeParam && this.routeParam['orderId']) {
-      //     const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
-      //     this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
-      //   }
-      //   this.selectedOrderDetail = of(res);
-      //   this.setColumById(res?.orderStatusId);
-      //   if (this.statusWhereToShowActionColumn.includes(res?.orderStatusId)) {
-      //     this.showAction = true;
-      //     if (res.orderStatusId === 3 || res.orderStatusId === 4 ) {
-      //       this.showPrint = true;
-      //       // if (res.orderStatusId === 3) {
-      //       //   this.setMenuItem();
-      //       // }
-      //     }
-      //   } else {
-      //     this.showAction = false;
-      //   }
-      // }
       if (res && (res?.OrderID || res?.ShipmentId)) {
         if (this.routeParam && this.routeParam['orderId']) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
@@ -110,9 +88,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           this.showAction = true;
           if (res.Status === 'Shipped' || res.Status === 'Delivered') {
             this.showPrint = true;
-            // if (res.orderStatusId === 3) {
-            //   this.setMenuItem();
-            // }
           }
         } else {
           this.showAction = false;
@@ -169,17 +144,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         { field: 'TotalPrice', header: 'NET AMOUNT' },
       ]
     }
-  }
-
-  public setMenuItem() {
-    this.menuItems = [
-      { label: 'Accept', command: () => { this.hitApiOnMenuItemClick(); } },
-      { label: 'Cancel', command: () => { this.hitApiOnMenuItemClick(); } }
-    ]
-  }
-
-  public hitApiOnMenuItemClick() {
-
   }
 
   public getApiCallStatusWise(key: number): string {
@@ -241,15 +205,29 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
       const obj: IOrderCancelModel = {
-        OrderID: this.getCurrentOrder()?.OrderID,
+        OrderID: (this.singleCancelOnStatusShipped) ? this.singleCancelOrderId  : this.getCurrentOrder()?.OrderID,
         DetailID: null,
         Remark: this.cancelReasonControl.value
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
+          if (this.singleCancelOnStatusShipped) {
+            this.singleCancelOnStatusShipped = false;
+            this.singleCancelOrderId = null;
+            this.cancelReasonControl.setValue('')
+            this.cancelOrder(hideShowCancelModel);
+            const order = this.getCurrentOrder()
+            const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
+            this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+            return
+          }
           this.backClicked();
         } else {
           this.toasterService.error(res?.ErrorMessage);
+          if (this.singleCancelOnStatusShipped) {
+            this.singleCancelOnStatusShipped = false;
+            this.singleCancelOrderId = null;
+          }
         }
         this.cancelReasonControl.setValue('')
         this.cancelOrder(hideShowCancelModel);
@@ -396,41 +374,60 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
 
-   public show() {
-    {
-      const req = {
-        url: '/api/sellerDashboard/ShopOverview/GetBulkAcceptOrderData',
-        params: '',
-      };
-      this.ds.get(req).subscribe((res: any) => {
-        if (res.Status === 'OK') {
-          const ref = this.dialogService.open(PrintInvoiceModelComponent, {
-            width: '70%',
-            height: '70%'
-          });
-          return (res);
-        }
-      });
-    }
+  public show() {
+    const req = {
+      url: '/api/sellerDashboard/ShopOverview/GetPrintInvoice/100',
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        debugger
+        const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
+
+  }
+
+  printInvoice(order: any) {
+    console.log(order);
+    const req = {
+      url: `/api/sellerDashboard/ShopOverview/GetPrintInvoice/${order.OrderId}`,
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      console.log(res.Data);
+      debugger;
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintInvoiceModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
   }
 
   public shipmentModel() {
-    {
-      const req = {
-        url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
-        params: '',
-      };
-      this.ds.get(req).subscribe((res: any) => {
-        if (res.Status === 'OK') {
-          const ref = this.dialogService.open(PrintShipmentModelComponent, {
-            data: res.Data,
-            width: '70%',
-            height: '70%'
-          });
-          return (res);
-        }
-      });
-    }
+    const req = {
+      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
+      params: '',
+    };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        const ref = this.dialogService.open(PrintShipmentModelComponent, {
+          data: res.Data,
+          width: '70%',
+          height: '70%'
+        });
+        return (res);
+      }
+    });
   }
 
   public redirectToOrder() {
@@ -452,5 +449,26 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       this.subjectService.setSaveFilterOnRedirection(filter);
       this.router.navigate(['/admin', 'order'])
     }
+  }
+
+  public deliverOrder(id: string): void {
+    this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
+      console.log(res)
+      if (res && res?.Status == 'OK') {
+        // this.backClicked();
+        const order = this.getCurrentOrder()
+        const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
+        this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+      } else {
+        this.toasterService.error(res?.ErrorMessage);
+      }
+      this.cancelReasonControl.setValue('')
+    });
+  }
+
+  public rowSingleCancel(cancel: boolean, orderId: any) {
+    this.singleCancelOrderId = orderId;
+    this.singleCancelOnStatusShipped = cancel;
+    this.cancelOrder(cancel)
   }
 }

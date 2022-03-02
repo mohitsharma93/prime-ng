@@ -455,8 +455,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public shipmentModel(order: any) {
+    let orderStatusId = 3;
+    if (order.Status === 'Shipped') {
+      orderStatusId = 3;
+    } else if (order.Status !== 'Shipped') {
+      orderStatusId = 4;
+    }
+
     const req = {
-      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${order.ShipmentId}`,
+      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${orderStatusId}/${order.ShipmentId}`,
       params: '',
     };
     this.ds.get(req).subscribe((res: any) => {
@@ -466,7 +473,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
           width: '70%',
           height: '70%'
         });
-        return (res);
       }
     });
   }

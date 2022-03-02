@@ -3,13 +3,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'app-print-invoice-model',
-  templateUrl: './print-invoice-model.component.html',
-  styleUrls: ['./print-invoice-model.component.scss']
+  selector: 'app-print-invoice-multiple-model',
+  templateUrl: './print-invoice-multiple-model.component.html',
+  styleUrls: ['./print-invoice-multiple-model.component.scss']
 })
-export class PrintInvoiceModelComponent implements OnInit {
+export class PrintInvoiceMultipleModelComponent implements OnInit {
 
-  data: {
+  listData: {
     AmountInWord: string
     BuyerAddress1: string
     BuyerAddress2: string
@@ -39,12 +39,12 @@ export class PrintInvoiceModelComponent implements OnInit {
     TaxableAmount: any
     TotalAmount: any
     _invoiceItemListDTO: any[],
-  };
+  }[];
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
     if (config.data) {
-      this.data = config.data;
+      this.listData = config.data;
     }
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core"
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 
 import { BaseComponent } from "../../../base.component";
 import { dummyData } from "./dummy";
@@ -20,10 +20,10 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   public columns: any[] = [];
   public orders$: Observable<any[]>;
   public selectedData: any[] = [];
-  public cancelReasonControl: FormControl = new FormControl('', [ Validators.required ]);
+  public cancelReasonControl: FormControl = new FormControl('', [Validators.required]);
   public cancelModelShow: boolean = false;
   public disableNext: boolean = false;
-  
+
   constructor(
     private _location: Location,
     private router: Router,
@@ -55,9 +55,9 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
 
   public setColumById() {
     this.columns = [
-      { field: 'BuyerName', header: 'BUYER NAME'},
-      { field: 'OrderId', header: 'ORDER ID'},
-      { field: 'NOOfItem', header: 'NO. OF ITEMS'},
+      { field: 'BuyerName', header: 'BUYER NAME' },
+      { field: 'OrderId', header: 'ORDER ID' },
+      { field: 'NOOfItem', header: 'NO. OF ITEMS' },
       { field: 'OrderAmount', header: 'ORDER AMOUNT' },
       { field: 'Status', header: 'STATUS' },
     ]
@@ -67,7 +67,7 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
     this.adminOrderService
       .bulkCancelOrderDetail(ids)
       .subscribe((res) => {
-        console.log("bulkcancelorder",res)
+        console.log("bulkcancelorder", res)
         if (res && res.Status == 'OK') {
           this.orders$ = of(res?.Data)
         } else {
@@ -75,7 +75,6 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
         }
       });
   }
-
 
   public cancelOrder(): void {
     console.log('in cancel order');
@@ -93,7 +92,7 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   }
 
   public rejectCancelPopUp(hideShowCancelModel: boolean): void {
-  this.cancelModelShow = hideShowCancelModel
+    this.cancelModelShow = hideShowCancelModel
   }
 
   public hitCancelOrderApi() {

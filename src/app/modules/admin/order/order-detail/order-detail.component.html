@@ -90,7 +90,7 @@
                   ">
                   <button pButton pRipple type="button" label="Print Invoice" class="p-button-outlined outlined-border"
                     style="padding: 4px 5px; font-size: 14px; margin-top: 8px" icon="pi pi-print"
-                    (click)="show()"></button>
+                    (click)="printCancelInvoice()"></button>
                 </p>
               </div>
             </div>
@@ -130,13 +130,13 @@
                     (click)="shipmentModel()"></button>
                   <button pButton pRipple type="button" label="Print Invoice"
                     class="p-button-outlined p-button-sm order-detail-action" icon="pi pi-print"
-                    (click)="show()"></button>
+                    (click)="printInvoiceMultiple()"></button>
                 </div>
               </div>
             </ng-template>
             <!-- scrollHeight="700px" -->
             <div>
-              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
+              <p-table  responsiveLayout="scroll" scrollHeight="calc(100vh - 437px)" [value]="(orders$ | async) || []" [scrollable]="true"
                 [columns]="columns" [(selection)]="selectedData">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
@@ -249,10 +249,10 @@
   </p-dialog>
 </div>
 <ng-template #actionButton let-order>
-  <button pButton pRipple type="button" class="p-button-outlined order-detail-action" icon="pi pi-print" *ngIf="showPrint"
-    style="width: 36px; height: 41px" (click)="printInvoice(order)"></button>
+  <button pButton pRipple type="button" class="p-button-outlined order-detail-action" icon="pi pi-print"
+    *ngIf="showPrint" style="width: 36px; height: 41px" (click)="printInvoice(order)"></button>
   <button pButton pRipple type="button" label="View" class="p-button-outlined order-detail-action"
-    (click)="redirectToDetail(order)" style="width: 85px"
+    (click)="redirectToDetail(order)" style="width: 38px; padding: 10px 1px; font-size: 13px;"
     *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"></button>
   <button pButton pRipple type="button" label="Edit" class="p-button-outlined order-detail-action" style="width: 85px"
     *ngIf="

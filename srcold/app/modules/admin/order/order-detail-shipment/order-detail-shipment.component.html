@@ -95,11 +95,10 @@
               </div>
             </div>
             <div>
-             
+
               <!-- scrollHeight="700px" -->
               <p-table responsiveLayout="scroll" scrollHeight="300px"
-               [value]="(orders$ | async)?.getShowOrderDetailList || []"
-                [scrollable]="true"  [columns]="columns">
+                [value]="(orders$ | async)?.getShowOrderDetailList || []" [scrollable]="true" [columns]="columns">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
