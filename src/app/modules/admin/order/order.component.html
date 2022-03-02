@@ -134,12 +134,12 @@
               </ng-template>
             </p-table>
           </div>
-          <div class="text-uppercase d-flex justify-content-center c-danger mt-4 cursor-pointer" *ngIf="
+          <!-- <div class="text-uppercase d-flex justify-content-center c-danger mt-4 cursor-pointer" *ngIf="
               orderRequestParam?.Status === 1 ||
               orderRequestParam?.Status === 2
             " (click)="loadMore()" [ngClass]="{'disabled': !(orders$ | async)?.Next}">
             view more
-          </div>
+          </div> -->
         </p-card>
       </div>
     </div>

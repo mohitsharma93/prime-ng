@@ -398,6 +398,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.loadMorePage = null;
     }
     this.setColumById(orderStatusId);
+    if (orderStatusId === 1 || orderStatusId === 2) {
+      delete this.orderRequestParam.PageNo 
+      delete this.orderRequestParam.PageSize 
+    }
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {
       this.showPrint = true;
