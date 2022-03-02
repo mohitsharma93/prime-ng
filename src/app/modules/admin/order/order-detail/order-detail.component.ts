@@ -55,6 +55,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public singleCancelOrderId: any = null;
   printInvoiceIds: any[] = [];
   public disableAcceptOrder: boolean = false;
+  public notCallApiAfterQuantityUpdate: boolean = true;
 
   constructor(
     private router: Router,
@@ -80,7 +81,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
       if (res && (res?.OrderID || res?.ShipmentId)) {
-        if (this.routeParam && this.routeParam['orderId']) {
+        if ((this.routeParam && this.routeParam['orderId']) && this.notCallApiAfterQuantityUpdate) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
           this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
         }
@@ -270,9 +271,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         const sum = orders?.reduce((acc: number, order: any) => acc += order.TotalPrice, 0)
         console.log('sum', sum);
         if (sum && sum > 0) {
+          this.notCallApiAfterQuantityUpdate = false
           const orderDetail = this.getOrderDetailUpSide();
           orderDetail['OrderAmount'] = sum;
-          this.subjectService.setOrderDetail(orderDetail)
+          this.subjectService.setOrderDetail(orderDetail);
         }
       } else {
         this.toasterService.error(res?.ErrorMessage);
