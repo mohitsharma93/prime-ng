@@ -163,6 +163,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.getOrders(this.orderRequestParam);
         }
       });
+
+      // this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
+      //   if (res && res?.length) {
+      //     console.log('res ids', res)
+      //   }
+      // })
   }
 
   public ngOnDestroy(): void {
@@ -184,7 +190,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.subjectService.holdAcceptedOrderForSelected$
         .pipe(take(1))
         .subscribe((res) => {
-          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
+          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)];
         })
       this.subjectService.holdAcceptedOrderIdsForSelcted$
         .pipe(take(1), filter(p => p && p.length))
@@ -444,12 +450,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToBulkAccept() {
-    this.subjectService.setSaveFilterOnRedirection({
-      topFilter: this.orderRequestParam,
-      ...(this.searchControl.value && {
-        searchString: this.searchControl.value,
-      }),
-    });
+    this.saveCurrentFilter()
     this.router.navigate(['/admin', 'order', 'bulk-accept']);
   }
 
@@ -457,6 +458,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map((p) => p.OrderID);
       this.subjectService.setHoldIdsForCreateShipment(allId);
+      this.saveCurrentFilter()
       this.router.navigate(['/admin', 'order', 'review-shipment']);
     } else {
       this.toasterService.info('Select order first through checkbox.');
@@ -483,6 +485,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
           height: '70%'
         });
       }
+    });
+  }
+
+  public saveCurrentFilter() {
+    this.subjectService.setSaveFilterOnRedirection({
+      topFilter: this.orderRequestParam,
+      ...(this.searchControl.value && {
+        searchString: this.searchControl.value,
+      }),
     });
   }
 }

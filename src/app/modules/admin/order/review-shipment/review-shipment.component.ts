@@ -43,6 +43,10 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
   }
 
   public backClicked(): void {
+    if (this.allIds && this.allIds.length) {
+      console.log('ids', this.allIds)
+      this.subjectService.setHoldAcceptedOrderIdsForSelcted(this.allIds);
+    }
     this._location.back();
   }
 
@@ -90,6 +94,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit {
           showElse: true,
           Status: 'Shipped'
         });
+        this.subjectService.setHoldWhereToRedirectOnBackFromShipped('BackToAccepted');
         this.router.navigate([
           '/admin',
           'order',

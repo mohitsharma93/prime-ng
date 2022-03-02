@@ -100,6 +100,18 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public backClicked(): void {
+    this.subjectService.holdWhereToRedirectOnBackFromShipped$.pipe(take(1)).subscribe(res => {
+      if (res && res === 'BackToAccepted') {
+        let filter = this.getSaveFilterRedirection();
+        if (filter && Object.keys(filter).length) {
+          filter.topFilter.Status = 2
+          this.subjectService.setSaveFilterOnRedirection(filter);
+        }
+        this.subjectService.setHoldWhereToRedirectOnBackFromShipped(null);
+        this.backClicked();
+        return;
+      }
+    });
     this._location.back();
   }
 
