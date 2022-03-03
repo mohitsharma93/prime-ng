@@ -86,7 +86,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
             // endPoint: this.dateConvection(res),
             searchTimeRange: this.dateConvection(res),
             PageNo: 1,
-            PageSize: 10
+            PageSize: 200
           });
           if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
             this.dateChangeByUser = true;
@@ -405,8 +405,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2) {
-      delete this.orderRequestParam.PageNo 
-      delete this.orderRequestParam.PageSize 
+      // delete this.orderRequestParam.PageNo 
+      // delete this.orderRequestParam.PageSize 
     }
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {

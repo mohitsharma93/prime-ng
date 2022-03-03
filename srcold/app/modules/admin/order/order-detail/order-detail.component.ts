@@ -2,17 +2,17 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
-import { Observable, of, take, takeUntil } from 'rxjs';
+import { forkJoin, Observable, of, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
 import { FormControl, Validators } from '@angular/forms';
 import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/admin/order';
-import { MenuItem } from 'primeng/api';
 import { PrintInvoiceModelComponent } from 'src/app/modules/print-invoice-model/print-invoice-model.component';
 import { PrintShipmentModelComponent } from 'src/app/modules/print-shipment-model/print-shipment-model.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { DataService } from 'src/app/shared/services/data.service';
+import { PrintInvoiceMultipleModelComponent } from 'src/app/modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
 
 interface Products {
   id?: string;
@@ -53,6 +53,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   id: any;
   public singleCancelOnStatusShipped: boolean = false;
   public singleCancelOrderId: any = null;
+  printInvoiceIds: any[] = [];
+  public disableAcceptOrder: boolean = false;
+  public notCallApiAfterQuantityUpdate: boolean = true;
 
   constructor(
     private router: Router,
@@ -78,7 +81,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
       if (res && (res?.OrderID || res?.ShipmentId)) {
-        if (this.routeParam && this.routeParam['orderId']) {
+        if ((this.routeParam && this.routeParam['orderId']) && this.notCallApiAfterQuantityUpdate) {
           const apiMiddleStr = this.getApiCallStatusWise(res?.orderStatusId);
           this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
         }
@@ -97,6 +100,18 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public backClicked(): void {
+    this.subjectService.holdWhereToRedirectOnBackFromShipped$.pipe(take(1)).subscribe(res => {
+      if (res && res === 'BackToAccepted') {
+        let filter = this.getSaveFilterRedirection();
+        if (filter && Object.keys(filter).length) {
+          filter.topFilter.Status = 2
+          this.subjectService.setSaveFilterOnRedirection(filter);
+        }
+        this.subjectService.setHoldWhereToRedirectOnBackFromShipped(null);
+        this.backClicked();
+        return;
+      }
+    });
     this._location.back();
   }
 
@@ -158,9 +173,19 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public getOrderDetailRecord(orderId: number, apiMiddleStr: string): void {
+    this.printInvoiceIds = [];
     this.adminOrderService.getOrderDetailRecordService(orderId, apiMiddleStr).subscribe(res => {
       if (res && res.Status == 'OK') {
         let changeRes = res?.Data;
+        if (changeRes && changeRes.shipMentOrderDataListDTO) {
+          for (const item of changeRes.shipMentOrderDataListDTO) {
+            this.printInvoiceIds.push(item.OrderId);
+          }
+        } else if (changeRes && changeRes.deliveredOrderDataListDTO) {
+          for (const item of changeRes.deliveredOrderDataListDTO) {
+            this.printInvoiceIds.push(item.OrderId);
+          }
+        }
         console.log('changeRes before change', changeRes)
         if (this.getCurrentOrder()?.Status === 'Pending') {
           changeRes.getShowOrderDetailList.map((order: any) => {
@@ -252,14 +277,16 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.updateQuantityService(obj).subscribe(res => {
       console.log(res);
       if (res && res?.Status == 'OK') {
+        this.disableAcceptOrder = false;
         order['showEdit'] = true;
         const orders = this.getLocalOrder();
         const sum = orders?.reduce((acc: number, order: any) => acc += order.TotalPrice, 0)
         console.log('sum', sum);
         if (sum && sum > 0) {
+          this.notCallApiAfterQuantityUpdate = false
           const orderDetail = this.getOrderDetailUpSide();
           orderDetail['OrderAmount'] = sum;
-          this.subjectService.setOrderDetail(orderDetail)
+          this.subjectService.setOrderDetail(orderDetail);
         }
       } else {
         this.toasterService.error(res?.ErrorMessage);
@@ -373,27 +400,44 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     return upSideOrderDetail
   }
 
+  printCancelInvoice() {
+    const order = this.getCurrentOrder();
+    if (order) {
+      order['OrderId'] = order['OrderID'];
+      this.printInvoice(order)
+    }
+  }
 
-  public show() {
-    const req = {
-      url: '/api/sellerDashboard/ShopOverview/GetPrintInvoice/100',
-      params: '',
-    };
-    this.ds.get(req).subscribe((res: any) => {
-      if (res.Status === 'OK') {
-        debugger
-        const ref = this.dialogService.open(PrintInvoiceModelComponent, {
-          data: res.Data,
+  public printInvoiceMultiple() {
+    let itemCount = 0;
+    let printData: any[] = [];
+    let calls: any[] = [];
+    for (let i = 0; i < this.printInvoiceIds.length; i++) {
+      const req = {
+        url: `/api/sellerDashboard/ShopOverview/GetPrintInvoice/${this.printInvoiceIds[i]}`,
+        params: ''
+      };
+      calls.push(this.ds.get(req));
+    }
+    forkJoin(...calls).subscribe((data: any) => {
+      if (data && data.length) {
+        for (const apiRes of data) {
+          if (apiRes.Status === 'OK') {
+            printData.push(apiRes.Data);
+          }
+        }
+      }
+      if (printData.length > 0) {
+        const ref = this.dialogService.open(PrintInvoiceMultipleModelComponent, {
+          data: printData,
           width: '70%',
           height: '70%'
         });
-        return (res);
       }
-    });
-
+    })
   }
 
-  printInvoice(order: any) {
+  public printInvoice(order: any) {
     console.log(order);
     const req = {
       url: `/api/sellerDashboard/ShopOverview/GetPrintInvoice/${order.OrderId}`,
@@ -401,21 +445,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     };
     this.ds.get(req).subscribe((res: any) => {
       console.log(res.Data);
-      debugger;
       if (res.Status === 'OK') {
         const ref = this.dialogService.open(PrintInvoiceModelComponent, {
           data: res.Data,
           width: '70%',
           height: '70%'
         });
-        return (res);
       }
     });
   }
 
   public shipmentModel() {
+    const order = this.getCurrentOrder();
     const req = {
-      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${this.id}`,
+      url: `api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${order.orderStatusId}/${this.id}`,
       params: '',
     };
     this.ds.get(req).subscribe((res: any) => {
@@ -425,7 +468,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           width: '70%',
           height: '70%'
         });
-        return (res);
       }
     });
   }

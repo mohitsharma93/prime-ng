@@ -45,6 +45,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   public selectedOrderDetail: Observable<any>;
   public showPrint: boolean = false;
   public showAction: boolean = false;
+  public printOrderId: any;
 
   constructor(
     private router: Router,
@@ -60,6 +61,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     this.actRoute.params.subscribe(res => {
       this.routeParam = res;
       if (res && res['id']) {
+        this.printOrderId = res['id']
         this.getOrderDetailRecord(res['id']);
       }
     })
@@ -148,10 +150,9 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     });
   }
 
-  public show() {
-
+  public printInvoice() {
     const req = {
-      url: '/api/sellerDashboard/ShopOverview/GetPrintInvoice/100',
+      url: `/api/sellerDashboard/ShopOverview/GetPrintInvoice/${this.printOrderId}`,
       params: '',
     };
     this.ds.get(req).subscribe((res: any) => {
@@ -161,9 +162,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
           width: '70%',
           height: '70%'
         });
-        return (res);
       }
     });
-
   }
 }

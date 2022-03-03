@@ -28,6 +28,7 @@ export class TopBarComponent implements OnInit {
   public ngOnInit(): void {
     this.userDetail = this.activeUserService.getUser();
     this.searchControl.valueChanges.pipe(debounceTime(400)).subscribe(res => {
+      console.log(res)
       this.subjectService.setSearchStringFromTobBar(res);
     })
   }

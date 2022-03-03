@@ -1,5 +1,5 @@
 <div class="content-wrapper">
-  <!-- <loader *ngIf="(showLoader | async)"></loader> -->
+  <loader *ngIf="(showLoader | async)"></loader>
   <div class="">
     <div class="text-center justify-content-between">
       <div class="outlined-button order-outlinebtn">
@@ -11,7 +11,7 @@
         <ng-container>
           <div class="c-search col-md-4">
             <div>
-              <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile/Shipment" type="text"
+              <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile" type="text"
                 [formControl]="searchControl" />
               <!-- <i class="pi pi-times" (click)="resetSearch()"></i> -->
             </div>
@@ -77,7 +77,7 @@
 
           <div class="order-table">
             <!-- [rowsPerPageOptions]="[5, 10, 25, 50]" -->
-            <p-table responsiveLayout="scroll" scrollHeight="350px" [value]="products?.lstorderDetails"
+            <p-table responsiveLayout="scroll" scrollHeight="calc(100vh - 378px)" [value]="products?.lstorderDetails"
               [scrollable]="false" [paginator]="
                 orderRequestParam?.Status === 1 ||
                 orderRequestParam?.Status === 2
@@ -134,12 +134,12 @@
               </ng-template>
             </p-table>
           </div>
-          <div class="text-uppercase d-flex justify-content-center c-danger mt-4 cursor-pointer" *ngIf="
+          <!-- <div class="text-uppercase d-flex justify-content-center c-danger mt-4 cursor-pointer" *ngIf="
               orderRequestParam?.Status === 1 ||
               orderRequestParam?.Status === 2
             " (click)="loadMore()" [ngClass]="{'disabled': !(orders$ | async)?.Next}">
             view more
-          </div>
+          </div> -->
         </p-card>
       </div>
     </div>

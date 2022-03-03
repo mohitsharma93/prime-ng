@@ -24,23 +24,8 @@ export class UserAuthService {
     })
   };
 
-//   loginUser(req: any) {
-//     const url = this.baseUrl + req.url;
-//     return this.http.post(url, req.params, this.httpOptions).pipe(
-//       map((response: any) => response),
-//       catchError((err) => {
-//         if (err.error && err.error == 'Wrong Crendtials') {
-//           this.toasterService.error(err.error.error_description);
-//         } else {
-//           this.toasterService.error('User not found. Contact customer support');
-//         }
-//         return err;
-//       })
-//     );
-//   }
 
-// }
-loginUser(req: any) {
+ public loginUser(req: any) {
   const url = this.baseUrl + req.url;
   return this.http.post(url, req.params, this.httpOptions).pipe(
     map((response: any) => response),

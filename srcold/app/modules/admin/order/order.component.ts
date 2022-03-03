@@ -154,10 +154,21 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
           this.getOrders(this.orderRequestParam);
+          if (this.orderRequestParam.Status === 3) {
+            this.showPrint = true;
+          } else {
+            this.showPrint = false;
+          }
         } else {
           this.getOrders(this.orderRequestParam);
         }
       });
+
+      // this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
+      //   if (res && res?.length) {
+      //     console.log('res ids', res)
+      //   }
+      // })
   }
 
   public ngOnDestroy(): void {
@@ -179,7 +190,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.subjectService.holdAcceptedOrderForSelected$
         .pipe(take(1))
         .subscribe((res) => {
-          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)]
+          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)];
         })
       this.subjectService.holdAcceptedOrderIdsForSelcted$
         .pipe(take(1), filter(p => p && p.length))
@@ -393,6 +404,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.loadMorePage = null;
     }
     this.setColumById(orderStatusId);
+    if (orderStatusId === 1 || orderStatusId === 2) {
+      delete this.orderRequestParam.PageNo 
+      delete this.orderRequestParam.PageSize 
+    }
     this.getOrders(this.orderRequestParam);
     if (orderStatusId === 3) {
       this.showPrint = true;
@@ -435,12 +450,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToBulkAccept() {
-    this.subjectService.setSaveFilterOnRedirection({
-      topFilter: this.orderRequestParam,
-      ...(this.searchControl.value && {
-        searchString: this.searchControl.value,
-      }),
-    });
+    this.saveCurrentFilter()
     this.router.navigate(['/admin', 'order', 'bulk-accept']);
   }
 
@@ -448,6 +458,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     if (this.selectedData && this.selectedData.length) {
       const allId: number[] = this.selectedData.map((p) => p.OrderID);
       this.subjectService.setHoldIdsForCreateShipment(allId);
+      this.saveCurrentFilter()
       this.router.navigate(['/admin', 'order', 'review-shipment']);
     } else {
       this.toasterService.info('Select order first through checkbox.');
@@ -455,8 +466,15 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public shipmentModel(order: any) {
+    let orderStatusId = 3;
+    if (order.Status === 'Shipped') {
+      orderStatusId = 3;
+    } else if (order.Status !== 'Shipped') {
+      orderStatusId = 4;
+    }
+
     const req = {
-      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${order.ShipmentId}`,
+      url: `/api/sellerDashboard/ShopOverview/GetPrintShipmentDetails/${orderStatusId}/${order.ShipmentId}`,
       params: '',
     };
     this.ds.get(req).subscribe((res: any) => {
@@ -466,8 +484,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
           width: '70%',
           height: '70%'
         });
-        return (res);
       }
+    });
+  }
+
+  public saveCurrentFilter() {
+    this.subjectService.setSaveFilterOnRedirection({
+      topFilter: this.orderRequestParam,
+      ...(this.searchControl.value && {
+        searchString: this.searchControl.value,
+      }),
     });
   }
 }

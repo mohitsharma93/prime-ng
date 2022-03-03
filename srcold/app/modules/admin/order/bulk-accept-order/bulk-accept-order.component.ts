@@ -134,6 +134,8 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
           const findRow = obj.expandedRow.findIndex((obj: any) => obj.OrderId === this.holdOrderIdToAddCancel)
           if (findRow > -1) {
             obj.expandedRow[findRow]['show'] = true;
+            // reduce dispatch quantity.
+            obj.DispatchQuantity -= obj.expandedRow[findRow].Quantity;
           }
           return [...acc, obj];
         }, []);

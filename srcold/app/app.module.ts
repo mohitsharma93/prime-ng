@@ -12,6 +12,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { PrintModelComponent } from './modules/print-model/print-model.component';
 import { PrintShipmentModelComponent } from './modules/print-shipment-model/print-shipment-model.component';
 import { PrintInvoiceModelComponent } from './modules/print-invoice-model/print-invoice-model.component';
+import { PrintInvoiceMultipleModelComponent } from './modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { PrintInvoiceModelComponent } from './modules/print-invoice-model/print-
     PrintModelComponent,
     PrintShipmentModelComponent,
     PrintInvoiceModelComponent,
+    PrintInvoiceMultipleModelComponent
   ],
   imports: [
     BrowserModule,

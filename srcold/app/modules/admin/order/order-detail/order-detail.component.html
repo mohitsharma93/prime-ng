@@ -2,9 +2,10 @@
   <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
     <i class="fa fa-arrow-left"></i> &nbsp;&nbsp;
     {{
-    (this.selectedOrderDetail | async)?.orderStatusId === 3 || (this.selectedOrderDetail | async)?.orderStatusId === 4
-    ? 'View Shipment'
-    : 'Order Details'
+      (this.selectedOrderDetail | async)?.orderStatusId === 3 ||
+      (this.selectedOrderDetail | async)?.orderStatusId === 4
+        ? "View Shipment"
+        : "Order Details"
     }}
   </h4>
   <div class="page-content">
@@ -12,19 +13,27 @@
       <div class="">
         <p-card>
           <div class="d-flex flex-column">
-            <div *ngIf="!(selectedOrderDetail | async)?.showElse; else orderDetail">
+            <div
+              *ngIf="!(selectedOrderDetail | async)?.showElse; else orderDetail"
+            >
               <div class="tab_sec_left">
                 <p>
                   ID:
-                  <span><b>{{ (selectedOrderDetail | async)?.OrderID }}</b></span>
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.OrderID }}</b></span
+                  >
                 </p>
                 <p>
                   Store Name:
-                  <span><b>{{ (selectedOrderDetail | async)?.ShopName }}</b></span>
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.ShopName }}</b></span
+                  >
                 </p>
                 <p>
                   Mobile No.:
-                  <span><b>{{ (selectedOrderDetail | async)?.Mobile }}</b></span>
+                  <span
+                    ><b>{{ (selectedOrderDetail | async)?.Mobile }}</b></span
+                  >
                 </p>
                 <br />
                 <p>
@@ -36,34 +45,46 @@
                   Status
                   <span class="ml-2">
                     <ng-container
-                      *ngTemplateOutlet="statusCol context: { $implicit:  (selectedOrderDetail | async)?.Status }">
+                      *ngTemplateOutlet="
+                        statusCol;
+                        context: {
+                          $implicit: (selectedOrderDetail | async)?.Status
+                        }
+                      "
+                    >
                     </ng-container>
-
                   </span>
-
                 </p>
                 <br /><br />
                 <p>
                   Order Date:
                   <span>{{
                     (selectedOrderDetail | async)?.OrderDate
-                    | date: "MMM. d, y : h:mm a"
-                    }}</span>
+                      | date: "MMM. d, y : h:mm a"
+                  }}</span>
                 </p>
-                <p *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'">
+                <p
+                  *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'"
+                >
                   Cancelled Date:
                   <span>{{
                     (selectedOrderDetail | async)?.CancelationDate
-                    | date: "MMM. d, y : h:mm a"
-                    }}</span>
+                      | date: "MMM. d, y : h:mm a"
+                  }}</span>
                 </p>
-                <div class="d-flex flex-column cancel-reason"
-                  *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'">
+                <div
+                  class="d-flex flex-column cancel-reason"
+                  *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'"
+                >
                   <p>
-                    Cancelled by : <span>{{(selectedOrderDetail | async)?.CancelBy}}</span>
+                    Cancelled by :
+                    <span>{{ (selectedOrderDetail | async)?.CancelBy }}</span>
                   </p>
                   <p>
-                    Reason for cancellation : <span>{{(selectedOrderDetail | async)?.CancellationRemark}}</span>
+                    Reason for cancellation :
+                    <span>{{
+                      (selectedOrderDetail | async)?.CancellationRemark
+                    }}</span>
                   </p>
                 </div>
               </div>
@@ -76,21 +97,31 @@
                   Delivery Charges:
                   <span>{{
                     (selectedOrderDetail | async)?.DeliveryCharges
-                    }}</span>
+                  }}</span>
                 </p>
                 <h5 class="d-flex justify-content-end">
                   Grant Total:
-                  <span><b>{{
+                  <span
+                    ><b>{{
                       (selectedOrderDetail | async)?.OrderAmount +
-                      (selectedOrderDetail | async)?.DeliveryCharges
-                      }}</b></span>
+                        (selectedOrderDetail | async)?.DeliveryCharges
+                    }}</b></span
+                  >
                 </h5>
-                <p class="outlined-button d-flex justify-content-end" *ngIf="
-                    (selectedOrderDetail | async)?.Status === 'Cancelled'
-                  ">
-                  <button pButton pRipple type="button" label="Print Invoice" class="p-button-outlined outlined-border"
-                    style="padding: 4px 5px; font-size: 14px; margin-top: 8px" icon="pi pi-print"
-                    (click)="show()"></button>
+                <p
+                  class="outlined-button d-flex justify-content-end"
+                  *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'"
+                >
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Print Invoice"
+                    class="p-button-outlined outlined-border"
+                    style="padding: 4px 5px; font-size: 14px; margin-top: 8px"
+                    icon="pi pi-print"
+                    (click)="printCancelInvoice()"
+                  ></button>
                 </p>
               </div>
             </div>
@@ -110,109 +141,205 @@
                   <p class="p-inline">
                     Created Date:
                     {{
-                    (selectedOrderDetail | async)?.OrderDate
-                    | date: "MMM. d, y"
+                      (selectedOrderDetail | async)?.OrderDate
+                        | date: "MMM. d, y"
                     }}
                   </p>
-                  <p *ngIf="(selectedOrderDetail | async)?.Status === 'Delivered'">
+                  <p
+                    *ngIf="
+                      (selectedOrderDetail | async)?.Status === 'Delivered'
+                    "
+                  >
                     Closed Date:
                     {{
-                    (selectedOrderDetail | async)?.CloseDate
-                    | date: "MMM. d, y"
+                      (selectedOrderDetail | async)?.CloseDate
+                        | date: "MMM. d, y"
                     }}
                   </p>
                 </div>
               </div>
               <div class="d-flex justify-content-end mb-2">
                 <div class="outlined-button">
-                  <button pButton pRipple type="button" label="Print Shipment Details"
-                    class="p-button-outlined p-button-sm order-detail-action" icon="pi pi-print"
-                    (click)="shipmentModel()"></button>
-                  <button pButton pRipple type="button" label="Print Invoice"
-                    class="p-button-outlined p-button-sm order-detail-action" icon="pi pi-print"
-                    (click)="show()"></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Print Shipment Details"
+                    class="p-button-outlined p-button-sm order-detail-action"
+                    icon="pi pi-print"
+                    (click)="shipmentModel()"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Print Invoice"
+                    class="p-button-outlined p-button-sm order-detail-action"
+                    icon="pi pi-print"
+                    (click)="printInvoiceMultiple()"
+                  ></button>
                 </div>
               </div>
             </ng-template>
             <!-- scrollHeight="700px" -->
             <div>
-              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
-                [columns]="columns" [(selection)]="selectedData">
+              <p-table
+                responsiveLayout="scroll"
+                scrollHeight="calc(100vh - 437px)"
+                [value]="(orders$ | async) || []"
+                [scrollable]="true"
+                [columns]="columns"
+                [(selection)]="selectedData"
+              >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
-                    <th *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
-                    </th>
+                    <th
+                      *ngIf="
+                        (selectedOrderDetail | async)?.Status === 'Shipped'
+                      "
+                    ></th>
 
-                    <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
+                    <th
+                      *ngFor="let col of columns"
+                      [pSortableColumn]="col.sort ? col.field : ''"
+                    >
                       {{ col.header }}
-                      <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+                      <p-sortIcon
+                        *ngIf="col.sort"
+                        [field]="col.field"
+                      ></p-sortIcon>
                     </th>
                     <th *ngIf="showAction">ACTION</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                   <tr>
-                    <td *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'">
-                      <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
+                    <td
+                      *ngIf="
+                        (selectedOrderDetail | async)?.Status === 'Shipped'
+                      "
+                    >
+                      <p-tableCheckbox
+                        [value]="rowData"
+                        class="custom-checkbox"
+                      ></p-tableCheckbox>
                     </td>
                     <td *ngFor="let col of columns">
-                      <ng-container *ngIf="
+                      <ng-container
+                        *ngIf="
                           (selectedOrderDetail | async)?.Status === 'Pending' &&
                             col.field === 'Quantity';
                           else showString
-                        ">
+                        "
+                      >
                         <div class="inc-dec-button">
-                          <p-inputNumber [disabled]="rowData['showEdit']" inputId="integerOnly"
-                            [(ngModel)]="rowData[col.field]" [showButtons]="true" buttonLayout="horizontal" [step]="1"
-                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" (onInput)="
+                          <p-inputNumber
+                            [disabled]="rowData['showEdit']"
+                            inputId="integerOnly"
+                            [(ngModel)]="rowData[col.field]"
+                            [showButtons]="true"
+                            buttonLayout="horizontal"
+                            [step]="1"
+                            incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus"
+                            (onInput)="
                               changeAmountAsPerQuantity($event.value, rowData)
-                            " [min]="0">
+                            "
+                            [min]="0"
+                          >
                           </p-inputNumber>
                         </div>
                       </ng-container>
                       <ng-template #showString>
                         {{
-                        (col.field === 'OrderDate' || col.field === 'DeliveryDate')
-                        ? (rowData[col.field] | date: "MMM. d, y")
-                        : (col.field === 'Status')
-                        ? ''
-                        : ((selectedOrderDetail | async)?.ShipmentId && col.field === 'OrderAmount')
-                        ? rowData[col.field] + rowData['DeliveryCharges']
-                        : rowData[col.field]
+                          col.field === "OrderDate" ||
+                          col.field === "DeliveryDate"
+                            ? (rowData[col.field] | date: "MMM. d, y")
+                            : col.field === "Status"
+                            ? ""
+                            : (selectedOrderDetail | async)?.ShipmentId &&
+                              col.field === "OrderAmount"
+                            ? rowData[col.field] + rowData["DeliveryCharges"]
+                            : rowData[col.field]
                         }}
 
                         <ng-container *ngIf="col.field === 'Status'">
-                          <ng-container *ngTemplateOutlet="statusCol context: { $implicit:  rowData[col.field] }">
+                          <ng-container
+                            *ngTemplateOutlet="
+                              statusCol;
+                              context: { $implicit: rowData[col.field] }
+                            "
+                          >
                           </ng-container>
                         </ng-container>
                       </ng-template>
                     </td>
                     <td class="outlined-button" *ngIf="showAction">
-                      <ng-container *ngTemplateOutlet="
+                      <ng-container
+                        *ngTemplateOutlet="
                           actionButton;
                           context: { $implicit: rowData }
-                        "></ng-container>
+                        "
+                      ></ng-container>
                     </td>
                   </tr>
                 </ng-template>
               </p-table>
             </div>
             <div class="d-flex justify-content-center mt-3">
-              <button pButton pRipple type="button" label="Add to shipment" class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted'" (click)="addToShipment()"></button>
-              <button pButton pRipple type="button" label="Accept Order" class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'" (click)="acceptOrder()"></button>
-              <button pButton pRipple type="button" label="Delivered Selected" class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliveredSelected()"></button>
-              <button pButton type="button" label="Cancel Order" class="p-button-raised p-button-danger ml-2"
-                (click)="cancelOrder(true)" *ngIf="
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Add to shipment"
+                class="p-button-raised p-button-success"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted'"
+                (click)="addToShipment()"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Accept Order"
+                class="p-button-raised p-button-success"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'"
+                (click)="acceptOrder()"
+                [disabled]="disableAcceptOrder"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Delivered Selected"
+                class="p-button-raised p-button-success"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+                (click)="deliveredSelected()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Cancel Order"
+                class="p-button-raised p-button-danger ml-2"
+                (click)="cancelOrder(true)"
+                *ngIf="
                   (selectedOrderDetail | async)?.Status !== 'Delivered' &&
                   (selectedOrderDetail | async)?.Status !== 'Shipped' &&
-                  ((selectedOrderDetail | async)?.Status !== 'Cancelled')
-                "></button>
-              <button pButton type="button" label="Cancel Selected" class="p-button-raised p-button-danger ml-2"
+                  (selectedOrderDetail | async)?.Status !== 'Cancelled'
+                "
+                [disabled]="(selectedOrderDetail | async)?.Status === 'Pending' && disableAcceptOrder"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Cancel Selected"
+                class="p-button-raised p-button-danger ml-2"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
-                (click)="(selectedData && selectedData.length) ? cancelOrder(true) : warningCancel()"></button>
+                (click)="
+                  selectedData && selectedData.length
+                    ? cancelOrder(true)
+                    : warningCancel()
+                "
+              ></button>
             </div>
           </div>
         </p-card>
@@ -222,16 +349,33 @@
 </div>
 
 <div class="custom-dialog">
-  <p-dialog [(visible)]="cancelModelShow" [position]="'center'" [modal]="true" [style]="{ width: '30vw' }"
-    [baseZIndex]="10000" [draggable]="false" [resizable]="false" [closeOnEscape]="true" [closable]="false">
+  <p-dialog
+    [(visible)]="cancelModelShow"
+    [position]="'center'"
+    [modal]="true"
+    [style]="{ width: '30vw' }"
+    [baseZIndex]="10000"
+    [draggable]="false"
+    [resizable]="false"
+    [closeOnEscape]="true"
+    [closable]="false"
+  >
     <div class="d-flex flex-column text-center justify-content-center">
       <p>Are you sure you <br />want to cancel the order?</p>
       <div class="content">
         <span class="p-float-label">
-          <input pInputText class="mb-2" id="float-input" [formControl]="cancelReasonControl" />
+          <input
+            pInputText
+            class="mb-2"
+            id="float-input"
+            [formControl]="cancelReasonControl"
+          />
           <label for="float-input">Reason</label>
           <ng-container *ngIf="cancelReasonControl?.touched">
-            <small *ngIf="cancelReasonControl.errors?.['required']" class="p-error">
+            <small
+              *ngIf="cancelReasonControl.errors?.['required']"
+              class="p-error"
+            >
               Reason field is required.
             </small>
           </ng-container>
@@ -239,42 +383,120 @@
       </div>
     </div>
     <div class="d-flex justify-content-center outlined-button">
-      <button pButton pRipple type="button" label="No" class="p-button-outlined outlined-border"
-        style="width: 90px; height: 40px;"
-        (click)="cancelOrder(false); cancelReasonControl.setValue('');singleCancelOnStatusShipped = false;"></button>
-      <button pButton pRipple type="button" label="Yes" class="p-button-outlined is_active ml-2"
-        style="width: 90px; height: 40px;"
-        (click)="(getCurrentOrder()?.Status === 'Shipped' && !singleCancelOnStatusShipped) ? cancelSelected() : hitCancelOrderApi(false)"></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="No"
+        class="p-button-outlined outlined-border"
+        style="width: 90px; height: 40px"
+        (click)="
+          cancelOrder(false);
+          cancelReasonControl.setValue('');
+          singleCancelOnStatusShipped = false
+        "
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Yes"
+        class="p-button-outlined is_active ml-2"
+        style="width: 90px; height: 40px"
+        (click)="
+          getCurrentOrder()?.Status === 'Shipped' &&
+          !singleCancelOnStatusShipped
+            ? cancelSelected()
+            : hitCancelOrderApi(false)
+        "
+      ></button>
     </div>
   </p-dialog>
 </div>
 <ng-template #actionButton let-order>
-  <button pButton pRipple type="button" class="p-button-outlined order-detail-action" icon="pi pi-print" *ngIf="showPrint"
-    style="width: 36px; height: 41px" (click)="printInvoice(order)"></button>
-  <button pButton pRipple type="button" label="View" class="p-button-outlined order-detail-action"
-    (click)="redirectToDetail(order)" style="width: 85px"
-    *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"></button>
-  <button pButton pRipple type="button" label="Edit" class="p-button-outlined order-detail-action" style="width: 85px"
+  <button
+    pButton
+    pRipple
+    type="button"
+    class="p-button-outlined order-detail-action"
+    icon="pi pi-print"
+    *ngIf="showPrint"
+    style="width: 36px; height: 41px"
+    (click)="printInvoice(order)"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="View"
+    class="p-button-outlined order-detail-action"
+    (click)="redirectToDetail(order)"
+    style="width: 38px; padding: 10px 1px; font-size: 13px"
+    *ngIf="(selectedOrderDetail | async)?.Status !== 'Pending'"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Edit"
+    class="p-button-outlined order-detail-action"
+    style="width: 85px"
     *ngIf="
-        (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
-      " (click)="order.showEdit = !order.showEdit;"></button>
-  <button pButton pRipple type="button" label="Save" class="p-button-outlined order-detail-action" style="width: 85px"
+      (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
+    "
+    (click)="order.showEdit = !order.showEdit; disableAcceptOrder = true"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Save"
+    class="p-button-outlined order-detail-action"
+    style="width: 85px"
     *ngIf="
-        (selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit
-      " (click)="saveQuantity(order)"></button>
+      (selectedOrderDetail | async)?.Status === 'Pending' && !order?.showEdit
+    "
+    (click)="saveQuantity(order)"
+  ></button>
   <!-- <i class="pi pi-ellipsis-h" style="font-size: 2rem" *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"></i> -->
-  <button pButton pRipple type="button" label="D"
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="D"
     class="p-element p-button-raised p-button-success p-button p-component d"
-    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="deliverOrder(order.OrderId)"></button>
-  <button pButton pRipple type="button" label="C"
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+    (click)="deliverOrder(order.OrderId)"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="C"
     class="p-element p-button-raised p-button-danger ml-2 p-button p-component c"
-    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" (click)="rowSingleCancel(true, order.OrderId)"></button>
+    *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+    (click)="rowSingleCancel(true, order.OrderId)"
+  ></button>
   <div></div>
 </ng-template>
 <ng-template #statusCol let-status>
-  <label class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{status}}</label>
-  <label class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{status}}</label>
-  <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>
-  <label class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</label>
-  <label class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{status}}</label>
+  <label class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{
+    status
+  }}</label>
+  <label class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{
+    status
+  }}</label>
+  <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{
+    status
+  }}</label>
+  <label
+    class="badge rounded-pill bg-delivered"
+    *ngIf="status === 'Delivered'"
+    >{{ status }}</label
+  >
+  <label
+    class="badge rounded-pill bg-cancelled"
+    *ngIf="status === 'Cancelled'"
+    >{{ status }}</label
+  >
 </ng-template>

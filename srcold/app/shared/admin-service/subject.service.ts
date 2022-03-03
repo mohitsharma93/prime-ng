@@ -35,6 +35,9 @@ export class SubjectService {
     
     public oldOrderCountSumForConfirmScreen = new BehaviorSubject<any>(null);
     public oldOrderCountSumForConfirmScreen$ = this.oldOrderCountSumForConfirmScreen.asObservable();
+
+    public holdWhereToRedirectOnBackFromShipped = new BehaviorSubject<any>(null);
+    public holdWhereToRedirectOnBackFromShipped$ = this.holdWhereToRedirectOnBackFromShipped.asObservable();
     
 
     public setApiCallStatusWise(response: { statusId: number } | null): void {
@@ -79,5 +82,9 @@ export class SubjectService {
 
     public setHoldOrderCountSumForConfirmScreen(response: any): void {
         this.oldOrderCountSumForConfirmScreen.next(response);
+    }
+
+    public setHoldWhereToRedirectOnBackFromShipped(response: any): void {
+        this.holdWhereToRedirectOnBackFromShipped.next(response);
     }
 }
