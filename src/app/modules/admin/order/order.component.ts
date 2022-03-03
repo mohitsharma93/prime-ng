@@ -272,12 +272,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
             ? 4
             : this.orderRequestParam?.Status;
       this.subjectService.setOrderDetail(orderDetail);
-      this.subjectService.setSaveFilterOnRedirection({
-        topFilter: this.orderRequestParam,
-        ...(this.searchControl.value && {
-          searchString: this.searchControl.value,
-        }),
-      });
+      // this.subjectService.setSaveFilterOnRedirection({
+      //   topFilter: this.orderRequestParam,
+      //   ...(this.searchControl.value && {
+      //     searchString: this.searchControl.value,
+      //   }),
+      // });
+      this.saveCurrentFilter();
       if (shippedOrDelivered && this.orderRequestParam?.Status === 0) {
         orderDetail['OrderId'] = orderDetail.OrderID
         this.subjectService.setOrderDetailShipment(orderDetail);
@@ -409,6 +410,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       // delete this.orderRequestParam.PageSize 
     }
     this.getOrders(this.orderRequestParam);
+    this.saveCurrentFilter();
     if (orderStatusId === 3) {
       this.showPrint = true;
     } else {

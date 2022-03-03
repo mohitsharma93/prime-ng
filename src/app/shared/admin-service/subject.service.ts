@@ -38,7 +38,6 @@ export class SubjectService {
 
     public holdWhereToRedirectOnBackFromShipped = new BehaviorSubject<any>(null);
     public holdWhereToRedirectOnBackFromShipped$ = this.holdWhereToRedirectOnBackFromShipped.asObservable();
-    
 
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);

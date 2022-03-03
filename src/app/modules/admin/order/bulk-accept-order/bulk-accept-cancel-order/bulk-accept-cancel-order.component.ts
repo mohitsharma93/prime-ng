@@ -40,6 +40,8 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
     this.subjectService.holdBulkOrderIdsForCancel$.pipe(take(1)).subscribe(res => {
       if (res && res?.length) {
         this.getBulkCancelOrderDetail(res);
+      } else {
+        this.backClicked();
       }
     })
     this.subjectService.holdBulkDataForNext$.pipe(take(1)).subscribe(res => {
