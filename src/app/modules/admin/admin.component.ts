@@ -31,6 +31,10 @@ export class AdminComponent extends BaseComponent implements OnInit {
         }
         if (event && !event.url.includes('/admin/order')) {
           this.subjectService.setSaveFilterOnRedirection(null);
+        } else {
+          if (event && event.url === '/admin/order') {
+            this.localStorageService.remove('holdIdsForCreateShipment');
+          }
         }
         const paddingAdd =
           event.url.includes('/admin/order/bulk-accept') ||
@@ -120,7 +124,12 @@ export class AdminComponent extends BaseComponent implements OnInit {
     if (oldOrderCountSumForConfirmScreen && holdBulkOrderIdsForCancel?.length) {
       this.localStorageService.set('holdBulkOrderIdsForCancel', holdBulkOrderIdsForCancel);
     }
-
+    
+    const holdIdsForCreateShipment = this.subjectService.holdIdsForCreateShipment.value;
+    console.log('holdIdsForCreateShipment', holdIdsForCreateShipment);
+    if (holdIdsForCreateShipment && holdIdsForCreateShipment?.length) {
+      this.localStorageService.set('holdIdsForCreateShipment', holdIdsForCreateShipment)
+    }
   }
 
   public getValueAfterReload(event: any) {
@@ -136,6 +145,11 @@ export class AdminComponent extends BaseComponent implements OnInit {
       const orderDetail = this.localStorageService.get('orderDetail');
       this.subjectService.setOrderDetail(orderDetail);
       this.localStorageService.remove('orderDetail');
+
+      // 
+      const holdIdsForCreateShipment = this.localStorageService.get('holdIdsForCreateShipment') || null;
+      this.subjectService.setHoldIdsForCreateShipment(holdIdsForCreateShipment);
+      this.localStorageService.remove('holdIdsForCreateShipment');
     }
     if (shipmentDetailPatterUrlTest.test(event.url)){
       const orderDetailShipment = this.localStorageService.get('orderDetailShipment');
@@ -168,6 +182,13 @@ export class AdminComponent extends BaseComponent implements OnInit {
       this.subjectService.setHoldBulkOrderIdsForCancel(holdBulkOrderIdsForCancel);
       this.localStorageService.remove('holdBulkOrderIdsForCancel');
     }
+
+    if (event.url === '/admin/order/review-shipment'){
+      const holdIdsForCreateShipment = this.localStorageService.get('holdIdsForCreateShipment');
+      this.subjectService.setHoldIdsForCreateShipment(holdIdsForCreateShipment);
+      this.localStorageService.remove('holdIdsForCreateShipment');
+    }
+
     // this.localStorageService.clearStorage();
   }
 
