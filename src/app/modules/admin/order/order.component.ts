@@ -347,8 +347,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageNo: 1,
       PageSize: 10
     };
-    this.setColumById(statusId);
+    // this.setColumById(statusId);
     this.getOrders(forAll);
+    
   }
 
   public export(tableId: string): void {
@@ -406,8 +407,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2) {
-      // delete this.orderRequestParam.PageNo 
-      // delete this.orderRequestParam.PageSize 
+      this.orderRequestParam.PageNo =1;
+      this.orderRequestParam.PageSize =1000;
     }
     this.getOrders(this.orderRequestParam);
     this.saveCurrentFilter();

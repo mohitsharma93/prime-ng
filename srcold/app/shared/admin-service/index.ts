@@ -4,6 +4,7 @@ import { HttpWrapperService } from './httpWrapper';
 import { AdminDashboardService } from './dashboard/dashboard.service';
 import { AdminOrderService } from './order/order.service';
 import { SubjectService } from './subject.service';
+import { LocalStorageService } from './localstorage.service';
 
 @NgModule({
     imports: [CommonModule],
@@ -18,6 +19,7 @@ export class AdminServiceModule {
                 AdminDashboardService,
                 AdminOrderService,
                 SubjectService,
+                LocalStorageService
             ],
         };
     }

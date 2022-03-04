@@ -25,6 +25,7 @@ export class PrintShipmentModelComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     public ref: DynamicDialogRef, public config: DynamicDialogConfig) {
     this.data = config.data;
+    console.log(this.data);
   }
 
   ngOnInit(): void {

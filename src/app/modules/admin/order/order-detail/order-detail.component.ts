@@ -235,6 +235,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         Remark: this.cancelReasonControl.value
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
+        console.log("cancelres",res);
         if (res && res?.Status == 'OK') {
           if (this.singleCancelOnStatusShipped) {
             this.singleCancelOnStatusShipped = false;

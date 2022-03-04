@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Event, NavigationStart, Router } from '@angular/router';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs';
+import { LocalStorageService } from 'src/app/shared/admin-service/localstorage.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from './base.component';
 
@@ -14,8 +15,21 @@ export class AdminComponent extends BaseComponent implements OnInit {
   public addPadding = false;
   public addPaddingUrl = ['/admin/order/bulk-accept', '/admin/order/detail'];
 
-  constructor(private router: Router, private subjectService: SubjectService) {
+  constructor(
+    private router: Router,
+    private subjectService: SubjectService,
+    private localStorageService: LocalStorageService
+  ) {
     super();
+    this.router.events
+      .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+      .subscribe(event => {
+        if ( event.id === 1 && event.url === event.urlAfterRedirects  ) {
+          this.getValueAfterReload(event);
+        } else {
+          this.removeStorageValueByUrl(event);
+        }
+    });
   }
 
   ngOnInit(): void {
@@ -50,5 +64,104 @@ export class AdminComponent extends BaseComponent implements OnInit {
     //   this.sideBarPixel = '70px'
     // }
     this.minimize = e;
+  }
+
+  public objectLength(obj: any) {
+    return obj && Object.keys(obj).length;
+  }
+
+  @HostListener('window:beforeunload', ['$event']) 
+  beforeUnloadHandler(event: any) {
+    this.setValueBeforeReload();
+  }
+
+  public setValueBeforeReload() {
+    // console.log('this.subjectService', this.subjectService);
+    this.localStorageService.clearStorage();
+    const filter = this.subjectService.saveFilterOnRedirection.value;
+    if (filter && this.objectLength(filter))  {
+      this.localStorageService.set('filter', filter);
+    }
+    const orderDetail = this.subjectService.orderDetail.value;
+    if (orderDetail && this.objectLength(orderDetail)) {
+      this.localStorageService.set('orderDetail', orderDetail);
+    }
+
+    const orderDetailShipment = this.subjectService.orderDetailShipment.value;
+    if (orderDetailShipment && this.objectLength(orderDetailShipment)) {
+      this.localStorageService.set('orderDetailShipment', orderDetailShipment);
+      this.localStorageService.set('orderDetail', orderDetail);
+    }
+
+    const holdBulkDataForNext = this.subjectService.holdBulkDataForNext.value;
+    if (holdBulkDataForNext && this.objectLength(holdBulkDataForNext)) {
+      this.localStorageService.set('holdBulkDataForNext', holdBulkDataForNext);
+    }
+
+    const oldOrderCountSumForConfirmScreen = this.subjectService.oldOrderCountSumForConfirmScreen.value;
+    if (oldOrderCountSumForConfirmScreen && this.objectLength(oldOrderCountSumForConfirmScreen)) {
+      this.localStorageService.set('oldOrderCountSumForConfirmScreen', oldOrderCountSumForConfirmScreen);
+    }
+
+    const holdBulkOrderIdsForCancel = this.subjectService.holdBulkOrderIdsForCancel.value;
+    if (oldOrderCountSumForConfirmScreen && holdBulkOrderIdsForCancel?.length) {
+      this.localStorageService.set('holdBulkOrderIdsForCancel', holdBulkOrderIdsForCancel);
+    }
+  }
+
+  public getValueAfterReload(event: any) {
+    const shipmentDetailPatterUrlTest = /^\/admin\/order\/detail\/\d+\/s\/\d+$/g;
+    const orderDetailUrlPatter = /^\/admin\/order\/detail\/\d+$/g;
+    if (event.url === "/admin/order") {
+      const filter = this.localStorageService.get('filter');
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      // this.localStorageService.remove('filter');
+      this.localStorageService.clearStorage();
+    }
+    if (orderDetailUrlPatter.test(event.url)) {
+      const orderDetail = this.localStorageService.get('orderDetail');
+      this.subjectService.setOrderDetail(orderDetail);
+      this.localStorageService.remove('orderDetail');
+    }
+    if (shipmentDetailPatterUrlTest.test(event.url)){
+      const orderDetailShipment = this.localStorageService.get('orderDetailShipment');
+      this.subjectService.setOrderDetailShipment(orderDetailShipment);
+      this.localStorageService.remove('orderDetailShipment');
+      const orderDetail = this.localStorageService.get('orderDetail');
+      this.subjectService.setOrderDetail(orderDetail);
+    }
+    if (event.url === '/admin/order/bulk-accept') {
+      this.localStorageService.remove('holdBulkDataForNext');
+      this.localStorageService.remove('oldOrderCountSumForConfirmScreen');
+      this.localStorageService.remove('holdBulkOrderIdsForCancel');
+    }
+    if (event.url === '/admin/order/bulk-accept/confirm' || event.url === '/admin/order/bulk-accept/cancel') {
+      const bulkDataForNext = this.localStorageService.get('holdBulkDataForNext');
+      this.subjectService.setHoldBulkDataForNext(bulkDataForNext);
+      if (event.url === '/admin/order/bulk-accept/confirm') {
+        this.localStorageService.remove('holdBulkDataForNext');
+      }
+
+      const oldOrderCountSumForConfirmScreen = this.localStorageService.get('oldOrderCountSumForConfirmScreen');
+      this.subjectService.setHoldOrderCountSumForConfirmScreen(oldOrderCountSumForConfirmScreen);
+      if (event.url === '/admin/order/bulk-accept/confirm') {
+        this.localStorageService.remove('oldOrderCountSumForConfirmScreen');
+      }
+    }
+
+    if (event.url === '/admin/order/bulk-accept/cancel') {
+      const holdBulkOrderIdsForCancel = this.localStorageService.get('holdBulkOrderIdsForCancel');
+      this.subjectService.setHoldBulkOrderIdsForCancel(holdBulkOrderIdsForCancel);
+      this.localStorageService.remove('holdBulkOrderIdsForCancel');
+    }
+    // this.localStorageService.clearStorage();
+  }
+
+  public removeStorageValueByUrl(event: any) {
+    // if (event.id !== 1 && event.url === "/admin/order") {
+    //   this.localStorageService.remove('filter');
+    // }
+    // if ()
+    // console.log('event.url', event.url)
   }
 }

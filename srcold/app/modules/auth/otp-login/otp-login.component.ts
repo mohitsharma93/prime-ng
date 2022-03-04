@@ -170,7 +170,7 @@ export class OtpLoginComponent implements OnInit {
   }
 
   public onlyDigit(e: KeyboardEvent): void {
-    this.sendCount = 0;
+    // this.sendCount = 0;
     const inputChar = String.fromCharCode(e.charCode);
     if (e.keyCode !== 8 && !ONLY_DIGIT.test(inputChar)) {
       e.preventDefault();
@@ -188,12 +188,14 @@ export class OtpLoginComponent implements OnInit {
       this.isTimerOn = true;
       this.startTimer(30);
       if (res) {
+        this.sendCount = +1;
         this.toasterService.success('OTP has been sent.');
         this.loginOtpForm.controls['MobileNumber'].disable();
       }
     });
-    this.sendCount = +1;
+
   }
+
   onSubmit() {
     if (!this.loginOtpForm.valid) {
       this.loginOtpForm.markAllAsTouched();
@@ -203,6 +205,7 @@ export class OtpLoginComponent implements OnInit {
         params: this.loginOtpForm.getRawValue()
       }
       this.ds.post(req).subscribe((res: any) => {
+        debugger
         if (res && res.Userid && res.IsUserExist === "True") {
           this.toasterService.success('OTP is Verified Successfully.');
           const url = `auth/change-password/${res.Userid}`;

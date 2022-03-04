@@ -4,7 +4,6 @@
             <h2>Login With OTP</h2>
             <h3>Login using OTP on your </h3>
             <h3>registered number</h3>
-
         </div>
         <div class="logo content-right">
             <img src="assets/img/logo.svg" width="60">
@@ -21,7 +20,7 @@
                     (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
                 <i class="pi pi-times icon" [ngClass]="{'disabled': !loginOtpForm.controls['MobileNumber'].disabled}"
                     (click)="enableField()"></i> -->
-                    <input type="search" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
+                <input type="search" pInputText formControlName="MobileNumber" inputId="MobileNumber" class="mb-2"
                     (search)="enableField()" (keypress)="onlyDigit($event)" placeholder="Your mobile number" />
                 <!-- <i class="pi pi-times icon" [ngClass]="{'disabled': !loginOtpForm.controls['MobileNumber'].disabled}"
                     (click)="enableField()"></i> -->
@@ -53,10 +52,10 @@
                 Allowed otp length is 4.
             </small>
         </ng-container>
+
         <div>
             <a href="javascript:void(0)" (click)="onSendOtp()"
-                [class]="loginOtpForm.controls['MobileNumber'].valid && remainingTime == '00:00' ? 'otp-login' : 'otp-login-disabled' "
-                >
+                [class]="loginOtpForm.controls['MobileNumber'].valid && remainingTime == '00:00' ? 'otp-login' : 'otp-login-disabled' ">
                 <span>{{ sendCount === 0 ? 'Send OTP': 'Resend OTP'}} </span>
             </a>
             <span class="otp-login" *ngIf="remainingTime !== '00:00'">&nbsp;&nbsp;&nbsp;&nbsp;{{remainingTime}}</span>

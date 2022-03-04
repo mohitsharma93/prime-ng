@@ -52,7 +52,7 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     this.subjectService.oldOrderCountSumForConfirmScreen$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res && Object.keys(res)?.length) {
         this.orderValue$ = of(res);
-        this.subjectService.setHoldOrderCountSumForConfirmScreen(null)
+        // this.subjectService.setHoldOrderCountSumForConfirmScreen(null)
       }
     })
   }
