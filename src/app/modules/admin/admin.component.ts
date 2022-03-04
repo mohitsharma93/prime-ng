@@ -107,9 +107,15 @@ export class AdminComponent extends BaseComponent implements OnInit {
     if (oldOrderCountSumForConfirmScreen && holdBulkOrderIdsForCancel?.length) {
       this.localStorageService.set('holdBulkOrderIdsForCancel', holdBulkOrderIdsForCancel);
     }
+
+    this.localStorageService.set('screenExpand', this.addPadding);
   }
 
   public getValueAfterReload(event: any) {
+    this.subjectService.setScreenExpand(this.localStorageService.get('screenExpand'))
+    this.addPadding = this.localStorageService.get('screenExpand')
+    this.localStorageService.remove('screenExpand')
+
     const shipmentDetailPatterUrlTest = /^\/admin\/order\/detail\/\d+\/s\/\d+$/g;
     const orderDetailUrlPatter = /^\/admin\/order\/detail\/\d+$/g;
     if (event.url === "/admin/order") {
