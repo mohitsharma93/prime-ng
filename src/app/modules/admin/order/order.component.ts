@@ -258,6 +258,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToDetail(orderDetail: any): void {
+    console.log('orderDetail', orderDetail);
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
       const shippedOrDelivered = orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered';
       if (shippedOrDelivered) {
@@ -349,7 +350,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
     };
     // this.setColumById(statusId);
     this.getOrders(forAll);
-    
   }
 
   public export(tableId: string): void {
@@ -369,8 +369,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public getOrders(requestParam: any) {
     this.setLoader(true);
+    const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam, this.getApiCallStatusWise(requestParam.Status))
+      .getOrdersServiceSingle(requestParam, endStringPoint)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
