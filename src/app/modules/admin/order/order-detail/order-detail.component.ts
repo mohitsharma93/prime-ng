@@ -54,7 +54,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public singleCancelOnStatusShipped: boolean = false;
   public singleCancelOrderId: any = null;
   printInvoiceIds: any[] = [];
-  public disableAcceptOrder: boolean = false;
+  public disableAcceptOrder: any = {};
   public notCallApiAfterQuantityUpdate: boolean = true;
 
   constructor(
@@ -278,7 +278,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.updateQuantityService(obj).subscribe(res => {
       console.log(res);
       if (res && res?.Status == 'OK') {
-        this.disableAcceptOrder = false;
+        delete this.disableAcceptOrder[order?.DetailId];
         order['showEdit'] = true;
         const orders = this.getLocalOrder();
         const sum = orders?.reduce((acc: number, order: any) => acc += order.TotalPrice, 0)
@@ -513,5 +513,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.singleCancelOrderId = orderId;
     this.singleCancelOnStatusShipped = cancel;
     this.cancelOrder(cancel)
+  }
+
+  public checkSomeOneEditEnable(): boolean {
+    return this.disableAcceptOrder && Object.keys(this.disableAcceptOrder).length
   }
 }
