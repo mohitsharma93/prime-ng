@@ -120,8 +120,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.orders$
             .pipe(take(1))
             .subscribe((orders) => {
-              console.log(orders);
-              console.log(res);
               // if (res.length === 0) {
               //   this.products = orders;
               // }
@@ -150,7 +148,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
       .pipe(take(1))
       .subscribe((res) => {
         if (res?.topFilter) {
-          console.log('res.top', res)
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
           this.getOrders(this.orderRequestParam);
@@ -185,7 +182,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (newAddress?.length) p['newAddress'] = newAddress;
     });
     this.products = newProduct;
-    console.log('this.orderRequestParam', this.orderRequestParam)
     if (this.orderRequestParam.Status === 2) {
       this.subjectService.holdAcceptedOrderForSelected$
         .pipe(take(1))
@@ -298,8 +294,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public paginate(event: any): void {
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
-    console.log('pageNo', pageNo)
     if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
+      this.orderRequestParam.PageNo = pageNo;
       const orderRequestParam = {
         Status: this.orderRequestParam.Status,
         searchTimeRange: this.orderRequestParam.searchTimeRange,
