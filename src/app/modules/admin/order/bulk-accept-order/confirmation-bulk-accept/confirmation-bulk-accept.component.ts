@@ -100,7 +100,6 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     });
   }
 
-
   public redirectToOrder() {
     const obj = {
       topFilter: {

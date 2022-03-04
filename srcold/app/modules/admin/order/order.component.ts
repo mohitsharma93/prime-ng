@@ -37,7 +37,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     { name: 'All', code: 0 },
     { name: 'Pending', code: 1 },
     { name: 'Accepted', code: 2 },
-    { name: 'In-transit', code: 3 },
+    { name: 'Shipped', code: 3 },
     { name: 'Delivered', code: 4 },
     { name: 'Cancelled', code: 6 },
   ];
@@ -120,8 +120,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.orders$
             .pipe(take(1))
             .subscribe((orders) => {
-              console.log(orders);
-              console.log(res);
               // if (res.length === 0) {
               //   this.products = orders;
               // }
@@ -150,7 +148,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
       .pipe(take(1))
       .subscribe((res) => {
         if (res?.topFilter) {
-          console.log('res.top', res)
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
           this.getOrders(this.orderRequestParam);
@@ -185,7 +182,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
       if (newAddress?.length) p['newAddress'] = newAddress;
     });
     this.products = newProduct;
-    console.log('this.orderRequestParam', this.orderRequestParam)
     if (this.orderRequestParam.Status === 2) {
       this.subjectService.holdAcceptedOrderForSelected$
         .pipe(take(1))
@@ -258,6 +254,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public redirectToDetail(orderDetail: any): void {
+    console.log('orderDetail', orderDetail);
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
       const shippedOrDelivered = orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered';
       if (shippedOrDelivered) {
@@ -298,6 +295,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public paginate(event: any): void {
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
     if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
+      this.orderRequestParam.PageNo = pageNo;
       const orderRequestParam = {
         Status: this.orderRequestParam.Status,
         searchTimeRange: this.orderRequestParam.searchTimeRange,
@@ -347,7 +345,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageNo: 1,
       PageSize: 10
     };
-    this.setColumById(statusId);
+    // this.setColumById(statusId);
     this.getOrders(forAll);
   }
 
@@ -368,8 +366,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public getOrders(requestParam: any) {
     this.setLoader(true);
+    const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam, this.getApiCallStatusWise(requestParam.Status))
+      .getOrdersServiceSingle(requestParam, endStringPoint)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
@@ -406,8 +405,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2) {
-      // delete this.orderRequestParam.PageNo 
-      // delete this.orderRequestParam.PageSize 
+      this.orderRequestParam.PageNo =1;
+      this.orderRequestParam.PageSize =1000;
     }
     this.getOrders(this.orderRequestParam);
     this.saveCurrentFilter();

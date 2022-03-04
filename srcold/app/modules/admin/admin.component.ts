@@ -77,7 +77,7 @@ export class AdminComponent extends BaseComponent implements OnInit {
 
   public setValueBeforeReload() {
     // console.log('this.subjectService', this.subjectService);
-    this.localStorageService.clearStorage();
+    // this.localStorageService.clearStorage();
     const filter = this.subjectService.saveFilterOnRedirection.value;
     if (filter && this.objectLength(filter))  {
       this.localStorageService.set('filter', filter);
@@ -107,16 +107,22 @@ export class AdminComponent extends BaseComponent implements OnInit {
     if (oldOrderCountSumForConfirmScreen && holdBulkOrderIdsForCancel?.length) {
       this.localStorageService.set('holdBulkOrderIdsForCancel', holdBulkOrderIdsForCancel);
     }
+
+    this.localStorageService.set('screenExpand', this.addPadding);
   }
 
   public getValueAfterReload(event: any) {
+    this.subjectService.setScreenExpand(this.localStorageService.get('screenExpand'))
+    // this.addPadding = this.localStorageService.get('screenExpand')
+    this.localStorageService.remove('screenExpand')
+
     const shipmentDetailPatterUrlTest = /^\/admin\/order\/detail\/\d+\/s\/\d+$/g;
     const orderDetailUrlPatter = /^\/admin\/order\/detail\/\d+$/g;
     if (event.url === "/admin/order") {
       const filter = this.localStorageService.get('filter');
       this.subjectService.setSaveFilterOnRedirection(filter);
-      // this.localStorageService.remove('filter');
-      this.localStorageService.clearStorage();
+      this.localStorageService.remove('filter');
+      // this.localStorageService.clearStorage();
     }
     if (orderDetailUrlPatter.test(event.url)) {
       const orderDetail = this.localStorageService.get('orderDetail');

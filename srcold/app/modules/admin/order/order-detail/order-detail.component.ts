@@ -13,6 +13,7 @@ import { PrintShipmentModelComponent } from 'src/app/modules/print-shipment-mode
 import { DialogService } from 'primeng/dynamicdialog';
 import { DataService } from 'src/app/shared/services/data.service';
 import { PrintInvoiceMultipleModelComponent } from 'src/app/modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
+import { PrimeNGConfig } from 'primeng/api';
 
 interface Products {
   id?: string;
@@ -54,7 +55,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public singleCancelOnStatusShipped: boolean = false;
   public singleCancelOrderId: any = null;
   printInvoiceIds: any[] = [];
-  public disableAcceptOrder: boolean = false;
+  public disableAcceptOrder: any = {};
   public notCallApiAfterQuantityUpdate: boolean = true;
 
   constructor(
@@ -65,8 +66,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     private toasterService: ToasterService,
     private subjectService: SubjectService,
     private ds: DataService,
-    public dialogService: DialogService
-
+    public dialogService: DialogService,
+    private primengConfig: PrimeNGConfig
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -78,6 +79,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.primengConfig.ripple = true;
     this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
       if (res && (res?.OrderID || res?.ShipmentId)) {
@@ -235,6 +237,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         Remark: this.cancelReasonControl.value
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
+        console.log("cancelres",res);
         if (res && res?.Status == 'OK') {
           if (this.singleCancelOnStatusShipped) {
             this.singleCancelOnStatusShipped = false;
@@ -277,7 +280,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.adminOrderService.updateQuantityService(obj).subscribe(res => {
       console.log(res);
       if (res && res?.Status == 'OK') {
-        this.disableAcceptOrder = false;
+        delete this.disableAcceptOrder[order?.DetailId];
         order['showEdit'] = true;
         const orders = this.getLocalOrder();
         const sum = orders?.reduce((acc: number, order: any) => acc += order.TotalPrice, 0)
@@ -512,5 +515,26 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     this.singleCancelOrderId = orderId;
     this.singleCancelOnStatusShipped = cancel;
     this.cancelOrder(cancel)
+  }
+
+  public checkSomeOneEditEnable(): boolean {
+    return this.disableAcceptOrder && Object.keys(this.disableAcceptOrder).length
+  }
+
+  public returnItemForMenu(orderId: any) {
+    return [
+      {
+        label: 'Delivered',
+        command: () => {
+            this.deliverOrder(orderId);
+        }
+      },
+      {
+        label: 'Cancel',
+        command: () => {
+            this.rowSingleCancel(true, orderId);
+        }
+      }
+    ]
   }
 }

@@ -11,7 +11,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MenuModule } from 'primeng/menu';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
-
 const routes: Routes = [
   {
     path: '',

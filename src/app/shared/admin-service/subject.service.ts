@@ -39,9 +39,6 @@ export class SubjectService {
     public holdWhereToRedirectOnBackFromShipped = new BehaviorSubject<any>(null);
     public holdWhereToRedirectOnBackFromShipped$ = this.holdWhereToRedirectOnBackFromShipped.asObservable();
 
-    public screenExpand = new BehaviorSubject<any>(false);
-    public screenExpand$ = this.screenExpand.asObservable();
-
     public setApiCallStatusWise(response: { statusId: number } | null): void {
         this.apiCallStatusWise.next(response);
     }
@@ -88,9 +85,5 @@ export class SubjectService {
 
     public setHoldWhereToRedirectOnBackFromShipped(response: any): void {
         this.holdWhereToRedirectOnBackFromShipped.next(response);
-    }
-
-    public setScreenExpand(response: any): void {
-        this.screenExpand.next(response);
     }
 }

@@ -304,7 +304,7 @@
                 class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'"
                 (click)="acceptOrder()"
-                [disabled]="disableAcceptOrder"
+                [disabled]="checkSomeOneEditEnable()"
               ></button>
               <button
                 pButton
@@ -326,7 +326,7 @@
                   (selectedOrderDetail | async)?.Status !== 'Shipped' &&
                   (selectedOrderDetail | async)?.Status !== 'Cancelled'
                 "
-                [disabled]="(selectedOrderDetail | async)?.Status === 'Pending' && disableAcceptOrder"
+                [disabled]="(selectedOrderDetail | async)?.Status === 'Pending' && checkSomeOneEditEnable()"
               ></button>
               <button
                 pButton
@@ -444,7 +444,7 @@
     *ngIf="
       (selectedOrderDetail | async)?.Status === 'Pending' && order?.showEdit
     "
-    (click)="order.showEdit = !order.showEdit; disableAcceptOrder = true"
+    (click)="order.showEdit = !order.showEdit; disableAcceptOrder[order.DetailId] = true"
   ></button>
   <button
     pButton
@@ -458,7 +458,18 @@
     "
     (click)="saveQuantity(order)"
   ></button>
-  <!-- <i class="pi pi-ellipsis-h" style="font-size: 2rem" *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"></i> -->
+  <!-- <button 
+    pButton
+    pRipple
+    type="button"
+    icon="pi pi-ellipsis-h"
+    class="p-button-rounded p-button-text"
+    (click)="menu.toggle($event)"
+  ></button>
+  <p-menu #menu [popup]="true" [model]="returnItemForMenu(order.OrderId)" [appendTo]="showMenu"></p-menu>
+  <ng-template #showMenu>
+    
+  </ng-template> -->
   <button
     pButton
     pRipple

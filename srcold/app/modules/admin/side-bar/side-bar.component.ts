@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { NavigationStart, Router, Event } from '@angular/router';
+import { NavigationStart, Router, Event, NavigationEnd } from '@angular/router';
 import { PrimeNGConfig } from 'primeng/api';
-import { filter, takeUntil } from 'rxjs';
+import { filter, take, takeUntil } from 'rxjs';
+import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../base.component';
 
 @Component({
@@ -16,24 +17,24 @@ export class SideBarComponent extends BaseComponent implements OnInit, OnChanges
   public visible: boolean = true;
 
   constructor(
-    private primengConfig: PrimeNGConfig,
     public router: Router,
+    public subjectService: SubjectService,
   ) {
     super();
   }
 
   public ngOnInit(): void {
-    this.primengConfig.ripple = true;
     this.router.events.pipe(
       filter(e => e instanceof NavigationStart),
       takeUntil(this.destroy$)
     ).subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
+        console.log('event.url', event.url)
         const changeVisible = 
           event.url.includes('/admin/order/bulk-accept') ||
           event.url.includes('/admin/order/detail') ||
           event.url.includes('/admin/order/review-shipment');
-
+          console.log('event.url', changeVisible)
         if (event && changeVisible) {
           this.visible = false;
         } else {
@@ -41,6 +42,10 @@ export class SideBarComponent extends BaseComponent implements OnInit, OnChanges
         }
       }
     })
+    this.subjectService.screenExpand$.pipe(take(1)).subscribe((res: any) => {
+      console.log('res', res)
+      // this.visible = !res;
+    });
   }
 
   public ngOnChanges(simpleChanges: SimpleChanges): void {

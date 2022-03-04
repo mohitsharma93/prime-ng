@@ -21,31 +21,44 @@ export class SideBarComponent extends BaseComponent implements OnInit, OnChanges
     public subjectService: SubjectService,
   ) {
     super();
-  }
-
-  public ngOnInit(): void {
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationStart),
-      takeUntil(this.destroy$)
-    ).subscribe((event: Event) => {
-      if (event instanceof NavigationStart) {
-        console.log('event.url', event.url)
+    this.router.events
+    .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+    .subscribe(event => {
+      if ( event instanceof NavigationEnd  ) {
+        console.log('event', event)
         const changeVisible = 
           event.url.includes('/admin/order/bulk-accept') ||
           event.url.includes('/admin/order/detail') ||
           event.url.includes('/admin/order/review-shipment');
-          console.log('event.url', changeVisible)
+        console.log('event.url', changeVisible)
         if (event && changeVisible) {
           this.visible = false;
         } else {
           this.visible = true;
         }
       }
-    })
-    this.subjectService.screenExpand$.pipe(take(1)).subscribe((res: any) => {
-      console.log('res', res)
-      // this.visible = !res;
-    });
+  });
+  }
+
+  public ngOnInit(): void {
+    // this.router.events.pipe(
+    //   filter(e => e instanceof NavigationStart),
+    //   takeUntil(this.destroy$)
+    // ).subscribe((event: Event) => {
+    //   if (event instanceof NavigationStart) {
+    //     console.log('event.url', event.url)
+    //     const changeVisible = 
+    //       event.url.includes('/admin/order/bulk-accept') ||
+    //       event.url.includes('/admin/order/detail') ||
+    //       event.url.includes('/admin/order/review-shipment');
+    //       console.log('event.url', changeVisible)
+    //     if (event && changeVisible) {
+    //       this.visible = false;
+    //     } else {
+    //       this.visible = true;
+    //     }
+    //   }
+    // })
   }
 
   public ngOnChanges(simpleChanges: SimpleChanges): void {
