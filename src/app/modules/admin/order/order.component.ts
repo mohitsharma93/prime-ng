@@ -37,7 +37,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     { name: 'All', code: 0 },
     { name: 'Pending', code: 1 },
     { name: 'Accepted', code: 2 },
-    { name: 'In-transit', code: 3 },
+    { name: 'Shipped', code: 3 },
     { name: 'Delivered', code: 4 },
     { name: 'Cancelled', code: 6 },
   ];

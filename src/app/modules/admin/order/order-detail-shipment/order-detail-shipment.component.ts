@@ -121,7 +121,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
       const obj: IOrderCancelModel = {
-        OrderID: this.getCurrentOrder()?.OrderID,
+        OrderID: this.getCurrentOrder()?.OrderId,
         DetailID: null,
         Remark: this.cancelReasonControl.value
       }
