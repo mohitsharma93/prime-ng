@@ -113,7 +113,7 @@ export class AdminComponent extends BaseComponent implements OnInit {
 
   public getValueAfterReload(event: any) {
     this.subjectService.setScreenExpand(this.localStorageService.get('screenExpand'))
-    this.addPadding = this.localStorageService.get('screenExpand')
+    // this.addPadding = this.localStorageService.get('screenExpand')
     this.localStorageService.remove('screenExpand')
 
     const shipmentDetailPatterUrlTest = /^\/admin\/order\/detail\/\d+\/s\/\d+$/g;

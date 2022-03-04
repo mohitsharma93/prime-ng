@@ -298,6 +298,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public paginate(event: any): void {
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
+    console.log('pageNo', pageNo)
     if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
       const orderRequestParam = {
         Status: this.orderRequestParam.Status,

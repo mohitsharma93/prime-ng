@@ -44,7 +44,7 @@ export class SideBarComponent extends BaseComponent implements OnInit, OnChanges
     })
     this.subjectService.screenExpand$.pipe(take(1)).subscribe((res: any) => {
       console.log('res', res)
-      this.visible = !res;
+      // this.visible = !res;
     });
   }
 
