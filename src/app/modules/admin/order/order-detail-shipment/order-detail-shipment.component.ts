@@ -127,6 +127,9 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
         if (res && res?.Status == 'OK') {
+          const deliveredOrder = this.getCurrentOrder();
+          deliveredOrder.Status = 'Cancelled'
+          this.subjectService.setOrderDetailShipment(deliveredOrder);
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -142,7 +145,10 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
       console.log(res)
       if (res && res?.Status == 'OK') {
-        this.backClicked();
+        // this.backClicked();
+        const deliveredOrder = this.getCurrentOrder();
+        deliveredOrder.Status = 'Delivered'
+        this.subjectService.setOrderDetailShipment(deliveredOrder);
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }

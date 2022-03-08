@@ -31,7 +31,11 @@
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                   <tr>
                     <td>
-                      <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
+                      <p-tableCheckbox
+                        [value]="rowData"
+                        class="custom-checkbox"
+                        [disabled]="rowData?.Status !== 'Pending'"
+                      ></p-tableCheckbox>
                     </td>
                     <td>
                       {{ index + 1 }}
@@ -41,7 +45,12 @@
                         {{ rowData[col.field] }}
                       </ng-container>
                       <ng-template #showStatus>
-                        <label class="badge rounded-pill bg-pending" >{{rowData['Status']}}</label>
+                        <label class="badge rounded-pill bg-pending" *ngIf="rowData['Status'] === 'Pending'">{{rowData['Status']}}</label>
+                        <label
+                          class="badge rounded-pill bg-cancelled"
+                          *ngIf="rowData['Status'] === 'Cancelled'"
+                          >{{ rowData['Status'] }}</label
+                        >
                       </ng-template>
                     </td>
                   </tr>
