@@ -543,6 +543,11 @@ span.p-button-icon.pi.pi-minus, span.p-button-icon.pi.pi-plus {
 .p-datepicker:not(.p-datepicker-inline) {
   top: 40px !important;
 }
+.p-calendar-w-btn .p-datepicker-trigger {
+ 
+  background-color: #ff5722 !important;
+  border-color: #ff5722 !important;
+}
 i.pi.pi-trash {
   color: red;
 }
@@ -595,6 +600,13 @@ td.bulk-tbl {
   display: grid !important;
   grid-template-columns: repeat(auto-fill,minmax(24%, 1fr));
   gap: 1em;
+}
+.bulk-tbl {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(21%, 1fr));
+  grid-gap: 1em;
+  gap: 1em;
+  width: 100%;
 }
 .bulk-accept-table .p-datatable-tbody > tr > td {
  

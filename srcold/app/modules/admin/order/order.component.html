@@ -27,7 +27,7 @@
           <div class="dashboard-dropdown" *ngIf="orderRequestParam?.Status === 0">
             Status
             <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name"
-              (onChange)="statusChange($event?.value.code)"></p-dropdown>
+              (onChange)="statusChange($event?.value.code)" [ngModel]="allStatusSelected"></p-dropdown>
           </div>
         </div>
         <div class="col-md-2" style="text-align: right">

@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core"
 import { Location } from '@angular/common';
 
 import { BaseComponent } from "../../../base.component";
-import { dummyData } from "./dummy";
 import { Observable, of, take } from "rxjs";
 import { Router } from "@angular/router";
 import { FormControl, Validators } from "@angular/forms";
@@ -33,7 +32,6 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
   ) {
     super();
     this.setColumById();
-    // this.orders$ = of(dummyData)
   }
 
   ngOnInit() {
@@ -114,8 +112,14 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
       const allOrderId = this.selectedData.map(o => o.OrderId);
       this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
         if (res && res?.Status == 'OK') {
+          this.cancelReasonControl.setValue('')
           this.rejectCancelPopUp(false);
-          this.next();
+          this.changeOrderStatus(allOrderId, 'Cancelled');
+          const disableCheckbox = this.checkShippedExistInOrder();
+          if (disableCheckbox) {
+            this.next();
+          }
+          this.selectedData = [];
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -123,5 +127,41 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
     } else {
       this.toasterService.info('Please select order through checkbox for cancelled')
     }
+  }
+
+  public getOrders(): any[] | null {
+    let orders: any[] | null = null;
+    this.orders$.pipe(take(1)).subscribe(res => {
+      orders = res;
+    });
+    return orders;
+  }
+
+  public changeOrderStatus(orderId: number[], status: 'Cancelled') {
+    const allOrders = this.getOrders() as any[];
+    if (allOrders && allOrders?.length) {
+      console.log('orderId', orderId)
+      orderId.forEach((id: number) => {
+        const index = allOrders?.findIndex((order: any) => order.OrderId === id);
+        if (index > -1) {
+          allOrders[index].Status = status;
+        }
+      })
+    }
+    console.log('allOrders', allOrders);
+    this.orders$ = of(allOrders)
+  }
+
+  public checkShippedExistInOrder(): boolean {
+    const allOrders = this.getOrders();
+    const checkStatus = allOrders?.filter((order: any) => order.Status === 'Pending');
+    if (checkStatus && checkStatus.length) {
+      return false;
+    } else {
+      if (checkStatus && checkStatus.length === 0) {
+        return true;
+      }
+    }
+    return true;
   }
 }

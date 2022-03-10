@@ -12,7 +12,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BaseComponent } from '../base.component';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, pick } from 'lodash-es';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
@@ -51,6 +51,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public searchControl: FormControl = new FormControl('');
   public loadMorePage: number | null;
   public dateChangeByUser: boolean = false;
+  public allStatusSelected: any = {};
+  public holdAllStatusFilter: any = {};
+  public holdFullFilter: any = {};
 
   constructor(
     private router: Router,
@@ -124,7 +127,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
               //   this.products = orders;
               // }
               if (+res) {
-                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+                this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
                   return (
                     f?.OrderID?.toString()?.includes(res) ||
                     f?.Mobile?.toString()?.includes(res) ||
@@ -147,10 +150,20 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.saveFilterOnRedirection$
       .pipe(take(1))
       .subscribe((res) => {
-        if (res?.topFilter) {
+        if (res && Object.keys(res).length) {
+          console.log('search', res)
+          this.holdFullFilter = res;
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
-          this.getOrders(this.orderRequestParam);
+          if(res.hasOwnProperty('allStatus')) {
+            this.getOrders({
+              ...this.orderRequestParam,
+              ...res.allStatus
+            });
+            this.allStatusSelected = this.status.filter(f => f.code === res.allStatus.Status)[0]
+          } else {
+            this.getOrders(this.orderRequestParam);
+          }
           if (this.orderRequestParam.Status === 3) {
             this.showPrint = true;
           } else {
@@ -200,6 +213,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
           })
           this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
         })
+    }
+    if (this.holdFullFilter && this.holdFullFilter.hasOwnProperty('searchString')) {
+      this.searchControl.setValue(this.holdFullFilter.searchString)
     }
   }
 
@@ -255,6 +271,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(orderDetail: any): void {
     console.log('orderDetail', orderDetail);
+    console.log('this.holdAllStatusFilter', this.holdAllStatusFilter);
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
       const shippedOrDelivered = orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered';
       if (shippedOrDelivered) {
@@ -341,10 +358,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public statusChange(statusId: number): void {
     const forAll = {
       Status: statusId,
-      searchTimeRange: 'OverAll',
+      searchTimeRange: this.orderRequestParam.searchTimeRange || 'OverAll',
       PageNo: 1,
       PageSize: 10
     };
+    this.holdAllStatusFilter = pick(forAll, ['Status', 'searchTimeRange'])
+    this.allStatusSelected = this.status.filter(f => f.code === statusId)[0];
     // this.setColumById(statusId);
     this.getOrders(forAll);
   }
@@ -408,6 +427,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.orderRequestParam.PageNo =1;
       this.orderRequestParam.PageSize =1000;
     }
+    delete this.holdFullFilter.searchString;
+    delete this.holdFullFilter.allStatus;
+    this.searchControl.setValue('');
+    this.allStatusSelected = {};
     this.getOrders(this.orderRequestParam);
     this.saveCurrentFilter();
     if (orderStatusId === 3) {
@@ -495,6 +518,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       ...(this.searchControl.value && {
         searchString: this.searchControl.value,
       }),
+      ...(this.holdAllStatusFilter && Object.keys(this.holdAllStatusFilter)?.length && {
+        allStatus: this.holdAllStatusFilter
+      })
     });
   }
 }

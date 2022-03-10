@@ -154,6 +154,14 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
 
   public next(): void {
     const orders = this.getBulkOrder();
+    for (const order of orders) {
+      for (const row of order.expandedRow) {
+        if (row.Quantity === 0) {
+          this.goCancel.push(row.OrderId);
+        }
+      }
+    }
+
     if (this.goCancel && !this.goCancel?.length) {
       if (this.updateDispatchQuantityData && this.updateDispatchQuantityData.length) {
         this.hitUpdateQuantityBulk(orders);
@@ -230,7 +238,7 @@ export class BulkAcceptOrderComponent extends BaseComponent implements OnInit {
       } else {
         this.updateDispatchQuantityData.push(obj);
       }
-      console.log('this.updateDispatchQuantityData',this.updateDispatchQuantityData)
+      console.log('this.updateDispatchQuantityData', this.updateDispatchQuantityData)
     }
   }
 

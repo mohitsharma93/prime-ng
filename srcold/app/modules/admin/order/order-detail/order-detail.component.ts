@@ -22,7 +22,7 @@ interface Products {
   mobile?: string;
   order_amt?: string;
   order_date?: string;
-  status?: string;
+  Status?: string;
 }
 
 interface Product {
@@ -57,6 +57,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   printInvoiceIds: any[] = [];
   public disableAcceptOrder: any = {};
   public notCallApiAfterQuantityUpdate: boolean = true;
+  public showHideCheckbox: boolean = true;
 
   constructor(
     private router: Router,
@@ -244,9 +245,15 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
             this.singleCancelOrderId = null;
             this.cancelReasonControl.setValue('')
             this.cancelOrder(hideShowCancelModel);
-            const order = this.getCurrentOrder()
-            const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
-            this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+            // const order = this.getCurrentOrder()
+            // const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
+            // this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+
+            this.changeOrderStatus([+obj?.OrderID], 'Cancelled')
+            const checkShippedExistInOrder = this.checkShippedExistInOrder();
+            if (checkShippedExistInOrder) {
+              this.showHideCheckbox = false;
+            }
             return
           }
           this.backClicked();
@@ -346,10 +353,15 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           if (localOrder && localOrder.length === this.selectedData.length) {
             // this.redirectToOrder();
           }
+          // const orderDetail = this.getCurrentOrder();
+          // const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
+          // this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+          this.changeOrderStatus(allOrderId, 'Delivered')
+          const checkShippedExistInOrder = this.checkShippedExistInOrder();
+          if (checkShippedExistInOrder) {
+            this.showHideCheckbox = false;
+          }
           this.selectedData = [];
-          const orderDetail = this.getCurrentOrder();
-          const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
-          this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -371,13 +383,17 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           const localOrder = this.getLocalOrder();
           if (localOrder && localOrder.length === this.selectedData.length) {
             // this.redirectToOrder();
-            this.cancelOrder(false);
           }
-
+          this.cancelOrder(false);
+          // const orderDetail = this.getCurrentOrder();
+          // const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
+          // this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+          this.changeOrderStatus(allOrderId, 'Cancelled')
+          const checkShippedExistInOrder = this.checkShippedExistInOrder();
+          if (checkShippedExistInOrder) {
+            this.showHideCheckbox = false;
+          }
           this.selectedData = [];
-          const orderDetail = this.getCurrentOrder();
-          const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
-          this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -422,6 +438,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       };
       calls.push(this.ds.get(req));
     }
+    // some one who use forkJoin with reset parameter please remove it use array direct (pass reset in it is deprecated in v8)
     forkJoin(...calls).subscribe((data: any) => {
       if (data && data.length) {
         for (const apiRes of data) {
@@ -501,9 +518,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       console.log(res)
       if (res && res?.Status == 'OK') {
         // this.backClicked();
-        const order = this.getCurrentOrder()
-        const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
-        this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+        // const order = this.getCurrentOrder()
+        // const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
+        // this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+        this.changeOrderStatus([+id], 'Delivered')
+        const checkShippedExistInOrder = this.checkShippedExistInOrder();
+        if (checkShippedExistInOrder) {
+          this.showHideCheckbox = false;
+        }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -536,5 +558,33 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         }
       }
     ]
+  }
+
+  public checkShippedExistInOrder(): boolean {
+    const allOrders = this.getLocalOrder();
+    const checkStatus = allOrders?.filter((order: any) => order.Status === 'Shipped');
+    if (checkStatus && checkStatus.length) {
+      return false;
+    } else {
+      if (checkStatus && checkStatus.length === 0) {
+        return true;
+      }
+    }
+    return true;
+  }
+
+  public changeOrderStatus(orderId: number[], status: 'Delivered' | 'Cancelled') {
+    const allOrders = this.getLocalOrder() as Products[];
+    if (allOrders && allOrders.length) {
+      console.log('orderId', orderId)
+      orderId.forEach((id: number) => {
+        const index = allOrders?.findIndex((order: any) => order.OrderId === id);
+        if (index > -1) {
+          allOrders[index].Status = status;
+        }
+      })
+    }
+    console.log('allOrders', allOrders);
+    this.orders$ = of(allOrders)
   }
 }

@@ -187,15 +187,15 @@
                 responsiveLayout="scroll"
                 scrollHeight="calc(100vh - 437px)"
                 [value]="(orders$ | async) || []"
-                [scrollable]="true"
                 [columns]="columns"
                 [(selection)]="selectedData"
+                [scrollable]="true"
               >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th
                       *ngIf="
-                        (selectedOrderDetail | async)?.Status === 'Shipped'
+                        (selectedOrderDetail | async)?.Status === 'Shipped' && showHideCheckbox
                       "
                     ></th>
 
@@ -216,12 +216,13 @@
                   <tr>
                     <td
                       *ngIf="
-                        (selectedOrderDetail | async)?.Status === 'Shipped'
+                        (selectedOrderDetail | async)?.Status === 'Shipped' && showHideCheckbox
                       "
                     >
                       <p-tableCheckbox
                         [value]="rowData"
                         class="custom-checkbox"
+                        [disabled]="rowData?.Status !== 'Shipped'"
                       ></p-tableCheckbox>
                     </td>
                     <td *ngFor="let col of columns">
@@ -312,7 +313,7 @@
                 type="button"
                 label="Delivered Selected"
                 class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped' && showHideCheckbox"
                 (click)="deliveredSelected()"
               ></button>
               <button
@@ -333,7 +334,7 @@
                 type="button"
                 label="Cancel Selected"
                 class="p-button-raised p-button-danger ml-2"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped' && showHideCheckbox"
                 (click)="
                   selectedData && selectedData.length
                     ? cancelOrder(true)
@@ -458,19 +459,22 @@
     "
     (click)="saveQuantity(order)"
   ></button>
-  <!-- <button 
+  <button 
     pButton
     pRipple
     type="button"
     icon="pi pi-ellipsis-h"
     class="p-button-rounded p-button-text"
     (click)="menu.toggle($event)"
+    *ngIf="order?.Status === 'Shipped'"
   ></button>
-  <p-menu #menu [popup]="true" [model]="returnItemForMenu(order.OrderId)" [appendTo]="showMenu"></p-menu>
-  <ng-template #showMenu>
-    
-  </ng-template> -->
-  <button
+  <p-menu 
+    #menu
+    [popup]="true"
+    [model]="returnItemForMenu(order.OrderId)"
+    appendTo="body"
+  ></p-menu>
+  <!-- <button
     pButton
     pRipple
     type="button"
@@ -488,7 +492,7 @@
     *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'"
     (click)="rowSingleCancel(true, order.OrderId)"
   ></button>
-  <div></div>
+  <div></div> -->
 </ng-template>
 <ng-template #statusCol let-status>
   <label class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{

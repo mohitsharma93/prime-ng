@@ -43,10 +43,10 @@
                         {{ rowData[col.field] }}
                       </ng-container>
                       <ng-template #showOrderWiseQuantity>
-                        <div class="d-flex scroll-x">
+                        <div class="bulk-tbl">
                           <div class="d-flex" *ngFor="let orderQuantity of rowData?.expandedRow">
-                            <div style="margin-top: 7px" class="mr-3">{{orderQuantity.OrderId}}</div>
-                            <div class="box-catskill-white mr-4">
+                            <div style="margin-top: 7px" class="mr-1">{{orderQuantity.OrderId}}</div>
+                            <div class="box-catskill-white mr-1">
                               {{orderQuantity.Quantity}}
                             </div>
                           </div>
