@@ -28,7 +28,7 @@ import { DataService } from 'src/app/shared/services/data.service';
 export class OrderComponent extends BaseComponent implements OnInit {
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
   @ViewChild('dt') dt: any;
-  public rangeDates: FormControl = new FormControl([new Date(), new Date()]);
+  public rangeDates: FormControl = new FormControl([]);
   public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 

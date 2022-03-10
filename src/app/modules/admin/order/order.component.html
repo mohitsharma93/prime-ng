@@ -19,7 +19,7 @@
           <div class="col-md-3">
             <p-calendar #dashboardCalendar selectionMode="range" [readonlyInput]="true" inputId="range"
               [maxDate]="maxDateValue" (onSelect)="dateChange($event)" [dateFormat]="dateFormat"
-              [formControl]="rangeDates" [showIcon]="true">
+              [formControl]="rangeDates" [showIcon]="true" placeholder="Select date range.">
             </p-calendar>
           </div>
         </ng-container>
