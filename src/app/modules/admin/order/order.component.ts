@@ -185,6 +185,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
     super.ngOnDestroy();
   }
 
+  public ngAfterViewInit(): void {
+    this.dt.resetPageOnSort = false;
+  }
+
   public setProduct(res: any): void {
     const newProduct = cloneDeep(res);
     newProduct.lstorderDetails.map((p: any) => {
