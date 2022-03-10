@@ -81,7 +81,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.id = res['orderId']
       }
     })
-    this.subscription = this.confirmationService.getConfirmation().pipe(take(1)).subscribe((response: any) => {
+    this.subscription = this.confirmationService.getConfirmation().pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
       if (response.status) {
         if (response.action === 'accepted_order') {
           this.acceptOrder();
