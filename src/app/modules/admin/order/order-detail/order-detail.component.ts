@@ -81,7 +81,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.id = res['orderId']
       }
     })
-    this.subscription = this.confirmationService.getConfirmation().subscribe((response: any) => {
+    this.subscription = this.confirmationService.getConfirmation().pipe(take(1)).subscribe((response: any) => {
       if (response.status) {
         if (response.action === 'accepted_order') {
           this.acceptOrder();
@@ -350,7 +350,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     //     this.toasterService.error(res?.ErrorMessage);
     //   }
     // });
-    this.subjectService.setHoldAcceptedOrderForSelected(this.getCurrentOrder()?.OrderID);
+    const getAllReadyAvailId = this.subjectService.holdAcceptedOrderForSelected.value || [];
+    this.subjectService.setHoldAcceptedOrderForSelected([...getAllReadyAvailId, this.getCurrentOrder()?.OrderID]);
     let filter = this.getSaveFilterRedirection();
     if (filter && Object.keys(filter).length) {
       filter.topFilter.Status = 2
