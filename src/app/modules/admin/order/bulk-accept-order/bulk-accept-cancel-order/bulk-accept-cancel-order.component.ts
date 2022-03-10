@@ -117,7 +117,7 @@ export class BulkAcceptCancelOrderComponent extends BaseComponent implements OnI
           this.changeOrderStatus(allOrderId, 'Cancelled');
           const disableCheckbox = this.checkShippedExistInOrder();
           if (disableCheckbox) {
-            this.next();
+            // this.next();
           }
           this.selectedData = [];
         } else {
