@@ -181,12 +181,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
       // })
   }
 
-  public ngOnDestroy(): void {
-    super.ngOnDestroy();
+  public ngAfterViewInit() {
+    this.dt.resetPageOnSort = false;
   }
 
-  public ngAfterViewInit(): void {
-    this.dt.resetPageOnSort = false;
+  public ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 
   public setProduct(res: any): void {
@@ -201,11 +201,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.products = newProduct;
     if (this.orderRequestParam.Status === 2) {
       this.subjectService.holdAcceptedOrderForSelected$
-        .pipe(take(1), filter(p => p && p.length))
+        .pipe(take(1))
         .subscribe((res) => {
           // this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)];
           this.selectedData = [];
-          res.forEach((ids: number) => {
+          res?.forEach((ids: number) => {
             const find = newProduct.lstorderDetails.find((item: any) => item.OrderID === ids);
             if (find) {
               this.selectedData.push(find);
@@ -418,6 +418,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public orderChange(orderStatusId: number, urlMiddlePoint: string) {
+    this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.orderRequestParam = {
       Status: orderStatusId,
       searchTimeRange: 'OverAll',

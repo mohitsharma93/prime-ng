@@ -15,7 +15,7 @@
     <div class="mx-4">
       <p-calendar selectionMode="range" [readonlyInput]="true" inputId="range" [showTime]="false" [showIcon]="true"
         (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates"
-        [maxDate]="maxDateRange">
+        [maxDate]="maxDateRange" placeholder="Select date range.">
       </p-calendar>
     </div>
   </div>

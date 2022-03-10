@@ -28,7 +28,7 @@ import { DataService } from 'src/app/shared/services/data.service';
 export class OrderComponent extends BaseComponent implements OnInit {
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
   @ViewChild('dt') dt: any;
-  public rangeDates: FormControl = new FormControl([new Date(), new Date()]);
+  public rangeDates: FormControl = new FormControl([]);
   public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 
@@ -185,6 +185,10 @@ export class OrderComponent extends BaseComponent implements OnInit {
     super.ngOnDestroy();
   }
 
+  public ngAfterViewInit(): void {
+    this.dt.resetPageOnSort = false;
+  }
+
   public setProduct(res: any): void {
     const newProduct = cloneDeep(res);
     newProduct.lstorderDetails.map((p: any) => {
@@ -197,9 +201,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.products = newProduct;
     if (this.orderRequestParam.Status === 2) {
       this.subjectService.holdAcceptedOrderForSelected$
-        .pipe(take(1))
+        .pipe(take(1), filter(p => p && p.length))
         .subscribe((res) => {
-          this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)];
+          // this.selectedData = [...this.selectedData, ...newProduct.lstorderDetails.filter((p: any) => p.OrderID === res)];
+          this.selectedData = [];
+          res.forEach((ids: number) => {
+            const find = newProduct.lstorderDetails.find((item: any) => item.OrderID === ids);
+            if (find) {
+              this.selectedData.push(find);
+            }
+          })
         })
       this.subjectService.holdAcceptedOrderIdsForSelcted$
         .pipe(take(1), filter(p => p && p.length))

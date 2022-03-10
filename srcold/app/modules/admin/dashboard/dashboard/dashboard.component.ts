@@ -19,7 +19,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
   public rangeDates: FormControl = new FormControl(
-    [new Date(), new Date()]
+    []
   );
   public dateFormat: string = 'dd/mm/yy';
   maxDateRange: Date = new Date();

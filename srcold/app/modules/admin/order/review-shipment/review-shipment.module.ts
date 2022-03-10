@@ -8,6 +8,7 @@ import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { ReviewShipmentComponent } from './review-shipment.component';
 import { DialogModule } from 'primeng/dialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
 const routes: Routes = [
   {
@@ -30,6 +31,8 @@ const routes: Routes = [
     TableModule,
     DropdownModule,
     DialogModule,
-  ]
+    DynamicDialogModule
+  ],
+  providers: [DialogService]
 })
 export class ReviewShipmentModule { }

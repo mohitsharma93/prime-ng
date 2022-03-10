@@ -13,6 +13,10 @@ import { PrintModelComponent } from './modules/print-model/print-model.component
 import { PrintShipmentModelComponent } from './modules/print-shipment-model/print-shipment-model.component';
 import { PrintInvoiceModelComponent } from './modules/print-invoice-model/print-invoice-model.component';
 import { PrintInvoiceMultipleModelComponent } from './modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
+import { ConfirmationModelComponent } from './modules/confirmation-model/confirmation-model.component';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+
 
 @NgModule({
   declarations: [
@@ -20,7 +24,8 @@ import { PrintInvoiceMultipleModelComponent } from './modules/print-invoice-mult
     PrintModelComponent,
     PrintShipmentModelComponent,
     PrintInvoiceModelComponent,
-    PrintInvoiceMultipleModelComponent
+    PrintInvoiceMultipleModelComponent,
+    ConfirmationModelComponent
   ],
   imports: [
     BrowserModule,
@@ -28,6 +33,8 @@ import { PrintInvoiceMultipleModelComponent } from './modules/print-invoice-mult
     AppRoutingModule,
     HttpClientModule,
     ToastModule,
+    DialogModule,
+    ButtonModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true, },

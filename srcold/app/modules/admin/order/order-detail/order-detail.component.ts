@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
-import { forkJoin, Observable, of, take, takeUntil } from 'rxjs';
+import { forkJoin, Observable, of, Subscription, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
@@ -14,6 +14,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { DataService } from 'src/app/shared/services/data.service';
 import { PrintInvoiceMultipleModelComponent } from 'src/app/modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
 import { PrimeNGConfig } from 'primeng/api';
+import { ConfirmationModelComponent } from 'src/app/modules/confirmation-model/confirmation-model.component';
+import { ConfirmationService } from 'src/app/shared/services/confirmation.service';
 
 interface Products {
   id?: string;
@@ -58,6 +60,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public disableAcceptOrder: any = {};
   public notCallApiAfterQuantityUpdate: boolean = true;
   public showHideCheckbox: boolean = true;
+  public subscription: Subscription;
 
   constructor(
     private router: Router,
@@ -68,7 +71,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     private subjectService: SubjectService,
     private ds: DataService,
     public dialogService: DialogService,
-    private primengConfig: PrimeNGConfig
+    private primengConfig: PrimeNGConfig,
+    private confirmationService: ConfirmationService
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -77,6 +81,17 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         this.id = res['orderId']
       }
     })
+    this.subscription = this.confirmationService.getConfirmation().pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
+      if (response.status) {
+        if (response.action === 'accepted_order') {
+          this.acceptOrder();
+        }
+        if (response.action === 'delivered_order') {
+          this.deliveredSelected();
+        }
+
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -233,12 +248,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
       const obj: IOrderCancelModel = {
-        OrderID: (this.singleCancelOnStatusShipped) ? this.singleCancelOrderId  : this.getCurrentOrder()?.OrderID,
+        OrderID: (this.singleCancelOnStatusShipped) ? this.singleCancelOrderId : this.getCurrentOrder()?.OrderID,
         DetailID: null,
         Remark: this.cancelReasonControl.value
       }
       this.adminOrderService.cancelOrderService(obj).subscribe(res => {
-        console.log("cancelres",res);
+        console.log("cancelres", res);
         if (res && res?.Status == 'OK') {
           if (this.singleCancelOnStatusShipped) {
             this.singleCancelOnStatusShipped = false;
@@ -335,7 +350,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     //     this.toasterService.error(res?.ErrorMessage);
     //   }
     // });
-    this.subjectService.setHoldAcceptedOrderForSelected(this.getCurrentOrder()?.OrderID);
+    const getAllReadyAvailId = this.subjectService.holdAcceptedOrderForSelected.value || [];
+    this.subjectService.setHoldAcceptedOrderForSelected([...getAllReadyAvailId, this.getCurrentOrder()?.OrderID]);
     let filter = this.getSaveFilterRedirection();
     if (filter && Object.keys(filter).length) {
       filter.topFilter.Status = 2
@@ -548,13 +564,13 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       {
         label: 'Delivered',
         command: () => {
-            this.deliverOrder(orderId);
+          this.deliverOrder(orderId);
         }
       },
       {
         label: 'Cancel',
         command: () => {
-            this.rowSingleCancel(true, orderId);
+          this.rowSingleCancel(true, orderId);
         }
       }
     ]
@@ -587,4 +603,29 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     console.log('allOrders', allOrders);
     this.orders$ = of(allOrders)
   }
+
+
+  confirmAcceptedOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'accepted_order',
+        message: 'Are you sure? you want to accepted selected order.',
+      },
+      height: '30%',
+      width: '30%'
+    });
+
+  }
+  confirmDeliveredOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'delivered_order',
+        message: 'Are you sure? you want to delivered selected order.',
+      },
+      height: '30%',
+      width: '30%'
+    });
+
+  }
+
 }
