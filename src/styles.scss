@@ -618,3 +618,23 @@ td.bulk-tbl {
   color: #fff !important;
   border-radius: 5px !important;
 }
+
+.p-menu-popup {
+  width: 150px !important;
+    li:nth-child(1) {
+      a {
+        padding: 0.50rem 1rem;
+        span {
+          color: #6aa84f !important;
+        }
+      }
+    }
+    li:nth-child(2) {
+      a {
+        padding: 0.50rem 1rem;
+        span {
+          color: #ff5722 !important
+        }
+      }
+    }
+}
