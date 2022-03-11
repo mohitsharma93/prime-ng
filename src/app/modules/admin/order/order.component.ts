@@ -426,6 +426,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
           //   data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
           // }
           this.orders$ = of(data);
+          console.log('table', this.dt);
+          if (this.dt.sortField && (this.dt.sortOrder === 1 || this.dt.sortOrder === -1)) {
+            const order = (this.dt.sortOrder === 1) ? true : false;
+            this.customSort(this.dt.sortField, order);
+            this.setLoader(false);
+            return;
+          }
           this.setProduct(data);
           this.setLoader(false);
         } else {
@@ -447,6 +454,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
     this.dt.rows = 10;
+    this.dt.sortOrder = 1;
+    this.dt.sortField = undefined;
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {
