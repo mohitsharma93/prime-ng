@@ -199,6 +199,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           if (apiMiddleStr === 'GetShipmentOrderData') {
 
             changeRes = changeRes.shipMentOrderDataListDTO
+            if (res?.Data?.shipMentOrderDataListDTO && res?.Data?.shipMentOrderDataListDTO?.length === 0) {
+              this.backClicked();
+            }
           }
           if (apiMiddleStr === 'GetShipmentdeliveredOrderData') {
             changeRes = changeRes.deliveredOrderDataListDTO

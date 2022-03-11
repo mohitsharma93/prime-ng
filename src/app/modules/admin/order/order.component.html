@@ -75,9 +75,13 @@
             </ng-container>
           </div>
 
+          <!-- [ngStyle]="{ 'height': (orderRequestParam?.Status === 1 || orderRequestParam?.Status === 2) ? '621px' : '800' }" -->
           <div class="order-table">
             <!-- [rowsPerPageOptions]="[5, 10, 25, 50]" -->
-            <p-table responsiveLayout="scroll" scrollHeight="calc(100vh - 379px)" [value]="products?.lstorderDetails"
+            <p-table 
+              responsiveLayout="scroll"
+              [scrollHeight]="'calc(100vh - 379px)'"
+              [value]="products?.lstorderDetails"
               [scrollable]="false" [paginator]="
                 orderRequestParam?.Status === 1 ||
                 orderRequestParam?.Status === 2

@@ -126,21 +126,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
               // if (res.length === 0) {
               //   this.products = orders;
               // }
-              if (+res) {
-                this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
-                  return (
-                    f?.OrderID?.toString()?.includes(res) ||
-                    f?.Mobile?.toString()?.includes(res) ||
-                    f?.ShipmentId?.toString()?.includes(res)
-                  );
-                });
-              } else {
-                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
-                  return f?.ShopName?.toLowerCase()?.includes(
-                    res.toLowerCase()
-                  );
-                });
-              }
+              this.searchOperation(res, orders)
             });
         }
       });
@@ -187,6 +173,24 @@ export class OrderComponent extends BaseComponent implements OnInit {
     super.ngOnDestroy();
   }
 
+  public searchOperation(res: any, orders: any) {
+    if (+res) {
+      this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
+        return (
+          f?.OrderID?.toString()?.includes(res) ||
+          f?.Mobile?.toString()?.includes(res) ||
+          f?.ShipmentId?.toString()?.includes(res)
+        );
+      });
+    } else {
+      this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+        return f?.ShopName?.toLowerCase()?.includes(
+          res.toLowerCase()
+        );
+      });
+    }
+  }
+
   public setProduct(res: any): void {
     const newProduct = cloneDeep(res);
     newProduct.lstorderDetails.map((p: any) => {
@@ -223,9 +227,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
         })
     }
+    if (this.searchControl.value.length) {
+      this.searchOperation(this.searchControl.value, res)
+    }
     if (this.holdFullFilter && this.holdFullFilter.hasOwnProperty('searchString')) {
       this.searchControl.setValue(this.holdFullFilter.searchString)
     }
+    
   }
 
   public setColumById(id: number) {
