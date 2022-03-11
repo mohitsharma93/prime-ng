@@ -135,13 +135,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
                   );
                 });
               } else {
-                if (res.length) {
-                  this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
-                    return f?.ShopName?.toLowerCase()?.includes(
-                      res.toLowerCase()
-                    );
-                  });
-                }
+                this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+                  return f?.ShopName?.toLowerCase()?.includes(
+                    res.toLowerCase()
+                  );
+                });
               }
             });
         }
