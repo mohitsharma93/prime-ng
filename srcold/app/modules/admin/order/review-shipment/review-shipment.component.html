@@ -48,14 +48,14 @@
                         {{ rowData[col.field] }}
                       </ng-container>
                       <ng-template #showThroughArray>
-                        <div class="bulk-tbl">
-                          <div class="d-flex " *ngFor="let orderQuantity of rowData?.OrderQuantityList">
-                            <div style="margin-top: 7px" class="mr-1">{{orderQuantity.OrderId}}</div>
-                            <div class="box-catskill-white mr-1">
-                              {{orderQuantity.Quantity}}
-                            </div>
+                       <div class="bulk-tbl">
+                        <div class="d-flex " *ngFor="let orderQuantity of rowData?.OrderQuantityList">
+                          <div style="margin-top: 7px" class="mr-1">{{orderQuantity.OrderId}}</div>
+                          <div class="box-catskill-white mr-1">
+                            {{orderQuantity.Quantity}}
                           </div>
                         </div>
+                       </div>
                       </ng-template>
                     </td>
                   </tr>
@@ -64,8 +64,7 @@
             </div>
             <div class="d-flex justify-content-center mt-3">
               <button pButton pRipple type="button" label="Create Shipment"
-                class="p-button-raised p-button-success h-40" style="width: 150px"
-                (click)="confirmCreateShipmentOrder()"></button>
+                class="p-button-raised p-button-success h-40" style="width: 150px" (click)="createShipment()"></button>
             </div>
           </div>
         </p-card>

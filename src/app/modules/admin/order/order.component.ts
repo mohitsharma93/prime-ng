@@ -155,7 +155,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.holdFullFilter = res;
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
-          if(res.hasOwnProperty('allStatus')) {
+          if (res.hasOwnProperty('allStatus')) {
             this.getOrders({
               ...this.orderRequestParam,
               ...res.allStatus
@@ -174,11 +174,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
         }
       });
 
-      // this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
-      //   if (res && res?.length) {
-      //     console.log('res ids', res)
-      //   }
-      // })
+    // this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
+    //   if (res && res?.length) {
+    //     console.log('res ids', res)
+    //   }
+    // })
   }
 
   public ngAfterViewInit() {
@@ -379,12 +379,24 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.getOrders(forAll);
   }
 
-  public export(tableId: string): void {
-    const data = this.getOrdersLocal();
-    if (data && data?.lstorderDetails?.length) {
-      this.exportExcel(data?.lstorderDetails);
+  public export(orderStatus: number): void {
+    let dates: any = 'OverAll';
+    if (this.rangeDates.value && this.rangeDates.value.length > 0) {
+      dates = this.dateConvection(this.rangeDates.value);
     }
+    const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetails?Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=0&searchTimeRange=${dates}`;
+    const req = { url, params: {} };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        this.exportExcel(res.Data?.lstorderDetails);
+      }
+    });
+    // const data = this.getOrdersLocal();
+    // if (data && data?.lstorderDetails?.length) {
+    //   this.exportExcel(data?.lstorderDetails);
+    // }
   }
+
 
   public getOrdersLocal(): any {
     let data = null;
@@ -436,8 +448,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2) {
-      this.orderRequestParam.PageNo =1;
-      this.orderRequestParam.PageSize =1000;
+      this.orderRequestParam.PageNo = 1;
+      this.orderRequestParam.PageSize = 1000;
     }
     delete this.holdFullFilter.searchString;
     delete this.holdFullFilter.allStatus;

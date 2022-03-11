@@ -12,6 +12,7 @@
               <!-- scrollHeight="700px" -->
               <p-table
                 responsiveLayout="scroll"
+                scrollHeight="calc(100vh - 329px)"
                 [value]="(orders$ | async) || []"
                 [scrollable]="true"
                 [columns]="columns"

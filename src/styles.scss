@@ -604,8 +604,8 @@ td.bulk-tbl {
 .bulk-tbl {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(21%, 1fr));
-  grid-gap: 1em;
-  gap: 1em;
+  // grid-gap: 1em;
+  gap: 0.5em;
   width: 100%;
 }
 .bulk-accept-table .p-datatable-tbody > tr > td {

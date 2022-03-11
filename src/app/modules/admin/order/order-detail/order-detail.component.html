@@ -469,6 +469,7 @@
     *ngIf="order?.Status === 'Shipped'"
   ></button>
   <p-menu 
+  class="shipmentdc"
     #menu
     [popup]="true"
     [model]="returnItemForMenu(order.OrderId)"
