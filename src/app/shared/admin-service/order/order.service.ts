@@ -129,7 +129,9 @@ export class AdminOrderService {
 
   public deliveredSelectedService(idsToBeDelivered: number[], shipmentId: number): Observable<any> {
     return this.http
-      .post(AdminOrderUrls.deliveredSelected(this.adminBaseUrl) + `/${shipmentId}`, idsToBeDelivered)
+      .post(
+        AdminOrderUrls.deliveredSelected(this.adminBaseUrl), idsToBeDelivered, { params: { shipmentId: shipmentId}}
+      )
       .pipe(
         map((res) => {
           const data: any = res;
