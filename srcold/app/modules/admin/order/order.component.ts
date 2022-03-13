@@ -126,23 +126,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
               // if (res.length === 0) {
               //   this.products = orders;
               // }
-              if (+res) {
-                this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
-                  return (
-                    f?.OrderID?.toString()?.includes(res) ||
-                    f?.Mobile?.toString()?.includes(res) ||
-                    f?.ShipmentId?.toString()?.includes(res)
-                  );
-                });
-              } else {
-                if (res.length) {
-                  this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
-                    return f?.ShopName?.toLowerCase()?.includes(
-                      res.toLowerCase()
-                    );
-                  });
-                }
-              }
+              this.searchOperation(res, orders)
             });
         }
       });
@@ -155,7 +139,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.holdFullFilter = res;
           this.orderRequestParam = res.topFilter;
           this.setColumById(this.orderRequestParam.Status);
-          if(res.hasOwnProperty('allStatus')) {
+          if (res.hasOwnProperty('allStatus')) {
             this.getOrders({
               ...this.orderRequestParam,
               ...res.allStatus
@@ -174,11 +158,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
         }
       });
 
-      // this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
-      //   if (res && res?.length) {
-      //     console.log('res ids', res)
-      //   }
-      // })
+    // this.subjectService.holdIdsForCreateShipment$.pipe(take(1)).subscribe(res => {
+    //   if (res && res?.length) {
+    //     console.log('res ids', res)
+    //   }
+    // })
   }
 
   public ngAfterViewInit() {
@@ -187,6 +171,24 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public ngOnDestroy(): void {
     super.ngOnDestroy();
+  }
+
+  public searchOperation(res: any, orders: any) {
+    if (+res) {
+      this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
+        return (
+          f?.OrderID?.toString()?.includes(res) ||
+          f?.Mobile?.toString()?.includes(res) ||
+          f?.ShipmentId?.toString()?.includes(res)
+        );
+      });
+    } else {
+      this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+        return f?.ShopName?.toLowerCase()?.includes(
+          res.toLowerCase()
+        );
+      });
+    }
   }
 
   public setProduct(res: any): void {
@@ -225,9 +227,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
         })
     }
+    if (this.searchControl.value.length) {
+      this.searchOperation(this.searchControl.value, res)
+    }
     if (this.holdFullFilter && this.holdFullFilter.hasOwnProperty('searchString')) {
       this.searchControl.setValue(this.holdFullFilter.searchString)
     }
+    
   }
 
   public setColumById(id: number) {
@@ -379,12 +385,24 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.getOrders(forAll);
   }
 
-  public export(tableId: string): void {
-    const data = this.getOrdersLocal();
-    if (data && data?.lstorderDetails?.length) {
-      this.exportExcel(data?.lstorderDetails);
+  public export(orderStatus: number): void {
+    let dates: any = 'OverAll';
+    if (this.rangeDates.value && this.rangeDates.value.length > 0) {
+      dates = this.dateConvection(this.rangeDates.value);
     }
+    const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetails?Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=0&searchTimeRange=${dates}`;
+    const req = { url, params: {} };
+    this.ds.get(req).subscribe((res: any) => {
+      if (res.Status === 'OK') {
+        this.exportExcel(res.Data?.lstorderDetails);
+      }
+    });
+    // const data = this.getOrdersLocal();
+    // if (data && data?.lstorderDetails?.length) {
+    //   this.exportExcel(data?.lstorderDetails);
+    // }
   }
+
 
   public getOrdersLocal(): any {
     let data = null;
@@ -408,6 +426,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
           //   data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
           // }
           this.orders$ = of(data);
+          console.log('table', this.dt);
+          if (this.dt.sortField && (this.dt.sortOrder === 1 || this.dt.sortOrder === -1)) {
+            const order = (this.dt.sortOrder === 1) ? true : false;
+            this.customSort(this.dt.sortField, order);
+            this.setLoader(false);
+            return;
+          }
           this.setProduct(data);
           this.setLoader(false);
         } else {
@@ -429,6 +454,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
     this.dt.rows = 10;
+    this.dt.sortOrder = 1;
+    this.dt.sortField = undefined;
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {
@@ -436,8 +463,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2) {
-      this.orderRequestParam.PageNo =1;
-      this.orderRequestParam.PageSize =1000;
+      this.orderRequestParam.PageNo = 1;
+      this.orderRequestParam.PageSize = 1000;
     }
     delete this.holdFullFilter.searchString;
     delete this.holdFullFilter.allStatus;

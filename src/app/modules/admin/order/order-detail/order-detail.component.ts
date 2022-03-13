@@ -384,7 +384,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public deliveredSelected() {
     if (this.selectedData && this.selectedData.length) {
       const allOrderId = this.selectedData.map(o => o.OrderId);
-      this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
+      const shipmentId = this.getOrderDetailUpSide()?.ShipmentId;
+      this.adminOrderService.deliveredSelectedService(allOrderId, shipmentId).subscribe(res => {
         if (res && res?.Status == 'OK') {
           const localOrder = this.getLocalOrder();
           if (localOrder && localOrder.length === this.selectedData.length) {

@@ -27,8 +27,8 @@
             </div>
             <div class="bulk-accept-table">
               <!-- responsiveLayout="scroll" -->
-              <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
-                scrollHeight="300px" [columns]="columns" dataKey="ItemName" [expandedRowKeys]="expandedRows">
+              <p-table responsiveLayout="scroll" scrollHeight="calc(100vh - 419px)" [value]="(orders$ | async) || []" [scrollable]="true"
+                [columns]="columns" dataKey="ItemName" [expandedRowKeys]="expandedRows">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th></th>

@@ -294,8 +294,17 @@
                 type="button"
                 label="Add to shipment"
                 class="p-button-raised p-button-success"
-                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted'"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted' && showAddToShipMentOrNot('Add')"
                 (click)="addToShipment()"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="Remove"
+                class="p-button-raised p-button-danger ml-2"
+                *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted' && showAddToShipMentOrNot('Remove')"
+                (click)="removeFromShipment()"
               ></button>
               <button
                 pButton
@@ -469,10 +478,12 @@
     *ngIf="order?.Status === 'Shipped'"
   ></button>
   <p-menu 
+    class="shipmentdc"
     #menu
     [popup]="true"
     [model]="returnItemForMenu(order.OrderId)"
     appendTo="body"
+    styleClass="p-menu-popup"
   ></p-menu>
   <!-- <button
     pButton

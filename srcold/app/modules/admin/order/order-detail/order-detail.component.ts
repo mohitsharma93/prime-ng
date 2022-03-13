@@ -14,6 +14,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { DataService } from 'src/app/shared/services/data.service';
 import { PrintInvoiceMultipleModelComponent } from 'src/app/modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
 import { PrimeNGConfig } from 'primeng/api';
+import { cloneDeep } from 'lodash-es';
 
 interface Products {
   id?: string;
@@ -199,6 +200,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           if (apiMiddleStr === 'GetShipmentOrderData') {
 
             changeRes = changeRes.shipMentOrderDataListDTO
+            if (res?.Data?.shipMentOrderDataListDTO && res?.Data?.shipMentOrderDataListDTO?.length === 0) {
+              this.backClicked();
+            }
           }
           if (apiMiddleStr === 'GetShipmentdeliveredOrderData') {
             changeRes = changeRes.deliveredOrderDataListDTO
@@ -337,6 +341,38 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     // });
     const getAllReadyAvailId = this.subjectService.holdAcceptedOrderForSelected.value || [];
     this.subjectService.setHoldAcceptedOrderForSelected([...getAllReadyAvailId, this.getCurrentOrder()?.OrderID]);
+    let filter = this.getSaveFilterRedirection();
+    if (filter && Object.keys(filter).length) {
+      filter.topFilter.Status = 2
+      this.subjectService.setSaveFilterOnRedirection(filter);
+      this.backClicked();
+    }
+  }
+
+  public showAddToShipMentOrNot(whichOne : string) {
+    const getAllReadyAvailId = this.subjectService.holdAcceptedOrderForSelected.value || [];
+    const currentId = this.getCurrentOrder()?.OrderID;
+    if (getAllReadyAvailId.includes(currentId)) {
+      if (whichOne === 'Add') {
+        return false;
+      }
+      if (whichOne === 'Remove') {
+        return true;
+      }
+    }
+    if (whichOne === 'Remove') {
+      return false;
+    }
+    return true;
+  }
+
+  public removeFromShipment() {
+    let getAllReadyAvailId = cloneDeep(this.subjectService.holdAcceptedOrderForSelected.value || []);
+    const id = this.getCurrentOrder()?.OrderID
+    if (getAllReadyAvailId.includes(id)) {
+      getAllReadyAvailId = getAllReadyAvailId.filter((x : number) => x !== id)
+    }
+    this.subjectService.setHoldAcceptedOrderForSelected(getAllReadyAvailId);
     let filter = this.getSaveFilterRedirection();
     if (filter && Object.keys(filter).length) {
       filter.topFilter.Status = 2

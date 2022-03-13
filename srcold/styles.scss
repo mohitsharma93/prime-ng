@@ -604,8 +604,8 @@ td.bulk-tbl {
 .bulk-tbl {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(21%, 1fr));
-  grid-gap: 1em;
-  gap: 1em;
+  // grid-gap: 1em;
+  gap: 0.5em;
   width: 100%;
 }
 .bulk-accept-table .p-datatable-tbody > tr > td {
@@ -617,4 +617,24 @@ td.bulk-tbl {
   border-color: #ff5722 !important;
   color: #fff !important;
   border-radius: 5px !important;
+}
+
+.p-menu-popup {
+  width: 150px !important;
+    li:nth-child(1) {
+      a {
+        padding: 0.50rem 1rem;
+        span {
+          color: #6aa84f !important;
+        }
+      }
+    }
+    li:nth-child(2) {
+      a {
+        padding: 0.50rem 1rem;
+        span {
+          color: #ff5722 !important
+        }
+      }
+    }
 }

@@ -159,5 +159,5 @@
 <ng-template #statusCol let-status>
   <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>
   <label class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</label>
-  <span class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{ status }}</span>
+  <label class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{ status }}</label>
 </ng-template>

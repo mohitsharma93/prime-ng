@@ -26,7 +26,7 @@
             <div>
               <div class="confirmtbl">
               <p-table responsiveLayout="scroll" [value]="(orders$ | async) || []" [scrollable]="true"
-                scrollHeight="330px" [columns]="columns">
+              scrollHeight="calc(100vh - 399px)" [columns]="columns">
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <th [style]="{'width': '38px'}">S No.</th>
@@ -45,7 +45,7 @@
                       <ng-template #showOrderWiseQuantity>
                         <div class="bulk-tbl">
                           <div class="d-flex" *ngFor="let orderQuantity of rowData?.expandedRow">
-                            <div style="margin-top: 7px" class="mr-1">{{orderQuantity.OrderId}}</div>
+                            <div style="margin-top: 7px; width: 31px;" class="mr-1">{{orderQuantity.OrderId}}</div>
                             <div class="box-catskill-white mr-1">
                               {{orderQuantity.Quantity}}
                             </div>
