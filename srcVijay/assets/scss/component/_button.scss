@@ -1,0 +1,129 @@
+.outlined-button {
+  .p-button:enabled:hover {
+    border-color: none !important;
+  }
+  .p-button {
+    padding: 8px 12px 9px 11px;
+    margin-right: 10px;
+    color: $black;
+  }
+  .p-button-outlined {
+    &.is_active {
+      background-color: $sazerac;
+      border-color: $orange;
+      color: $orange;
+    }
+    &.order-detail-action {
+      border-color: $orange;
+      color: $orange;
+    }
+  }
+  .outlined-border {
+    border-color: $orange;
+    color: $orange;
+  }
+}
+
+.p-button:focus {
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+.p-button:hover {
+  background-color: inherit !important;
+}
+
+.inc-dec-button {
+  span {
+    .p-inputtext {
+      height: 34px;
+      border-left: none;
+      border-right: none;
+      border-top: 1px solid #dee2e6 !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      text-align: center;
+      padding: 0;
+      width: 60px;
+    }
+    .p-inputtext:enabled:focus {
+      border-color: none !important;
+      box-shadow: none !important;
+    }
+    button {
+      background-color: #fff !important;
+      color: black;
+      height: 34px;
+    }
+    .p-button {
+      border: 1px solid #dee2e6 !important;
+    }
+    .p-button[ng-reflect-icon="pi pi-plus"] {
+      border-left: none !important;
+      width: 20px;
+    }
+    .p-button[ng-reflect-icon="pi pi-minus"] {
+      border-right: none !important;
+      width: 20px;
+    }
+    .p-button:hover {
+      background: none !important;
+      color: black !important;
+    }
+  }
+}
+.bulkbtn {
+  padding: 9px 5px !important;
+}
+.p-button.p-button-success {
+  background: #6aa84f !important;
+  border: 1px solid #6aa84f !important;
+}
+.p-button.p-button-danger {
+  background: #ff5722 !important;
+  border: 1px solid #ff5722 !important;
+  padding: 8px !important;
+}
+
+.arrow-left-right-button {
+  span {
+    .p-inputtext {
+      height: 34px;
+      border-left: none;
+      border-right: none;
+      border-top: 1px solid #dee2e6 !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      text-align: center;
+      padding: 0;
+      width: 30px;
+    }
+    .p-inputtext:enabled:focus {
+      border-color: none !important;
+      box-shadow: none !important;
+    }
+    button {
+      background-color: #fff !important;
+      color: black;
+      height: 34px;
+    }
+    .p-button {
+      border: 1px solid #dee2e6 !important;
+    }
+    .p-button[ng-reflect-icon="pi pi-caret-right"] {
+      border-left: none !important;
+      width: 20px;
+    }
+    .p-button[ng-reflect-icon="pi pi-caret-left"] {
+      border-right: none !important;
+      width: 20px;
+    }
+    .p-button:hover {
+      background: none !important;
+      color: black !important;
+    }
+  }
+}
+.p-button-raised.p-button-danger.ml-2 {
+  background-color: red !important;
+  border-color: red !important;
+  color: white !important;
+}

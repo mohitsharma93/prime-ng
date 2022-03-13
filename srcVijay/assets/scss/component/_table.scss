@@ -1,0 +1,24 @@
+.bulk-accept-table {
+    .p-datatable-scrollable {
+        tr {
+          th:nth-child(1) {
+            flex: 0 0 3rem;
+          }
+          th:nth-child(2) {
+            flex: 0 0 2rem;
+          }
+          // th:nth-child(3) {
+          //   justify-content: flex-start;
+          // }
+          td:nth-child(1) {
+            flex: 0 0 2rem;
+          }
+          td:nth-child(2) {
+            flex: 0 0 2rem;
+          }
+          // td:nth-child(3) {
+          //   justify-content: flex-start;
+          // }
+        }
+    }
+  }

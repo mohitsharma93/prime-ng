@@ -1,0 +1,163 @@
+<div class="content-wrapper">
+  <h4 class="page-title" (click)="backClicked()" style="cursor: pointer">
+    <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Order Details
+  </h4>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="">
+        <p-card>
+          <div class="d-flex flex-column">
+            <div>
+              <div class="tab_sec_left">
+                <p>
+                  Shipment ID:
+                  <span><b>{{ (orders$ | async)?.ShipmentId }}</b></span>
+                </p>
+                <p>
+                  ID:
+                  <span><b>{{ (selectedOrderDetail | async)?.OrderId }}</b></span>
+                </p>
+                <p>
+                  Store Name:
+                  <span><b>{{ (selectedOrderDetail | async)?.ShopName }}</b></span>
+                </p>
+                <p>
+                  Mobile No.:
+                  <span><b>{{ (selectedOrderDetail | async)?.Mobile }}</b></span>
+                </p>
+                <br />
+                <p>
+                  Address:
+                  <span>{{ (selectedOrderDetail | async)?.newAddress }}</span>
+                </p>
+                <br /><br />
+                <p>
+                  Status
+                  <span class="ml-2">
+                    <ng-container
+                      *ngTemplateOutlet="statusCol context: { $implicit: (selectedOrderDetail | async)?.Status }">
+                    </ng-container>
+                  </span>
+                </p>
+                <br /><br />
+                <div class="d-flex">
+                  <p>
+                    Order Date:
+                    <span>{{
+                      (selectedOrderDetail | async)?.OrderDate
+                      | date: "MMM. d, y | h:mm a"
+                      }}</span>
+                  </p>
+                  <p *ngIf="(selectedOrderDetail | async)?.Status === 'Delivered'">
+                    Delivery Date:
+                    <span>{{
+                      (selectedOrderDetail | async)?.OrderDate
+                      | date: "MMM. d, y | h:mm a"
+                      }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="tab_sec_right">
+                <p class="d-flex justify-content-end">
+                  Order Value:
+                  <span>{{ (selectedOrderDetail | async)?.OrderAmount }}</span>
+                </p>
+                <p class="d-flex justify-content-end">
+                  Delivery Charges:
+                  <span>{{
+                    (selectedOrderDetail | async)?.DeliveryCharges
+                    }}</span>
+                </p>
+                <!-- <h5 class="d-flex justify-content-end">
+                  Grant Total:
+                  <span
+                    ><b>{{
+                      (selectedOrderDetail | async)?.OrderAmount +
+                        (selectedOrderDetail | async)?.DeliveryCharges
+                    }}</b></span
+                  >
+                </h5> -->
+                <h5 class="d-flex justify-content-end">
+                  Grant Total:
+                  <span><b>{{
+                      (selectedOrderDetail | async)?.OrderAmount +
+                      (selectedOrderDetail | async)?.DeliveryCharges
+                      }}</b></span>
+                </h5>
+
+                <p class="outlined-button d-flex justify-content-end" *ngIf="
+                    (selectedOrderDetail | async)?.Status === 'Shipped' ||
+                    (selectedOrderDetail | async)?.Status === 'Cancelled'
+                  ">
+                  <button pButton pRipple type="button" label="Print Invoice" class="p-button-outlined outlined-border"
+                    style="padding: 4px 5px; font-size: 14px; margin-top: 8px" icon="pi pi-print"
+                    (click)="printInvoice()"></button>
+                </p>
+              </div>
+            </div>
+            <div>
+
+              <!-- scrollHeight="700px" -->
+              <p-table responsiveLayout="scroll" scrollHeight="300px"
+                [value]="(orders$ | async)?.getShowOrderDetailList || []" [scrollable]="true" [columns]="columns">
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
+                      {{ col.header }}
+                      <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                  <tr>
+                    <td *ngFor="let col of columns">
+                      {{ rowData[col.field] }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <button *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" pButton pRipple type="button"
+                label="Delivered" class="p-button-raised p-button-success" (click)="deliveredOrder()"></button>
+              <button *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" pButton type="button"
+                label="Cancel Order" class="p-button-raised p-button-danger ml-2" (click)="cancelOrder(true)"></button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="custom-dialog">
+  <p-dialog [(visible)]="cancelModelShow" [position]="'center'" [modal]="true" [style]="{ width: '30vw' }"
+    [baseZIndex]="10000" [draggable]="false" [resizable]="false" [closeOnEscape]="true" [closable]="false">
+    <div class="d-flex flex-column text-center justify-content-center">
+      <p>Are you sure you <br />want to cancel the order?</p>
+      <div class="content">
+        <span class="p-float-label">
+          <input pInputText class="mb-2" id="float-input" [formControl]="cancelReasonControl" />
+          <label for="float-input">Reason</label>
+          <ng-container *ngIf="cancelReasonControl?.touched">
+            <small *ngIf="cancelReasonControl.errors?.['required']" class="p-error">
+              Reason field is required.
+            </small>
+          </ng-container>
+        </span>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center outlined-button">
+      <button pButton pRipple type="button" label="No" class="p-button-outlined outlined-border" style="width: 100px"
+        (click)="cancelOrder(false); cancelReasonControl.setValue('')"></button>
+      <button pButton pRipple type="button" label="Yes" class="p-button-outlined is_active ml-2" style="width: 100px"
+        (click)="hitCancelOrderApi(false)"></button>
+    </div>
+  </p-dialog>
+</div>
+
+<ng-template #statusCol let-status>
+  <label class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{status}}</label>
+  <label class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{status}}</label>
+  <label class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{ status }}</label>
+</ng-template>

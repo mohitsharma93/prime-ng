@@ -1,0 +1,210 @@
+<div class="content-wrapper">
+  <!-- <loader *ngIf="(showLoader | async)"></loader> -->
+  <div class="">
+    <div class="text-center justify-content-between">
+      <div class="outlined-button order-outlinebtn">
+        <ng-component [ngTemplateOutlet]="orderStatusButton"></ng-component>
+      </div>
+    </div>
+    <div class="mt-4" [ngSwitch]="orderRequestParam?.Status">
+      <div class="row">
+        <ng-container>
+          <div class="c-search col-md-4">
+            <div>
+              <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile" type="text"
+                [formControl]="searchControl" />
+              <!-- <i class="pi pi-times" (click)="resetSearch()"></i> -->
+            </div>
+          </div>
+          <div class="col-md-3">
+            <p-calendar #dashboardCalendar selectionMode="range" [readonlyInput]="true" inputId="range"
+              [maxDate]="maxDateValue" (onSelect)="dateChange($event)" [dateFormat]="dateFormat"
+              [formControl]="rangeDates" [showIcon]="true" placeholder="Select date range."> 
+            </p-calendar>
+          </div>
+        </ng-container>
+        <div class="col-md-3">
+          <div class="dashboard-dropdown" *ngIf="orderRequestParam?.Status === 0">
+            Status
+            <p-dropdown [options]="status" placeholder="Select Status" optionLabel="name"
+              (onChange)="statusChange($event?.value.code)" [ngModel]="allStatusSelected"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-md-2" style="text-align: right">
+          <ng-container *ngSwitchCase="0">
+            <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-file-excel"
+              (click)="export(0)"></button>
+            <!-- <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-file-excel"
+            (click)="dt.exportCSV()"></button> -->
+          </ng-container>
+          <ng-container *ngSwitchCase="6">
+            <div>
+              <button class="p-button-danger p-button-sm" pButton pRipple label="Export" icon="pi pi-file-excel"
+                (click)="export(6)"></button>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="1">
+            <div class="outlined-button">
+              <button class="p-button-outlined p-button-sm bulkbtn order-detail-action bg-white" pButton pRipple
+                label="Bulk Accepted Order" (click)="redirectToBulkAccept()"></button>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="2">
+            <div class="outlined-button">
+              <button class="p-button-outlined p-button-sm order-detail-action bg-white" pButton pRipple
+                label="Create Shipment" (click)="createShipment()"></button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="page-inner-content">
+      <div class="mt-3">
+        <p-card>
+          <div [ngSwitch]="orderRequestParam?.Status">
+            <ng-container *ngSwitchCase="3">
+              <b>Out for Delivery Orders</b>
+            </ng-container>
+            <ng-container *ngSwitchCase="4">
+              <b>Delivered Shipments</b>
+            </ng-container>
+            <ng-container *ngSwitchCase="6">
+              <b>Cancelled Shipments</b>
+            </ng-container>
+          </div>
+
+          <!-- [ngStyle]="{ 'height': (orderRequestParam?.Status === 1 || orderRequestParam?.Status === 2) ? '621px' : '800' }" -->
+          <div class="order-table">
+            <!-- [rowsPerPageOptions]="[5, 10, 25, 50]" -->
+            <p-table 
+              responsiveLayout="scroll"
+              [scrollHeight]="'calc(100vh - 379px)'"
+              [value]="products?.lstorderDetails"
+              [scrollable]="false" [paginator]="
+                orderRequestParam?.Status === 1 ||
+                orderRequestParam?.Status === 2
+                  ? false
+                  : true
+              " [rows]="orderRequestParam.PageSize" [showCurrentPageReport]="true"
+              [totalRecords]="products?.TotalOrderCount" [columns]="columns" [(selection)]="selectedData" #dt
+              [lazy]="true" (onLazyLoad)="paginate($event)" [lazyLoadOnInit]="false">
+              <!-- (onPage)="paginate($event)" -->
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngIf="orderRequestParam?.Status === 2">
+                    <p-tableHeaderCheckbox class="custom-checkbox"></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.sort ? col.field : ''">
+                    {{ col.header }}
+                    <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+                  </th>
+                  <th>ACTION</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                  <td *ngIf="orderRequestParam?.Status === 2">
+                    <p-tableCheckbox [value]="rowData" class="custom-checkbox"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns">
+                    {{
+                    col.field === "OrderDate" || col.field === "CloseDate"
+                    ? (rowData[col.field] | date: "MMM. d, y")
+                    : col.field === "ShopAddressOne"
+                    ? rowData["newAddress"]
+                    : col.field === "Status"
+                    ? ""
+                    : (col.field === 'OrderAmount' )
+                    ? rowData[col.field] + rowData['DeliveryCharges']
+                    : rowData[col.field]
+                    }}
+                    <ng-container *ngIf="col.field === 'Status'">
+                      <ng-container *ngTemplateOutlet="
+                          statusCol;
+                          context: { $implicit: rowData['Status'] }
+                        ">
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <td class="outlined-button">
+                    <ng-container *ngTemplateOutlet="
+                        actionButton;
+                        context: { $implicit: rowData }
+                      "></ng-container>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          <!-- <div class="text-uppercase d-flex justify-content-center c-danger mt-4 cursor-pointer" *ngIf="
+              orderRequestParam?.Status === 1 ||
+              orderRequestParam?.Status === 2
+            " (click)="loadMore()" [ngClass]="{'disabled': !(orders$ | async)?.Next}">
+            view more
+          </div> -->
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #orderStatusButton>
+  <button pButton pRipple type="button" label="All" class="p-button-rounded p-button-outlined"
+    (click)="orderChange(0, 'GetAllOrderDetails')" [ngClass]="{
+      is_active: orderRequestParam?.Status === 0,
+      'bg-white': orderRequestParam?.Status !== 0
+    }"></button>
+  <button class="arrow dotted"></button>
+  <button pButton pRipple type="button" label="Pending" class="p-button-rounded p-button-outlined"
+    (click)="orderChange(1, 'GetAllOrderDetails')" [ngClass]="{
+      is_active: orderRequestParam?.Status === 1,
+      'bg-white': orderRequestParam?.Status !== 1
+    }"></button>
+  <button class="arrow dotted"></button>
+  <button pButton pRipple type="button" label="Accepted" class="p-button-rounded p-button-outlined"
+    (click)="orderChange(2, 'GetAllOrderDetails')" [ngClass]="{
+      is_active: orderRequestParam?.Status === 2,
+      'bg-white': orderRequestParam?.Status !== 2
+    }"></button>
+  <button class="arrow dotted"></button>
+  <button pButton pRipple type="button" label="In-transit Shipment" class="p-button-rounded p-button-outlined"
+    (click)="orderChange(3, 'GetInTransitOrderDetails')" [ngClass]="{
+      is_active: orderRequestParam?.Status === 3,
+      'bg-white': orderRequestParam?.Status !== 3
+    }"></button>
+  <button class="arrow dotted"></button>
+  <button pButton pRipple type="button" label="Delivered Shipment" class="p-button-rounded p-button-outlined"
+    (click)="orderChange(4, 'GetDeliveredOrderDetails')" [ngClass]="{
+      is_active: orderRequestParam?.Status === 4,
+      'bg-white': orderRequestParam?.Status !== 4
+    }"></button>
+  <button class="arrow dotted"></button>
+  <button pButton pRipple type="button" label="Cancelled Order" class="p-button-rounded p-button-outlined"
+    (click)="orderChange(6, 'GetAllOrderDetails')" [ngClass]="{
+      is_active: orderRequestParam?.Status === 6,
+      'bg-white': orderRequestParam?.Status !== 6
+    }"></button>
+</ng-template>
+
+<ng-template #actionButton let-orderDetail>
+  <button pButton pRipple type="button" class="p-button-outlined is_active" icon="pi pi-print" *ngIf="showPrint"
+    style="width: 36px; height: 35px" (click)="shipmentModel(orderDetail)"></button>
+  <button pButton pRipple type="button" label="View" class="p-button-outlined is_active"
+    (click)="redirectToDetail(orderDetail)" style="width: 75px; height: 35px"></button>
+</ng-template>
+
+<ng-template #statusCol let-status>
+  <span class="badge rounded-pill bg-accepted" *ngIf="status === 'Accepted'">{{
+    status
+    }}</span>
+  <span class="badge rounded-pill bg-pending" *ngIf="status === 'Pending'">{{
+    status
+    }}</span>
+  <span class="badge rounded-pill bg-shipped" *ngIf="status === 'Shipped'">{{
+    status
+    }}</span>
+  <span class="badge rounded-pill bg-delivered" *ngIf="status === 'Delivered'">{{ status }}</span>
+  <span class="badge rounded-pill bg-cancelled" *ngIf="status === 'Cancelled'">{{ status }}</span>
+</ng-template>

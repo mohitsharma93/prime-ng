@@ -1,0 +1,132 @@
+<div class="content-wrapper">
+  <div class="d-flex column-direction text-align-center">
+    <div>
+      <h4 class="page-title">Shop Overview</h4>
+    </div>
+    <div>
+      <p-button label="Today" class="p-button-outlined dashboard-filter-button" (click)="getDashboardAnalytics('Today')"
+        [ngClass]="{'btn-color': selectedFilter === 'Today'}"></p-button>
+      <p-button label="Months" class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('Month')" [ngClass]="{'btn-color': selectedFilter === 'Month'}">
+      </p-button>
+      <p-button label="Over All" class="p-button-outlined dashboard-filter-button"
+        (click)="getDashboardAnalytics('OverAll')" [ngClass]="{'btn-color': selectedFilter === 'OverAll'}"></p-button>
+    </div>
+    <div class="mx-4">
+      <p-calendar selectionMode="range" [readonlyInput]="true" inputId="range" [showTime]="false" [showIcon]="true"
+        (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates"
+        [maxDate]="maxDateRange" placeholder="Select date range.">
+      </p-calendar>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="page-inner-content1">
+      <div class="row">
+        <div class="col-md-8 col-sm-12">
+          <div class="row box-content">
+            <div class="col-md-6 col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="widget">
+                    <p class="">Total Order</p>
+                    <h3>{{(dashboardAnalytics$ | async)?.TotalOrder}} </h3>
+                    <div class="widget-bottom" *ngIf="selectedFilter === 'Today' || selectedFilter === 'Month'">
+                      <span class="widget-bottom-title" [ngClass]="{
+                          'text-success': (this.dashboardAnalytics$ | async)?.PreviousOrder_perce >= 0,
+                          'text-danger': (this.dashboardAnalytics$ | async)?.PreviousOrder_perce < 0
+                        }">
+                        {{ (this.dashboardAnalytics$ | async)?.PreviousOrder_perce | number : '1.2-2'}} %
+                        <i class="pi pi-arrow-up"
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousOrder_perce >= 0"></i>
+                        <i class="pi pi-arrow-down"
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousOrder_perce < 0"></i>
+                      </span>
+                      <span class="ml-1 shop-des">
+                        {{selectedFilter === 'Today'? 'than yesterday': 'than last Month'}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="widget">
+                    <p class="">Total Sale</p>
+                    <h3><i class="fas fa-rupee-sign"></i> {{(dashboardAnalytics$ | async)?.TotalSale}} </h3>
+                    <div class="widget-bottom" *ngIf="selectedFilter === 'Today' || selectedFilter === 'Month'">
+                      <span class="widget-bottom-title" [ngClass]="{
+                          'text-success': (this.dashboardAnalytics$ | async)?.PreviousSale_perce >= 0,
+                          'text-danger': (this.dashboardAnalytics$ | async)?.PreviousSale_perce < 0
+                        }">
+                        {{ (this.dashboardAnalytics$ | async)?.PreviousSale_perce | number : '1.2-2'}} %
+                        <i class="pi pi-arrow-up"
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousSale_perce >= 0"></i>
+                        <i class="pi pi-arrow-down"
+                          *ngIf="(this.dashboardAnalytics$ | async)?.PreviousSale_perce < 0"></i>
+                      </span>
+                      <span class="ml-1 shop-des">
+                        {{selectedFilter === 'Today'? ' than yesterday': 'than last Month'}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="widget">
+                    <p class="">Pending Orders</p>
+                    <h3>{{(dashboardAnalytics$ | async)?.PendingOrdersCount}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="widget">
+                    <p class="">In-transit Orders</p>
+                    <h3>{{(dashboardAnalytics$ | async)?.IntransitOrders}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <div class="order-report">
+            <div class="card">
+              <div class="card-body">
+                <p style="font-weight: 700;" class="mb-5">Order Processing Report</p>
+                <!-- <canvas id="myChart" style="width:100%; max-width:600px"></canvas> -->
+                <p-chart type="doughnut" [data]="chartData" [options]="chartOptions" height="140"></p-chart>
+                <!-- [style]="{'width': '50px !important'}" -->
+                <div *ngIf="graphLabelDetail?.length" class="mt-3">
+                  <div *ngFor="let detail of graphLabelDetail" class="mb-2 oprdetails">
+                    <div class="status opr1" [ngClass]="{
+                      'pending': detail.status === 'Pending',
+                      'accepted': detail.status === 'Accepted',
+                      'shipped': detail.status === 'Shipped',
+                      'delivered': detail.status === 'Delivered',
+                      'cancelled': detail.status === 'Cancelled'
+                    }"> </div>
+                    <div (click)="redirectToOrder(detail.statusId)" class="cursor-pointer oprstatus">{{detail.status}}
+                    </div>
+                    <div class="bold opr2">{{detail.count}}</div>
+                    <div class="bold opr3">{{detail.sum | number : '1.2-2'}}</div>
+                  </div>
+                </div>
+                <hr>
+                <!-- <a class="more" href="#">More Insights ></a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

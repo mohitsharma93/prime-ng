@@ -1,0 +1,30 @@
+.c-danger {
+  color: #ff5722;
+}
+
+.bg-white {
+  background-color: #ffffff !important;
+}
+
+.box-catskill-white {
+  box-sizing: border-box;
+  border: 1px #e6e9f4;
+  background: #e6e9f4;
+  padding: 5px;
+  min-width: 35px;
+  height: 35px;
+  text-align: center;
+  line-height: 25px;
+}
+
+.scroll-x {
+  display: flex;
+  justify-content: start;
+  max-width: 200px;
+  scrollbar-width: none;
+  overflow-x: scroll;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}

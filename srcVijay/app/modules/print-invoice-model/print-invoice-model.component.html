@@ -1,0 +1,90 @@
+<div id="main">
+    <div class="page-container hidden-on-narrow">
+        <div class="box-col">
+            <button class="export-pdf k-button" (click)="getPrint()">Print</button>
+        </div>
+        <div id="print-docs" class="pdf-page size-a4" style="background-image:url(../../../assets/icon1.svg)">
+            <div class="for">
+                <img src="../../../assets/img/direct_sign.png">
+                <p style="padding: 30px 0;">Sold By: <span>{{ data.SellerName }}</span></p>
+                <p>Pan No.: <span>{{data.SellerPanNO}}</span></p>
+                <p style="padding-bottom: 126px;">GST Registration No.: <span>{{ data.SellerGSTNo }}</span></p>
+                <p>Order Number: <span>{{ data.OrderId }}</span></p>
+                <p>Order Date: <span>{{data.OrderDate | date: 'dd/MM/yy hh:mm'}}</span></p>
+
+            </div>
+            <div class="from">
+                <h5>Tax Invoice/ Bill of Supply/ Cash Memo ( Original for Recipient )</h5>
+                <p style="padding: 70px 0 30px;">Bill to: <span>{{ data.BuyerName }}</span></p>
+                <p>Pan No.: <span>{{data.BuyerPanNO}}</span></p>
+                <p>GST Registration No.: <span>{{ data.BuyerGSTNo }}</span></p>
+                <p>State / UT Code: <span>{{ data.BuyerState }}</span></p>
+                <p>Place of supply: <span>{{data.PlaceOfSupply}}</span></p>
+                <p>Place of delivery: <span>{{data.PlaceOfDelivery}}</span></p>
+                <p>Invoice Number: <span>{{ data.InvoiceNo }}</span></p>
+                <p>Invoice Date: <span>{{data.InvoiceDate | date: 'dd/MM/yy hh:mm' }}</span></p>
+            </div>
+            <div class="pdf-body">
+                <div id="grid">
+                    <div class="k-grid-content">
+                        <table role="grid">
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th scope="col"> SL. No. </th>
+                                    <th scope="col"> Description</th>
+                                    <th scope="col">HSN CODE</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Tax Rate</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody role="rowgroup">
+                                <tr role="row" *ngFor="let item of data._invoiceItemListDTO;let i=index;">
+                                    <td role="gridcell">{{i+ 1}}</td>
+                                    <td role="gridcell">{{item.Discription}}</td>
+                                    <td role="gridcell">{{item.HSNNO}} </td>
+                                    <td role="gridcell">{{item.Amount}}</td>
+                                    <td role="gridcell">{{item.TaxRate}}</td>
+                                    <td role="gridcell">{{item.Discount}}</td>
+                                    <td role="gridcell">{{item.Value}}</td>
+                                </tr>
+                                <tr role="row">
+                                    <td style="vertical-align: top;" colspan="5" rowspan="5" role="gridcell">Remark:
+                                    </td>
+                                    <td colspan="2" role="gridcell">{{data.TaxableAmount}} </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="2" role="gridcell">{{data.SGST}} </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="2" role="gridcell">{{data.CGST}} </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="2" role="gridcell">{{data.IGST}} </td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="2" role="gridcell">{{data.RoundOff}}</td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="2" role="gridcell">Amount in Words:
+                                        <span><b>{{data.AmountInWord}}</b></span>
+                                    </td>
+                                    <td colspan="5" role="gridcell">Total Amount: <span>{{data.TotalAmount}}</span></td>
+                                </tr>
+                                <tr role="row">
+                                    <td colspan="4" role="gridcell"></td>
+                                    <td style="border-width: 0 0 1px;" colspan="3" role="gridcell">For Solution
+                                        Unlimited: <br>
+                                        Authorized Signatory
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Whether tax is payable under reverse charge - No</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

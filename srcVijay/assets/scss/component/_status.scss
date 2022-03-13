@@ -1,0 +1,51 @@
+.status {
+  height: 10px;
+  width: 10px;
+  border: 1px solid rgb(248, 247, 247);
+
+  &.accepted {
+    background-color: $accepted;
+  }
+  &.pending {
+    background-color: $pending;
+  }
+  &.shipped {
+    background-color: $shipped;
+  }
+  &.delivered {
+    background-color: $delivered;
+  }
+  &.cancelled {
+    background-color: $cancelled;
+  }
+}
+
+// <span class="badge rounded-pill bg-accepted">Primary</span>
+// <span class="badge rounded-pill bg-pending">Secondary</span>
+// <span class="badge rounded-pill bg-shipped">Success</span>
+// <span class="badge rounded-pill bg-delivered">Danger</span>
+// <span class="badge rounded-pill bg-cancelled">Warning</span>
+.badge {
+  font-size: 12px !important;
+  font-weight: normal !important;
+}
+.badge.rounded-pill.bg-accepted {
+  background-color: #fff4e4 !important;
+  color: #ff5722;
+}
+.badge.rounded-pill.bg-pending {
+  background-color: #fff2d7  !important;
+  color: #ecc564 ;
+}
+.badge.rounded-pill.bg-shipped {
+  background-color: #d0ecfa !important;
+  color: #07affa;
+}
+.badge.rounded-pill.bg-delivered {
+  background-color: #dfeee0 !important;
+  color: #6aa84f;
+}
+.badge.rounded-pill.bg-cancelled {
+  background-color: #fee2e5 !important;
+  color: #f0142f;
+}

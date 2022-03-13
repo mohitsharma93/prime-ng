@@ -1,0 +1,95 @@
+<div id="main">
+    <div class="page-container hidden-on-narrow">
+        <!-- <div class="box-col">
+                        <select id="paper" style="width: 100px;">
+                            <option value="size-a4" selected>A4</option>
+                            <option value="size-letter">Letter</option>
+                            <option value="size-executive">Executive</option>
+                        </select>
+                    </div> -->
+
+        <div class="box-col">
+            <button class="export-pdf k-button" (click)="getPrint()">Print</button>
+        </div>
+        <div id="print-docs" class="pdf-page size-a4" style="background-image:url(../../../assets/icon1.svg)">
+
+            <div class="for">
+                <h4>Shipment Sheet</h4>
+                <p>Seller Name:<span>{{ data.SellerName }}</span></p>
+                <p>Seller Address:<span>{{ data.SellerAddress }}</span></p>
+                <p>Mobile No: <span>{{data.SellerContactNo}}</span></p>
+                <h5 style="padding-top: 10px;">
+                    Order Count: <span>{{data.totalOrder}}</span>
+                </h5>
+            </div>
+
+            <div class="from">
+                <img src="../../../assets/img/direct_sign.png">
+                <p>Shipment ID : <span>{{data.ShipmentId}}</span></p>
+                <p>Date Of Shipment: <span>{{data.ShipmentDate| date: 'dd/MM/yy hh:mm' }}</span></p>
+                <h5 style="padding-top: 12px;">
+                    Total Dispatch Value: <span>{{data.TotalDispatchValue}}</span>
+                </h5>
+            </div>
+            <div class="pdf-body">
+                <div id="grid">
+                    <h4 style="text-align: center;">Buyer Details</h4>
+                    <div class="k-grid-content">
+                        <table role="grid">
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Order Id</th>
+                                    <th scope="col">Buyer Store Name</th>
+                                    <th scope="col">Buyer Mobile</th>
+                                    <th scope="col">Buyer Address</th>
+                                    <th scope="col">Dis. Amount</th>
+                                    <th scope="col">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody role="rowgroup">
+                                <tr role="row" *ngFor="let item of data.printShipmentBuyeListDTO;let i=index;">
+                                    <td role="gridcell">{{i+ 1}}</td>
+                                    <td role="gridcell">{{item.OrderId}}</td>
+                                    <td role="gridcell">{{item.ShopName}}</td>
+                                    <td role="gridcell">{{item.ContactNo}}</td>
+                                    <td role="gridcell">{{item.Address1}}{{item.Address2}}{{item.Address3}}</td>
+                                    <td role="gridcell">{{item.DispatchAmount}}</td>
+                                    <td role="gridcell">{{item.Remark}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                        <h4 style="text-align: center; padding-top: 25px;">Items List</h4>
+
+                        <table role="grid">
+                            <colgroup>
+                                <col style="width:80px">
+                                <col>
+                                <col style="width:80px">
+                                <col>
+                            </colgroup>
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Net Quantity</th>
+                                    <th scope="col">Order ID and Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody role="rowgroup">
+                                <tr role="row" *ngFor="let item of data.printShipmentItemListDTO;let i=index;">
+                                    <td role="gridcell">{{i+ 1}}</td>
+                                    <td role="gridcell">{{item.ItemName}}</td>
+                                    <td role="gridcell">{{item.NetQuantity}}</td>
+                                    <td role="gridcell">{{getOrderIdAndQuantity(item.OrderQuantityList)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
