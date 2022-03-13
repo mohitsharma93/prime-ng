@@ -82,7 +82,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
         this.id = res['orderId']
       }
     });
-    this.subscription = this.confirmationService.getConfirmation().subscribe((response: any) => {
+    this.subscription = this.confirmationService.getConfirmation().pipe(take(1)).subscribe((response: any) => {
       if (response.status) {
         if (response.action === 'accepted_order') {
           this.acceptOrder();
@@ -99,7 +99,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
 
   public ngOnInit(): void {
     this.primengConfig.ripple = true;
-    this.subjectService.orderDetail$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.subjectService.orderDetail$.pipe(take(1), takeUntil(this.destroy$)).subscribe(res => {
       console.log('orderDetail$', res)
       if (res && (res?.OrderID || res?.ShipmentId)) {
         if ((this.routeParam && this.routeParam['orderId']) && this.notCallApiAfterQuantityUpdate) {
@@ -420,6 +420,11 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
           if (checkShippedExistInOrder) {
             this.showHideCheckbox = false;
           }
+          let getOrderDetailUpSide = this.getOrderDetailUpSide();
+          if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && res?.Data?.Item2) {
+            getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
+            this.subjectService.setOrderDetail(getOrderDetailUpSide);
+          }
           this.selectedData = [];
         } else {
           this.toasterService.error(res?.ErrorMessage);
@@ -656,7 +661,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       height: '30%',
       width: '30%'
     });
-
+    
   }
 
   public confirmAcceptedOrder() {
@@ -679,6 +684,5 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       height: '30%',
       width: '30%'
     });
-
   }
 }
