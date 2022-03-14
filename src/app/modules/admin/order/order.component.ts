@@ -612,7 +612,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public removeParam(params: any) {
     let newParam: any = {};
     Object.keys(params).forEach((value, index) => {
-      console.log(typeof params[value], params[value])
       if (params[value]) {
         if (typeof params[value] === 'string' && params[value].length) {
           newParam[value] = params[value]
