@@ -295,7 +295,7 @@
                 label="Add to shipment"
                 class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Accepted' && showAddToShipMentOrNot('Add')"
-                (click)="addToShipment()"
+                (click)="confirmAddToShipmentOrder()"
               ></button>
               <button
                 pButton
@@ -313,7 +313,7 @@
                 label="Accept Order"
                 class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Pending'"
-                (click)="acceptOrder()"
+                (click)="confirmAcceptedOrder()"
                 [disabled]="checkSomeOneEditEnable()"
               ></button>
               <button
@@ -323,7 +323,7 @@
                 label="Delivered Selected"
                 class="p-button-raised p-button-success"
                 *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped' && showHideCheckbox"
-                (click)="deliveredSelected()"
+                (click)="confirmDeliveredOrder()"
               ></button>
               <button
                 pButton

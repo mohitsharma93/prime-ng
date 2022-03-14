@@ -126,7 +126,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit, On
     const ref = this.dialogService.open(ConfirmationModelComponent, {
       data: {
         action: 'create_Shipment_order',
-        message: 'Are you sure? you want to create Shipment selected order.',
+        message: 'Are you sure? you want to create Shipment of selected order.',
       },
       height: '30%',
       width: '30%'

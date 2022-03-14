@@ -120,9 +120,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     })
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.subscription.unsubscribe();
+  // }
 
   public backClicked(): void {
     this.subjectService.holdWhereToRedirectOnBackFromShipped$.pipe(take(1)).subscribe(res => {
@@ -407,6 +407,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       const allOrderId = this.selectedData.map(o => o.OrderId);
       const shipmentId = this.getOrderDetailUpSide()?.ShipmentId;
       this.adminOrderService.deliveredSelectedService(allOrderId, shipmentId).subscribe(res => {
+        console.log("deliveredSelected",res);
         if (res && res?.Status == 'OK') {
           const localOrder = this.getLocalOrder();
           if (localOrder && localOrder.length === this.selectedData.length) {
@@ -668,7 +669,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     const ref = this.dialogService.open(ConfirmationModelComponent, {
       data: {
         action: 'accepted_order',
-        message: 'Are you sure? you want to accepted selected order.',
+        message: 'Are you sure? you want to accept selected order.',
       },
       height: '30%',
       width: '30%'
@@ -679,7 +680,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     const ref = this.dialogService.open(ConfirmationModelComponent, {
       data: {
         action: 'delivered_order',
-        message: 'Are you sure? you want to delivered selected order.',
+        message: 'Are you sure? you want to deliver selected order.',
       },
       height: '30%',
       width: '30%'

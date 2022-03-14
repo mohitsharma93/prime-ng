@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AdminOrderService } from 'src/app/shared/admin-service/order/order.service';
-import { forkJoin, Observable, of, take, takeUntil } from 'rxjs';
+import { forkJoin, Observable, of, Subscription, take, takeUntil } from 'rxjs';
 import { ToasterService } from 'src/app/shared/services/toaster.service';
 import { SubjectService } from 'src/app/shared/admin-service/subject.service';
 import { BaseComponent } from '../../base.component';
@@ -15,6 +15,8 @@ import { DataService } from 'src/app/shared/services/data.service';
 import { PrintInvoiceMultipleModelComponent } from 'src/app/modules/print-invoice-multiple-model/print-invoice-multiple-model.component';
 import { PrimeNGConfig } from 'primeng/api';
 import { cloneDeep } from 'lodash-es';
+import { ConfirmationService } from 'src/app/shared/services/confirmation.service';
+import { ConfirmationModelComponent } from 'src/app/modules/confirmation-model/confirmation-model.component';
 
 interface Products {
   id?: string;
@@ -36,7 +38,7 @@ interface Product {
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.scss']
 })
-export class OrderDetailComponent extends BaseComponent implements OnInit {
+export class OrderDetailComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
 
@@ -59,7 +61,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public disableAcceptOrder: any = {};
   public notCallApiAfterQuantityUpdate: boolean = true;
   public showHideCheckbox: boolean = true;
-
+  public subscription: Subscription;
+  
   constructor(
     private router: Router,
     private actRoute: ActivatedRoute,
@@ -69,7 +72,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     private subjectService: SubjectService,
     private ds: DataService,
     public dialogService: DialogService,
-    private primengConfig: PrimeNGConfig
+    private primengConfig: PrimeNGConfig,
+    private confirmationService: ConfirmationService
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -77,7 +81,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
       if (res && res['orderId']) {
         this.id = res['orderId']
       }
-    })
+    });
+    this.subscription = this.confirmationService.getConfirmation().pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
+      if (response.status) {
+        if (response.action === 'accepted_order') {
+          this.acceptOrder();
+        }
+        if (response.action === 'delivered_order') {
+          this.deliveredSelected();
+        }
+        if (response.action === 'addToShipment_order') {
+          this.addToShipment();
+        }
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -101,6 +118,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
         }
       }
     })
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   public backClicked(): void {
@@ -384,7 +405,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
   public deliveredSelected() {
     if (this.selectedData && this.selectedData.length) {
       const allOrderId = this.selectedData.map(o => o.OrderId);
-      this.adminOrderService.deliveredSelectedService(allOrderId).subscribe(res => {
+      const shipmentId = this.getOrderDetailUpSide()?.ShipmentId;
+      this.adminOrderService.deliveredSelectedService(allOrderId, shipmentId).subscribe(res => {
         if (res && res?.Status == 'OK') {
           const localOrder = this.getLocalOrder();
           if (localOrder && localOrder.length === this.selectedData.length) {
@@ -397,6 +419,11 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
           const checkShippedExistInOrder = this.checkShippedExistInOrder();
           if (checkShippedExistInOrder) {
             this.showHideCheckbox = false;
+          }
+          let getOrderDetailUpSide = this.getOrderDetailUpSide();
+          if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && res?.Data?.Item2) {
+            getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
+            this.subjectService.setOrderDetail(getOrderDetailUpSide);
           }
           this.selectedData = [];
         } else {
@@ -623,5 +650,39 @@ export class OrderDetailComponent extends BaseComponent implements OnInit {
     }
     console.log('allOrders', allOrders);
     this.orders$ = of(allOrders)
+  }
+
+  public confirmAddToShipmentOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'addToShipment_order',
+        message: 'Are you sure? you want to add to shipment selected order.',
+      },
+      height: '30%',
+      width: '30%'
+    });
+    
+  }
+
+  public confirmAcceptedOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'accepted_order',
+        message: 'Are you sure? you want to accepted selected order.',
+      },
+      height: '30%',
+      width: '30%'
+    });
+
+  }
+  public confirmDeliveredOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'delivered_order',
+        message: 'Are you sure? you want to delivered selected order.',
+      },
+      height: '30%',
+      width: '30%'
+    });
   }
 }

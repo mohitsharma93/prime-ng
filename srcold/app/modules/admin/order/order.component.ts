@@ -541,6 +541,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       params: '',
     };
     this.ds.get(req).subscribe((res: any) => {
+      console.log("ShipmentModal",res);
       if (res.Status === 'OK') {
         const ref = this.dialogService.open(PrintShipmentModelComponent, {
           data: res.Data,
