@@ -54,8 +54,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public allStatusSelected: any = {};
   public holdAllStatusFilter: any = {};
   public holdFullFilter: any = {};
-  sortField: string = 'OrderID';
-  sortOrder: number = 1;
 
   constructor(
     private router: Router,
@@ -268,18 +266,13 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public setOrderRequestParam() {
-    // this.orderRequestParam = {
-    //   endPoint: 'OverAll',
-    //   orderStatusId: 0,
-    //   urlMiddlePoint: 'GetAllOrderDetails',
-    // };
     this.orderRequestParam = {
       Status: 0,
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'OrderID',
-      sortOrder:1
+      sortField: '',
+      sortOrder: ''
     }
   }
 
@@ -292,7 +285,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public redirectToDetail(orderDetail: any): void {
     console.log('orderDetail', orderDetail);
-    console.log('this.holdAllStatusFilter', this.holdAllStatusFilter);
     if (orderDetail && (orderDetail?.OrderID || orderDetail?.ShipmentId)) {
       const shippedOrDelivered = orderDetail?.Status === 'Shipped' || orderDetail?.Status === 'Delivered';
       if (shippedOrDelivered) {
@@ -307,12 +299,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
             ? 4
             : this.orderRequestParam?.Status;
       this.subjectService.setOrderDetail(orderDetail);
-      // this.subjectService.setSaveFilterOnRedirection({
-      //   topFilter: this.orderRequestParam,
-      //   ...(this.searchControl.value && {
-      //     searchString: this.searchControl.value,
-      //   }),
-      // });
       this.saveCurrentFilter();
       if (shippedOrDelivered && this.orderRequestParam?.Status === 0) {
         orderDetail['OrderId'] = orderDetail.OrderID
@@ -331,12 +317,24 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public paginate(event: any): void {
-    this.sortField = event.sortField;
-    this.sortOrder = event.sortOrder;
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
-    if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
-      this.orderRequestParam.PageNo = pageNo;
-      const orderRequestParam = {
+    // if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
+    //   this.orderRequestParam.PageNo = pageNo;
+    //   const orderRequestParam = {
+    //     Status: this.orderRequestParam.Status,
+    //     searchTimeRange: this.orderRequestParam.searchTimeRange,
+    //     PageNo: pageNo,
+    //     PageSize: event.rows,
+    //     sortField: event.sortField,
+    //     sortOrder: event.sortOrder,
+    //   };
+    //   this.getOrders(orderRequestParam);
+    // } else {
+    //   const order = (event.sortOrder === 1) ? true : false;
+    //   this.customSort(event.sortField, order);
+    // }
+    this.orderRequestParam.PageNo = pageNo;
+    this.orderRequestParam = {
         Status: this.orderRequestParam.Status,
         searchTimeRange: this.orderRequestParam.searchTimeRange,
         PageNo: pageNo,
@@ -344,11 +342,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         sortField: event.sortField,
         sortOrder: event.sortOrder,
       };
-      this.getOrders(orderRequestParam);
-    } else {
-      const order = (event.sortOrder === 1) ? true : false;
-      this.customSort(event.sortField, order);
-    }
+      this.getOrders(this.orderRequestParam);
   }
 
   public customSort(field: string, order: boolean) {
@@ -386,8 +380,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: this.orderRequestParam.searchTimeRange || 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'OrderID',
-      sortOrder:1
+      sortField: this.orderRequestParam.sortField || '',
+      sortOrder: this.orderRequestParam.sortOrder || ''
     };
     this.holdAllStatusFilter = pick(forAll, ['Status', 'searchTimeRange'])
     this.allStatusSelected = this.status.filter(f => f.code === statusId)[0];
@@ -461,10 +455,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: any) {
+    const newParam = this.removeParam(requestParam);
+    console.log('newParam', newParam)
     this.setLoader(true);
     const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam, endStringPoint)
+      .getOrdersServiceSingle(newParam, endStringPoint)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
@@ -474,7 +470,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
           //   data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
           // }
           this.orders$ = of(data);
-          console.log('table', this.dt);
           if (this.dt.sortField && (this.dt.sortOrder === 1 || this.dt.sortOrder === -1)) {
             const order = (this.dt.sortOrder === 1) ? true : false;
             this.customSort(this.dt.sortField, order);
@@ -497,8 +492,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'OrderID',
-      sortOrder:1
+      sortField:'',
+      sortOrder:''
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);
@@ -612,5 +607,20 @@ export class OrderComponent extends BaseComponent implements OnInit {
         allStatus: this.holdAllStatusFilter
       })
     });
+  }
+
+  public removeParam(params: any) {
+    let newParam: any = {};
+    Object.keys(params).forEach((value, index) => {
+      console.log(typeof params[value], params[value])
+      if (params[value]) {
+        if (typeof params[value] === 'string' && params[value].length) {
+          newParam[value] = params[value]
+        } else if (typeof params[value] === 'number') {
+          newParam[value] = params[value]
+        }
+      }
+    });
+    return newParam;
   }
 }
