@@ -54,6 +54,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public allStatusSelected: any = {};
   public holdAllStatusFilter: any = {};
   public holdFullFilter: any = {};
+  sortField: string = 'OrderID';
+  sortOrder: number = 1;
 
   constructor(
     private router: Router,
@@ -275,7 +277,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: 0,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 10
+      PageSize: 10,
+      sortField:'OrderID',
+      sortOrder:1
     }
   }
 
@@ -327,6 +331,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public paginate(event: any): void {
+    this.sortField = event.sortField;
+    this.sortOrder = event.sortOrder;
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
     if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
       this.orderRequestParam.PageNo = pageNo;
@@ -334,7 +340,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
         Status: this.orderRequestParam.Status,
         searchTimeRange: this.orderRequestParam.searchTimeRange,
         PageNo: pageNo,
-        PageSize: event.rows
+        PageSize: event.rows,
+        sortField: event.sortField,
+        sortOrder: event.sortOrder,
       };
       this.getOrders(orderRequestParam);
     } else {
@@ -377,7 +385,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: statusId,
       searchTimeRange: this.orderRequestParam.searchTimeRange || 'OverAll',
       PageNo: 1,
-      PageSize: 10
+      PageSize: 10,
+      sortField:'OrderID',
+      sortOrder:1
     };
     this.holdAllStatusFilter = pick(forAll, ['Status', 'searchTimeRange'])
     this.allStatusSelected = this.status.filter(f => f.code === statusId)[0];
@@ -385,24 +395,62 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.getOrders(forAll);
   }
 
+  // public export(orderStatus: number): void {
+  //   let dates: any = 'OverAll';
+  //   if (this.rangeDates.value && this.rangeDates.value.length > 0) {
+  //     dates = this.dateConvection(this.rangeDates.value);
+  //   }
+  //   const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=0&Name=0&searchTimeRange=${dates}`;
+  //   const req = { url, params: {} };
+  //   this.ds.get(req).subscribe((res: any) => {
+  //     if (res.Status === 'OK') {
+  //       this.exportExcel(res.Data?.lstorderDetails);
+  //     }
+  //   });
+  //   // const data = this.getOrdersLocal();
+  //   // if (data && data?.lstorderDetails?.length) {
+  //   //   this.exportExcel(data?.lstorderDetails);
+  //   // }
+  // }
+
   public export(orderStatus: number): void {
+    let filterQuery = '';
+    let searchValue = '';
     let dates: any = 'OverAll';
     if (this.rangeDates.value && this.rangeDates.value.length > 0) {
-      dates = this.dateConvection(this.rangeDates.value);
+      dates = this.getDateFilter(this.rangeDates.value);
     }
-    const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetails?Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=0&searchTimeRange=${dates}`;
+    if (this.searchControl.value) {
+      searchValue = this.searchControl.value;
+    }
+
+    
+    if (orderStatus === 0 && this.allStatusSelected && this.allStatusSelected.code >= 0) {
+      filterQuery = `Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=${this.allStatusSelected.code}&searchTimeRange=${dates}&Name=${searchValue}`;
+    } else {
+      filterQuery = `Status=${orderStatus}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
+    }
+    // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
+    const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}`;
     const req = { url, params: {} };
     this.ds.get(req).subscribe((res: any) => {
       if (res.Status === 'OK') {
         this.exportExcel(res.Data?.lstorderDetails);
       }
     });
-    // const data = this.getOrdersLocal();
-    // if (data && data?.lstorderDetails?.length) {
-    //   this.exportExcel(data?.lstorderDetails);
-    // }
   }
 
+  getDateFilter(dates: Array<any>) {
+    if (dates && dates.length > 0) {
+      const sDate = dates[0].getDate() + ',' + (dates[0].getMonth() + 1) + ',' + dates[0].getFullYear();
+      let eDate: any = '';
+      if (dates[1]) {
+        eDate = '-' + dates[1].getDate() + ',' + (dates[1].getMonth() + 1) + ',' + dates[1].getFullYear()
+      }
+      return sDate + eDate;
+    }
+    return '';
+  }
 
   public getOrdersLocal(): any {
     let data = null;
@@ -448,7 +496,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       Status: orderStatusId,
       searchTimeRange: 'OverAll',
       PageNo: 1,
-      PageSize: 10
+      PageSize: 10,
+      sortField:'OrderID',
+      sortOrder:1
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);

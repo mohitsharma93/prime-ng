@@ -415,7 +415,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public export(orderStatus: number): void {
     let filterQuery = '';
-    let searchValue = '';
+    let searchValue = 0;
     let dates: any = 'OverAll';
     if (this.rangeDates.value && this.rangeDates.value.length > 0) {
       dates = this.getDateFilter(this.rangeDates.value);
