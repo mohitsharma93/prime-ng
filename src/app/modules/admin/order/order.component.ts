@@ -492,7 +492,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'OrderId',
+      sortField:'OrderID',
       sortOrder:1
     };
     this.selectedData = [];
