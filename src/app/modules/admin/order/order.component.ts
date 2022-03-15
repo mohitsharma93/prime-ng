@@ -271,8 +271,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField: '',
-      sortOrder: ''
+      sortField: 'OrderID',
+      sortOrder: 1,
     }
   }
 
@@ -455,12 +455,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: any) {
-    const newParam = this.removeParam(requestParam);
-    console.log('newParam', newParam)
+    // const newParam = this.removeParam(requestParam);
+    // console.log('newParam', newParam)
     this.setLoader(true);
     const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
-      .getOrdersServiceSingle(newParam, endStringPoint)
+      .getOrdersServiceSingle(requestParam, endStringPoint)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
@@ -492,8 +492,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'',
-      sortOrder:''
+      sortField:'OrderId',
+      sortOrder:1
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);

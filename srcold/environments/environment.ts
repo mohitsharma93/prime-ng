@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   // API_ENDPOINT: 'https://localhost:44310/'
   // API_ENDPOINT: 'http://192.168.1.135:5252/',
-  // API_ENDPOINT:'http://localhost:4000/'
-  API_ENDPOINT: 'http://192.168.1.101:7890/',
+  API_ENDPOINT:'http://localhost:4000/',
+  // API_ENDPOINT: 'http://192.168.1.101:7890/',
   API_ENDPOINT_PROXY: 'api/sellerDashboard/ShopOverview'
 };
 

@@ -424,7 +424,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
           let getOrderDetailUpSide = this.getOrderDetailUpSide();
           if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && res?.Data?.Item2) {
             getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
-            this.subjectService.setOrderDetail(getOrderDetailUpSide);
+            getOrderDetailUpSide['Status'] = 'Delivered'
+            console.log("getorderdetail",getOrderDetailUpSide)
+            // this.subjectService.setOrderDetail(getOrderDetailUpSide);
+            // this.selectedOrderDetail = of(getOrderDetailUpSide);
           }
           this.selectedData = [];
         } else {
