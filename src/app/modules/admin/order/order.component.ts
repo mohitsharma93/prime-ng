@@ -407,7 +407,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   //   // }
   // }
 
-  public export(orderStatus: number): void {
+    public export(status: number): void {
     let filterQuery = '';
     let searchValue = 0;
     let dates: any = 'OverAll';
@@ -417,12 +417,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
     if (this.searchControl.value) {
       searchValue = this.searchControl.value;
     }
-
-    
-    if (orderStatus === 0 && this.allStatusSelected && this.allStatusSelected.code >= 0) {
-      filterQuery = `Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=${this.allStatusSelected.code}&searchTimeRange=${dates}&Name=${searchValue}`;
+    if (status === 0) {
+      if (this.allStatusSelected && this.allStatusSelected.code >= 0) {
+        filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+      } else {
+        filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+      }
     } else {
-      filterQuery = `Status=${orderStatus}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
+      filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
     }
     // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
     const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}`;

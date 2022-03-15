@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core"
 import { Location } from '@angular/common';
 
 import { BaseComponent } from "../../../base.component";
@@ -35,7 +35,8 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     private subjectService: SubjectService,
     private dialogService: DialogService,
     private ds: DataService,
-    private router: Router
+    private router: Router,
+    private cdn: ChangeDetectorRef
   ) {
     super();
     this.setColumById();
@@ -46,7 +47,23 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     this.subjectService.holdBulkDataForNext$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res && res?.length) {
         console.log('holdBulkDataForNext', res);
-        this.orders$ = of(res);
+        const newRes = res.reduce((acc: any[], value: any) => {
+          if (value?.expandedRow?.length > 3) {
+            value.showView = true;
+          } else {
+            value.showView = false;
+          }
+          value.expandedRow.forEach((obj: any, index: number) => {
+            if (index < 3) {
+              obj.show = true;
+            } else {
+              obj.show = false;
+            }
+          })
+          acc.push(value);
+          return acc;
+        }, []);
+        this.orders$ = of(newRes);
       }
     })
     this.subjectService.oldOrderCountSumForConfirmScreen$.pipe(takeUntil(this.destroy$)).subscribe(res => {
@@ -124,5 +141,9 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
       }
     })
     return uniq(ids);
+  }
+
+  public refreshData(rowData: any) {
+    rowData.expandedRow.map((obj : any) => obj.show = true);
   }
 }

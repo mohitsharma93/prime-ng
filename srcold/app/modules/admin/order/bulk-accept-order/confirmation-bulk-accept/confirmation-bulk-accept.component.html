@@ -44,12 +44,31 @@
                       </ng-container>
                       <ng-template #showOrderWiseQuantity>
                         <div class="bulk-tbl">
-                          <div class="d-flex" *ngFor="let orderQuantity of rowData?.expandedRow">
+                          <!-- <div class="d-flex" *ngFor="let orderQuantity of rowData?.expandedRow; let i=index;">
                             <div style="margin-top: 7px; width: 31px;" class="mr-1">{{orderQuantity.OrderId}}</div>
                             <div class="box-catskill-white mr-1">
                               {{orderQuantity.Quantity}}
                             </div>
-                          </div>
+                          </div> -->
+                          <ng-container *ngFor="let orderQuantity of rowData?.expandedRow; let i=index;">
+                            <div class="d-flex" *ngIf="orderQuantity.show">
+                              <div style="margin-top: 7px; width: 31px;" class="mr-1">{{orderQuantity.OrderId}}</div>
+                              <div class="box-catskill-white mr-1">
+                                {{orderQuantity.Quantity}}
+                              </div>
+                              <div class="outlined-button" *ngIf="rowData?.showView === true && i === 2">
+                                <button
+                                  pButton
+                                  pRipple
+                                  type="button"
+                                  label="View"
+                                  class="p-button-outlined order-detail-action"
+                                  (click)="rowData.showView = false; refreshData(rowData)"
+                                  style="width: 38px; padding: 10px 1px; font-size: 13px"
+                                ></button>
+                              </div>
+                            </div>
+                          </ng-container>
                         </div>
                       </ng-template>
                     </td>

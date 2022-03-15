@@ -271,8 +271,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField: '',
-      sortOrder: ''
+      sortField: 'OrderID',
+      sortOrder: 1,
     }
   }
 
@@ -492,8 +492,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'',
-      sortOrder:''
+      sortField:'OrderID',
+      sortOrder:1
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);
