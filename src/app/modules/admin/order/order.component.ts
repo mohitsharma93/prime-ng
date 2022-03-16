@@ -453,15 +453,23 @@ export class OrderComponent extends BaseComponent implements OnInit {
     // // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
     // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}`;
     // const req = { url, params: {} };
-
+    let newOrderIdSearchParam = this.orderRequestParam.OrderIdSerchParameter || 0;
+    console.log('newOrderIdSearchParam', newOrderIdSearchParam)
+    if (+newOrderIdSearchParam) {
+      // if (newOrderIdSearchParam?.toString().length >= 8 && newOrderIdSearchParam?.toString().length <= 10){
+      if (newOrderIdSearchParam?.toString().length === 10){
+        console.log('newOrderIdSearchParam', newOrderIdSearchParam)
+        newOrderIdSearchParam = +newOrderIdSearchParam.toString().slice(0, newOrderIdSearchParam?.toString().length - 1);
+      }
+    }
     if (status === 0) {
       if (this.allStatusSelected && this.allStatusSelected.code >= 0) {
-        filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&OrderIdSerchParameter=${this.orderRequestParam.OrderIdSerchParameter || 0}&SerchParameter=${searchValue}`;
+        filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&OrderIdSerchParameter=${newOrderIdSearchParam}&SerchParameter=${searchValue}`;
       } else {
-        filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&OrderIdSerchParameter=${this.orderRequestParam.OrderIdSerchParameter || 0}&SerchParameter=${searchValue}`;
+        filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&OrderIdSerchParameter=${newOrderIdSearchParam}&SerchParameter=${searchValue}`;
       }
     } else {
-      filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&OrderIdSerchParameter=${this.orderRequestParam.OrderIdSerchParameter || 0}&SerchParameter=${searchValue}`;
+      filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&OrderIdSerchParameter=${newOrderIdSearchParam}&SerchParameter=${searchValue}`;
     }
     // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
     const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetails?${filterQuery}&sortField=${this.orderRequestParam.sortField || ''}&sortOrder=${this.orderRequestParam.sortOrder || ''}`;
