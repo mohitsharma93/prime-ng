@@ -62,6 +62,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
   public notCallApiAfterQuantityUpdate: boolean = true;
   public showHideCheckbox: boolean = true;
   public subscription: Subscription;
+  public selectedSingleDeliveredOrderId: any = null;
   
   constructor(
     private router: Router,
@@ -92,6 +93,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
         }
         if (response.action === 'addToShipment_order') {
           this.addToShipment();
+        }
+        if (response.action === 'delivered_order_single' && (this.selectedSingleDeliveredOrderId || this.selectedSingleDeliveredOrderId === 0)) {
+          this.deliverOrder(this.selectedSingleDeliveredOrderId)
         }
       }
     });
@@ -585,6 +589,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
       console.log(res)
       if (res && res?.Status == 'OK') {
+        this.selectedSingleDeliveredOrderId = null
         // this.backClicked();
         // const order = this.getCurrentOrder()
         // const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
@@ -616,7 +621,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       {
         label: 'Delivered',
         command: () => {
-            this.deliverOrder(orderId);
+          this.deliverOrder(orderId);
+          this.selectedSingleDeliveredOrderId = orderId;
+          this.confirmDeliveredSingleOrder();
         }
       },
       {
@@ -662,7 +669,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
         action: 'addToShipment_order',
         message: 'Are you sure? you want to add to shipment selected order.',
       },
-      height: '30%',
+      height: '34%',
       width: '30%'
     });
     
@@ -684,6 +691,16 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       data: {
         action: 'delivered_order',
         message: 'Are you sure? you want to deliver selected order.',
+      },
+      height: '30%',
+      width: '30%'
+    });
+  }
+  public confirmDeliveredSingleOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'delivered_order_singleOrder',
+        message: 'Are you sure? you want to deliver order.',
       },
       height: '30%',
       width: '30%'

@@ -56,17 +56,18 @@
                               <div class="box-catskill-white mr-1">
                                 {{orderQuantity.Quantity}}
                               </div>
-                              <div class="outlined-button" *ngIf="rowData?.showView === true && i === 2">
-                                <button
-                                  pButton
-                                  pRipple
-                                  type="button"
-                                  label="View"
-                                  class="p-button-outlined order-detail-action"
-                                  (click)="rowData.showView = false; refreshData(rowData)"
-                                  style="width: 38px; padding: 7px 1px; font-size: 13px; margin-left: 18px;"
-                                ></button>
-                              </div>
+                            
+                            </div>
+                            <div class="outlined-button" *ngIf="rowData?.showView === true && i === 2">
+                              <button
+                                pButton
+                                pRipple
+                                type="button"
+                                label="View"
+                                class="p-button-outlined order-detail-action"
+                                (click)="rowData.showView = false; refreshData(rowData)"
+                                style="width: 38px; padding: 7px 1px; font-size: 13px; margin-left: 18px;"
+                              ></button>
                             </div>
                           </ng-container>
                         </div>

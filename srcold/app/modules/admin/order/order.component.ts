@@ -117,17 +117,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
       });
 
     this.searchControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe( debounceTime(500), takeUntil(this.destroy$))
       .subscribe((res) => {
         if (res || res?.length === 0) {
-          this.orders$
-            .pipe(take(1))
-            .subscribe((orders) => {
-              // if (res.length === 0) {
-              //   this.products = orders;
-              // }
-              this.searchOperation(res, orders)
-            });
+          // this.orders$
+          //   .pipe(take(1))
+          //   .subscribe((orders) => {
+          //     // if (res.length === 0) {
+          //     //   this.products = orders;
+          //     // }
+          //   });
+          this.searchOperation(res)
         }
       });
 
@@ -138,6 +138,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
           console.log('search', res)
           this.holdFullFilter = res;
           this.orderRequestParam = res.topFilter;
+          if (this.orderRequestParam?.SerchParameter) {
+            this.searchControl.setValue(this.orderRequestParam?.SerchParameter);
+          }
           this.setColumById(this.orderRequestParam.Status);
           if (res.hasOwnProperty('allStatus')) {
             this.getOrders({
@@ -173,22 +176,33 @@ export class OrderComponent extends BaseComponent implements OnInit {
     super.ngOnDestroy();
   }
 
-  public searchOperation(res: any, orders: any) {
+  public searchOperation(res: any) {
     if (+res) {
-      this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
-        return (
-          f?.OrderID?.toString()?.includes(res) ||
-          f?.Mobile?.toString()?.includes(res) ||
-          f?.ShipmentId?.toString()?.includes(res)
-        );
-      });
+      // this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
+      //   return (
+      //     f?.OrderID?.toString()?.includes(res) ||
+      //     f?.Mobile?.toString()?.includes(res) ||
+      //     f?.ShipmentId?.toString()?.includes(res)
+      //   );
+      // });
+      this.orderRequestParam = {
+        ...this.orderRequestParam,
+        OrderIdSerchParameter: +res,
+        SerchParameter: +res
+      }
     } else {
-      this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
-        return f?.ShopName?.toLowerCase()?.includes(
-          res.toLowerCase()
-        );
-      });
+      // this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
+      //   return f?.ShopName?.toLowerCase()?.includes(
+      //     res.toLowerCase()
+      //   );
+      // });
+      this.orderRequestParam = {
+        ...this.orderRequestParam,
+        OrderIdSerchParameter: 0,
+        SerchParameter:  res
+      }
     }
+    this.getOrders(this.orderRequestParam);
   }
 
   public setProduct(res: any): void {
@@ -227,12 +241,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
           this.subjectService.setHoldAcceptedOrderIdsForSelcted(null);
         })
     }
-    if (this.searchControl.value.length) {
-      this.searchOperation(this.searchControl.value, res)
-    }
-    if (this.holdFullFilter && this.holdFullFilter.hasOwnProperty('searchString')) {
-      this.searchControl.setValue(this.holdFullFilter.searchString)
-    }
+    // if (this.searchControl.value.length) {
+    //   this.searchOperation(this.searchControl.value, res)
+    // }
+    // if (this.holdFullFilter && this.holdFullFilter.hasOwnProperty('searchString')) {
+    //   this.searchControl.setValue(this.holdFullFilter.searchString)
+    // }
     
   }
 
@@ -273,6 +287,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageSize: 10,
       sortField: 'OrderID',
       sortOrder: 1,
+      OrderIdSerchParameter: 0,
+      SerchParameter: ''
     }
   }
 
@@ -335,14 +351,18 @@ export class OrderComponent extends BaseComponent implements OnInit {
     // }
     this.orderRequestParam.PageNo = pageNo;
     this.orderRequestParam = {
-        Status: this.orderRequestParam.Status,
+        ...this.orderRequestParam,
         searchTimeRange: this.orderRequestParam.searchTimeRange,
         PageNo: pageNo,
         PageSize: event.rows,
-        sortField: event.sortField,
+        sortField: event.sortField || 'OrderID',
         sortOrder: event.sortOrder,
       };
-      this.getOrders(this.orderRequestParam);
+      const newParam = {
+        ...this.orderRequestParam,
+        Status: (this.orderRequestParam.Status === 0 && this.allStatusSelected?.code) ? this.allStatusSelected?.code : this.orderRequestParam.Status ,
+      }
+      this.getOrders(newParam);
   }
 
   public customSort(field: string, order: boolean) {
@@ -381,7 +401,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageNo: 1,
       PageSize: 10,
       sortField: this.orderRequestParam.sortField || '',
-      sortOrder: this.orderRequestParam.sortOrder || ''
+      sortOrder: this.orderRequestParam.sortOrder || '',
+      OrderIdSerchParameter:  this.orderRequestParam.OrderIdSerchParameter || 0,
+      SerchParameter: this.orderRequestParam.SerchParameter || ''
     };
     this.holdAllStatusFilter = pick(forAll, ['Status', 'searchTimeRange'])
     this.allStatusSelected = this.status.filter(f => f.code === statusId)[0];
@@ -407,7 +429,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   //   // }
   // }
 
-  public export(orderStatus: number): void {
+    public export(status: number): void {
     let filterQuery = '';
     let searchValue = 0;
     let dates: any = 'OverAll';
@@ -417,12 +439,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
     if (this.searchControl.value) {
       searchValue = this.searchControl.value;
     }
-
-    
-    if (orderStatus === 0 && this.allStatusSelected && this.allStatusSelected.code >= 0) {
-      filterQuery = `Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=${this.allStatusSelected.code}&searchTimeRange=${dates}&Name=${searchValue}`;
+    if (status === 0) {
+      if (this.allStatusSelected && this.allStatusSelected.code >= 0) {
+        filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+      } else {
+        filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+      }
     } else {
-      filterQuery = `Status=${orderStatus}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
+      filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
     }
     // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
     const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}`;
@@ -493,14 +517,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageNo: 1,
       PageSize: 10,
       sortField:'OrderID',
-      sortOrder:1
+      sortOrder:1,
+      OrderIdSerchParameter:  0,
+      SerchParameter: ''
     };
     this.selectedData = [];
     this.subjectService.setHoldAcceptedOrderForSelected(null);
     this.dt.first = 0;
     this.dt.rows = 10;
     this.dt.sortOrder = 1;
-    this.dt.sortField = undefined;
+    this.dt.sortField = 'OrderID';
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {
@@ -511,8 +537,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.orderRequestParam.PageNo = 1;
       this.orderRequestParam.PageSize = 1000;
     }
-    delete this.holdFullFilter.searchString;
-    delete this.holdFullFilter.allStatus;
+    // delete this.holdFullFilter.searchString;
+    // delete this.holdFullFilter.allStatus;
     this.searchControl.setValue('');
     this.allStatusSelected = {};
     this.getOrders(this.orderRequestParam);
@@ -600,9 +626,6 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public saveCurrentFilter() {
     this.subjectService.setSaveFilterOnRedirection({
       topFilter: this.orderRequestParam,
-      ...(this.searchControl.value && {
-        searchString: this.searchControl.value,
-      }),
       ...(this.holdAllStatusFilter && Object.keys(this.holdAllStatusFilter)?.length && {
         allStatus: this.holdAllStatusFilter
       })

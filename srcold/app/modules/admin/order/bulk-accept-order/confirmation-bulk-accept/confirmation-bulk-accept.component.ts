@@ -118,12 +118,17 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
   }
 
   public redirectToOrder() {
+    const filter = this.subjectService.saveFilterOnRedirection.value;
     const obj = {
       topFilter: {
         Status: 2,
-        searchTimeRange: 'OverAll',
+        searchTimeRange: filter?.searchTimeRange || 'OverAll',
         PageNo: 1,
-        PageSize: 25
+        PageSize: 10,
+        sortField: filter?.sortField || 'OverAll',
+        sortOrder: filter?.sortOrder || 1,
+        SerchParameter: filter?.SerchParameter || '',
+        OrderIdSerchParameter: filter?.OrderIdSerchParameter || 0,
       }
     }
     this.subjectService.setSaveFilterOnRedirection(obj);
