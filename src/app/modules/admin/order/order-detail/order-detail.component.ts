@@ -438,7 +438,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
             this.showHideCheckbox = false;
           }
           let getOrderDetailUpSide = this.getOrderDetailUpSide();
-          if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && res?.Data?.Item2) {
+          if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && (res?.Data?.Item2 && res?.Data?.Item2 !== '1900-01-01T00:00:00')) {
             getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
             getOrderDetailUpSide['Status'] = 'Delivered'
             console.log("getorderdetail",getOrderDetailUpSide)
@@ -711,7 +711,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
   public confirmDeliveredSingleOrder() {
     const ref = this.dialogService.open(ConfirmationModelComponent, {
       data: {
-        action: 'delivered_order_singleOrder',
+        action: 'delivered_order_single',
         message: 'Are you sure? you want to deliver order.',
       },
       height: '30%',

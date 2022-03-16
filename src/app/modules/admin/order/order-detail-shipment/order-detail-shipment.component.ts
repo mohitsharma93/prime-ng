@@ -11,6 +11,8 @@ import { IOrderCancelModel, IOrderQuantityUpdateModel } from 'src/app/models/adm
 import { DialogService } from 'primeng/dynamicdialog';
 import { DataService } from 'src/app/shared/services/data.service';
 import { PrintInvoiceModelComponent } from 'src/app/modules/print-invoice-model/print-invoice-model.component';
+import { ConfirmationModelComponent } from 'src/app/modules/confirmation-model/confirmation-model.component';
+import { ConfirmationService } from 'src/app/shared/services/confirmation.service';
 
 interface Product {
   id?: string;
@@ -55,7 +57,8 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
     private toasterService: ToasterService,
     private subjectService: SubjectService,
     private ds: DataService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private confirmationService: ConfirmationService,
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -66,6 +69,13 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       }
     })
     // this.setMenuItem();
+    this.confirmationService.getConfirmation().pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
+      if (response.status) {
+        if (response.action === 'delivered_order_single_order_detail') {
+          this.deliveredOrder();
+        }
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -169,6 +179,17 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
           height: '70%'
         });
       }
+    });
+  }
+
+  public confirmDeliveredSingleOrder() {
+    const ref = this.dialogService.open(ConfirmationModelComponent, {
+      data: {
+        action: 'delivered_order_single_order_detail',
+        message: 'Are you sure? you want to deliver order.',
+      },
+      height: '30%',
+      width: '30%'
     });
   }
 }

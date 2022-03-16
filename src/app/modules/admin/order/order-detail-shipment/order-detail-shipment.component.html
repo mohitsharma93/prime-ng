@@ -119,7 +119,7 @@
             </div>
             <div class="d-flex justify-content-center mt-3">
               <button *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" pButton pRipple type="button"
-                label="Delivered" class="p-button-raised p-button-success" (click)="deliveredOrder()"></button>
+                label="Delivered" class="p-button-raised p-button-success" (click)="confirmDeliveredSingleOrder()"></button>
               <button *ngIf="(selectedOrderDetail | async)?.Status === 'Shipped'" pButton type="button"
                 label="Cancel Order" class="p-button-raised p-button-danger ml-2" (click)="cancelOrder(true)"></button>
             </div>
