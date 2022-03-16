@@ -544,7 +544,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.dt.first = 0;
     this.dt.rows = 10;
     this.dt.sortOrder = 1;
-    this.dt.sortField = 'OrderID';
+    this.dt.sortField = undefined;
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {

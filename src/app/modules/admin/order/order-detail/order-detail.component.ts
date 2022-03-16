@@ -17,6 +17,7 @@ import { PrimeNGConfig } from 'primeng/api';
 import { cloneDeep } from 'lodash-es';
 import { ConfirmationService } from 'src/app/shared/services/confirmation.service';
 import { ConfirmationModelComponent } from 'src/app/modules/confirmation-model/confirmation-model.component';
+import { LocalStorageService } from 'src/app/shared/admin-service/localstorage.service';
 
 interface Products {
   id?: string;
@@ -74,7 +75,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     private ds: DataService,
     public dialogService: DialogService,
     private primengConfig: PrimeNGConfig,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private localStorageService: LocalStorageService
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -121,7 +123,13 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
           this.showAction = false;
         }
       }
-    })
+    });
+    const selected = this.localStorageService.get('shipmentSelected');
+    console.log('selected', selected);
+    if (selected && selected.length) {
+      this.selectedData = selected;
+      this.localStorageService.remove('shipmentSelected');
+    }
   }
 
   // ngOnDestroy() {
@@ -146,8 +154,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
 
   public redirectToDetail(order: any): void {
     if (order) {
+      const upSideOrderDetail  = this.getCurrentOrder()?.Status;
+      if (upSideOrderDetail === 'Shipped') {
+        this.localStorageService.set('shipmentSelected', this.selectedData)
+      }
       this.subjectService.setOrderDetailShipment(order);
-      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId, 's', order.OrderId]);
     }
   }
 
