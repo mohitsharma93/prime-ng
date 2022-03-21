@@ -559,7 +559,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.loadMorePage = null;
     }
     this.setColumById(orderStatusId);
-    if (orderStatusId === 1 || orderStatusId === 2) {
+    if (orderStatusId === 1 || orderStatusId === 2 || this.allStatusSelected?.code === 1 || this.allStatusSelected?.code === 2) {
+      
       this.orderRequestParam.PageNo = 1;
       this.orderRequestParam.PageSize = 1000;
     }

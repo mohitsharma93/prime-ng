@@ -84,7 +84,9 @@
               [value]="products?.lstorderDetails"
               [scrollable]="false" [paginator]="
                 orderRequestParam?.Status === 1 ||
-                orderRequestParam?.Status === 2
+                orderRequestParam?.Status === 2 ||
+                allStatusSelected?.code === 1 ||
+                allStatusSelected?.code === 2
                   ? false
                   : true
               " [rows]="orderRequestParam.PageSize" [showCurrentPageReport]="true"

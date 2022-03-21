@@ -352,12 +352,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.orderRequestParam.PageNo = pageNo;
     this.orderRequestParam = {
         ...this.orderRequestParam,
+        Status: this.orderRequestParam.Status,
         searchTimeRange: this.orderRequestParam.searchTimeRange,
         PageNo: pageNo,
         PageSize: event.rows,
         sortField: event.sortField || 'OrderID',
         sortOrder: event.sortOrder,
       };
+
       const newParam = {
         ...this.orderRequestParam,
         Status: (this.orderRequestParam.Status === 0 && this.allStatusSelected?.code) ? this.allStatusSelected?.code : this.orderRequestParam.Status ,
@@ -439,18 +441,42 @@ export class OrderComponent extends BaseComponent implements OnInit {
     if (this.searchControl.value) {
       searchValue = this.searchControl.value;
     }
+    // if (status === 0) {
+    //   if (this.allStatusSelected && this.allStatusSelected.code >= 0) {
+    //     filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+    //   } else {
+    //     filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+    //   }
+    // } else {
+    //   filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
+    // }
+    // // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
+    // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}`;
+    // const req = { url, params: {} };
+    let newOrderIdSearchParam = this.orderRequestParam.OrderIdSerchParameter || 0;
+    console.log('newOrderIdSearchParam', newOrderIdSearchParam)
+    if (+newOrderIdSearchParam) {
+      // if (newOrderIdSearchParam?.toString().length >= 8 && newOrderIdSearchParam?.toString().length <= 10){
+      if (newOrderIdSearchParam?.toString().length === 10){
+        console.log('newOrderIdSearchParam', newOrderIdSearchParam)
+        newOrderIdSearchParam = +newOrderIdSearchParam.toString().slice(0, newOrderIdSearchParam?.toString().length - 1);
+      }
+    }
     if (status === 0) {
       if (this.allStatusSelected && this.allStatusSelected.code >= 0) {
-        filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+        filterQuery = `Status=${this.allStatusSelected.code}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&OrderIdSerchParameter=${newOrderIdSearchParam}&SerchParameter=${searchValue}`;
       } else {
-        filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&Name=${searchValue}`;
+        filterQuery = `Status=${status}&PageNo=1&PageSize=20000&searchTimeRange=${dates}&OrderIdSerchParameter=${newOrderIdSearchParam}&SerchParameter=${searchValue}`;
       }
     } else {
-      filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&Name=${searchValue}`;
+      filterQuery = `Status=${status}&PageNo=1&PageSize=2000&searchTimeRange=${dates}&OrderIdSerchParameter=${newOrderIdSearchParam}&SerchParameter=${searchValue}`;
     }
     // const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}&sortField=${this.sortField}&sortOrder=${this.sortOrder}`;
-    const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?${filterQuery}`;
+    const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetails?${filterQuery}&sortField=${this.orderRequestParam.sortField || ''}&sortOrder=${this.orderRequestParam.sortOrder || ''}`;
     const req = { url, params: {} };
+
+
+
     this.ds.get(req).subscribe((res: any) => {
       if (res.Status === 'OK') {
         this.exportExcel(res.Data?.lstorderDetails);
@@ -494,12 +520,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
           //   data.lstorderDetails = [...localData.lstorderDetails, ...data.lstorderDetails]
           // }
           this.orders$ = of(data);
-          if (this.dt.sortField && (this.dt.sortOrder === 1 || this.dt.sortOrder === -1)) {
-            const order = (this.dt.sortOrder === 1) ? true : false;
-            this.customSort(this.dt.sortField, order);
-            this.setLoader(false);
-            return;
-          }
+          // if (this.dt.sortField && (this.dt.sortOrder === 1 || this.dt.sortOrder === -1)) {
+          //   const order = (this.dt.sortOrder === 1) ? true : false;
+          //   this.customSort(this.dt.sortField, order);
+          //   this.setLoader(false);
+          //   return;
+          // }
           this.setProduct(data);
           this.setLoader(false);
         } else {
@@ -518,7 +544,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageSize: 10,
       sortField:'OrderID',
       sortOrder:1,
-      OrderIdSerchParameter:  0,
+      OrderIdSerchParameter:0,
       SerchParameter: ''
     };
     this.selectedData = [];
@@ -526,14 +552,14 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.dt.first = 0;
     this.dt.rows = 10;
     this.dt.sortOrder = 1;
-    this.dt.sortField = 'OrderID';
+    this.dt.sortField = undefined;
     if (orderStatusId === 1 || orderStatusId === 2) {
       this.loadMorePage = 1;
     } else {
       this.loadMorePage = null;
     }
     this.setColumById(orderStatusId);
-    if (orderStatusId === 1 || orderStatusId === 2) {
+    if (orderStatusId === 1 || orderStatusId === 2 || this.allStatusSelected?.code === 1 || this.allStatusSelected?.code === 2) {
       this.orderRequestParam.PageNo = 1;
       this.orderRequestParam.PageSize = 1000;
     }

@@ -55,6 +55,33 @@
                       | date: "MMM. d, y | h:mm a"
                       }}</span>
                   </p>
+              
+                </div>
+                <div class="d-flex flex-column">
+                  <p
+                    *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'"
+                  >
+                    Cancelled Date:
+                    <span>{{
+                      (selectedOrderDetail | async)?.CancelationDate
+                        | date: "MMM. d, y : h:mm a"
+                    }}</span>
+                  </p>
+                  <div
+                    class="d-flex flex-column cancel-reason"
+                    *ngIf="(selectedOrderDetail | async)?.Status === 'Cancelled'"
+                  >
+                    <p>
+                      Cancelled by :
+                      <span>{{ (selectedOrderDetail | async)?.CancelBy }}</span>
+                    </p>
+                    <!-- <p>
+                      Reason for cancellation :
+                      <span>{{
+                        (selectedOrderDetail | async)?.CancellationRemark
+                      }}</span>
+                    </p> -->
+                  </div>
                 </div>
               </div>
               <div class="tab_sec_right">
@@ -68,6 +95,7 @@
                     (selectedOrderDetail | async)?.DeliveryCharges
                     }}</span>
                 </p>
+
                 <!-- <h5 class="d-flex justify-content-end">
                   Grant Total:
                   <span

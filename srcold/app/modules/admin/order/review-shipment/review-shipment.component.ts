@@ -128,7 +128,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit, On
         action: 'create_Shipment_order',
         message: 'Are you sure? you want to create Shipment of selected order.',
       },
-      height: '30%',
+      height: '34%',
       width: '30%'
     });
 

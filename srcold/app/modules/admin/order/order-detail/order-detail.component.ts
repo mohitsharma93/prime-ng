@@ -17,6 +17,7 @@ import { PrimeNGConfig } from 'primeng/api';
 import { cloneDeep } from 'lodash-es';
 import { ConfirmationService } from 'src/app/shared/services/confirmation.service';
 import { ConfirmationModelComponent } from 'src/app/modules/confirmation-model/confirmation-model.component';
+import { LocalStorageService } from 'src/app/shared/admin-service/localstorage.service';
 
 interface Products {
   id?: string;
@@ -74,7 +75,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     private ds: DataService,
     public dialogService: DialogService,
     private primengConfig: PrimeNGConfig,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private localStorageService: LocalStorageService
   ) {
     super();
     this.actRoute.params.subscribe(res => {
@@ -121,7 +123,13 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
           this.showAction = false;
         }
       }
-    })
+    });
+    const selected = this.localStorageService.get('shipmentSelected');
+    console.log('selected', selected);
+    if (selected && selected.length) {
+      this.selectedData = selected;
+      this.localStorageService.remove('shipmentSelected');
+    }
   }
 
   // ngOnDestroy() {
@@ -146,8 +154,12 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
 
   public redirectToDetail(order: any): void {
     if (order) {
+      const upSideOrderDetail  = this.getCurrentOrder()?.Status;
+      if (upSideOrderDetail === 'Shipped') {
+        this.localStorageService.set('shipmentSelected', this.selectedData)
+      }
       this.subjectService.setOrderDetailShipment(order);
-      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId | 4, 's', order.OrderId]);
+      this.router.navigate(['/admin', 'order', 'detail', this.getCurrentOrder()?.ShipmentId, 's', order.OrderId]);
     }
   }
 
@@ -426,7 +438,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
             this.showHideCheckbox = false;
           }
           let getOrderDetailUpSide = this.getOrderDetailUpSide();
-          if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && res?.Data?.Item2) {
+          if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && (res?.Data?.Item2 && res?.Data?.Item2 !== '1900-01-01T00:00:00')) {
             getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
             getOrderDetailUpSide['Status'] = 'Delivered'
             console.log("getorderdetail",getOrderDetailUpSide)
@@ -589,7 +601,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
       console.log(res)
       if (res && res?.Status == 'OK') {
-        this.selectedSingleDeliveredOrderId = null;
+        this.selectedSingleDeliveredOrderId = null
         // this.backClicked();
         // const order = this.getCurrentOrder()
         // const apiMiddleStr = this.getApiCallStatusWise(order.orderStatusId);
@@ -598,6 +610,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
         const checkShippedExistInOrder = this.checkShippedExistInOrder();
         if (checkShippedExistInOrder) {
           this.showHideCheckbox = false;
+        }
+        let getOrderDetailUpSide = this.getOrderDetailUpSide();
+        if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && (res?.Data?.Item2 && res?.Data?.Item2 !== '1900-01-01T00:00:00')) {
+          getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
+          getOrderDetailUpSide['Status'] = 'Delivered'
+          console.log("getorderdetail",getOrderDetailUpSide)
+          // this.subjectService.setOrderDetail(getOrderDetailUpSide);
+          this.selectedOrderDetail = of(getOrderDetailUpSide);
         }
       } else {
         this.toasterService.error(res?.ErrorMessage);
@@ -621,9 +641,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       {
         label: 'Delivered',
         command: () => {
-            // this.deliverOrder(orderId);
-            this.selectedSingleDeliveredOrderId = orderId;
-            this.confirmDeliveredSingleOrder();
+          // this.deliverOrder(orderId);
+          this.selectedSingleDeliveredOrderId = orderId;
+          this.confirmDeliveredSingleOrder();
         }
       },
       {
@@ -669,7 +689,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
         action: 'addToShipment_order',
         message: 'Are you sure? you want to add to shipment selected order.',
       },
-      height: '30%',
+      height: '34%',
       width: '30%'
     });
     
@@ -696,7 +716,6 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       width: '30%'
     });
   }
-
   public confirmDeliveredSingleOrder() {
     const ref = this.dialogService.open(ConfirmationModelComponent, {
       data: {

@@ -122,15 +122,16 @@ export class ConfirmationBulkAcceptComponent extends BaseComponent implements On
     const obj = {
       topFilter: {
         Status: 2,
-        searchTimeRange: filter?.searchTimeRange || 'OverAll',
+        searchTimeRange: 'OverAll',
         PageNo: 1,
-        PageSize: 10,
+        PageSize: 25,
         sortField: filter?.sortField || 'OverAll',
         sortOrder: filter?.sortOrder || 1,
         SerchParameter: filter?.SerchParameter || '',
         OrderIdSerchParameter: filter?.OrderIdSerchParameter || 0,
       }
     }
+
     this.subjectService.setSaveFilterOnRedirection(obj);
     this.router.navigate(['/admin', 'order'])
   }

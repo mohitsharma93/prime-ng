@@ -130,12 +130,12 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
 
   public hitCancelOrderApi(hideShowCancelModel: boolean): void {
     if (this.cancelReasonControl.valid) {
-      const obj: IOrderCancelModel = {
-        OrderID: this.getCurrentOrder()?.OrderId,
-        DetailID: null,
-        Remark: this.cancelReasonControl.value
-      }
-      this.adminOrderService.cancelOrderService(obj).subscribe(res => {
+      // const obj: IOrderCancelModel = {
+      //   OrderID: this.getCurrentOrder()?.OrderId,
+      //   DetailID: null,
+      //   Remark: this.cancelReasonControl.value
+      // }
+      this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, [this.getCurrentOrder()?.OrderId]).subscribe(res => {
         if (res && res?.Status == 'OK') {
           const deliveredOrder = this.getCurrentOrder();
           deliveredOrder.Status = 'Cancelled'
@@ -152,7 +152,8 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
   }
   public deliveredOrder() {
     const id = this.getCurrentOrder()?.OrderId;
-    this.adminOrderService.deliveredOrder(id, {}).subscribe(res => {
+    console.log('routeParam', this.routeParam);
+    this.adminOrderService.deliveredSelectedService([id], this.routeParam['orderId']).subscribe(res => {
       console.log(res)
       if (res && res?.Status == 'OK') {
         // this.backClicked();
@@ -188,7 +189,7 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
         action: 'delivered_order_single_order_detail',
         message: 'Are you sure? you want to deliver order.',
       },
-      height: '30%',
+      height: '34%',
       width: '30%'
     });
   }

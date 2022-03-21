@@ -97,7 +97,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
           this.addToShipment();
         }
         if (response.action === 'delivered_order_single' && (this.selectedSingleDeliveredOrderId || this.selectedSingleDeliveredOrderId === 0)) {
-          this.deliverOrder(this.selectedSingleDeliveredOrderId)
+          // this.deliverOrder(this.selectedSingleDeliveredOrderId)
+          this.selectedData = [this.selectedSingleDeliveredOrderId];
+          this.deliveredSelected();
         }
       }
     });
@@ -165,6 +167,9 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
 
   public cancelOrder(showHideModel: boolean): void {
     this.cancelModelShow = showHideModel
+    // if (!showHideModel) {
+    //   this.selectedData = []
+    // }
   }
 
   public setColumById(id: number) {
@@ -446,6 +451,7 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
             this.selectedOrderDetail = of(getOrderDetailUpSide);
           }
           this.selectedData = [];
+          this.selectedSingleDeliveredOrderId = null;
         } else {
           this.toasterService.error(res?.ErrorMessage);
         }
@@ -461,27 +467,33 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
 
   public cancelSelected() {
     if (this.selectedData && this.selectedData.length) {
-      const allOrderId = this.selectedData.map(o => o.OrderId);
-      this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
-        if (res && res?.Status == 'OK') {
-          const localOrder = this.getLocalOrder();
-          if (localOrder && localOrder.length === this.selectedData.length) {
-            // this.redirectToOrder();
+      if (this.cancelReasonControl.value?.length ) {
+        const allOrderId = this.selectedData.map(o => o.OrderId);
+        this.adminOrderService.canceledSelectedService(this.cancelReasonControl.value, allOrderId).subscribe(res => {
+          if (res && res?.Status == 'OK') {
+            const localOrder = this.getLocalOrder();
+            if (localOrder && localOrder.length === this.selectedData.length) {
+              // this.redirectToOrder();
+            }
+            this.cancelOrder(false);
+            // const orderDetail = this.getCurrentOrder();
+            // const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
+            // this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
+            this.changeOrderStatus(allOrderId, 'Cancelled')
+            const checkShippedExistInOrder = this.checkShippedExistInOrder();
+            if (checkShippedExistInOrder) {
+              this.showHideCheckbox = false;
+            }
+            this.selectedData = [];
+            this.singleCancelOrderId = null;
+            this.cancelReasonControl.setValue('');
+          } else {
+            this.toasterService.error(res?.ErrorMessage);
           }
-          this.cancelOrder(false);
-          // const orderDetail = this.getCurrentOrder();
-          // const apiMiddleStr = this.getApiCallStatusWise(orderDetail?.orderStatusId);
-          // this.getOrderDetailRecord(this.routeParam['orderId'], apiMiddleStr)
-          this.changeOrderStatus(allOrderId, 'Cancelled')
-          const checkShippedExistInOrder = this.checkShippedExistInOrder();
-          if (checkShippedExistInOrder) {
-            this.showHideCheckbox = false;
-          }
-          this.selectedData = [];
-        } else {
-          this.toasterService.error(res?.ErrorMessage);
-        }
-      });
+        });
+      } else {
+        this.cancelReasonControl.markAllAsTouched();
+      }
     } else {
       this.toasterService.info('Please select order through checkbox for cancelled')
     }
@@ -611,6 +623,14 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
         if (checkShippedExistInOrder) {
           this.showHideCheckbox = false;
         }
+        let getOrderDetailUpSide = this.getOrderDetailUpSide();
+        if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && (res?.Data?.Item2 && res?.Data?.Item2 !== '1900-01-01T00:00:00')) {
+          getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
+          getOrderDetailUpSide['Status'] = 'Delivered'
+          console.log("getorderdetail",getOrderDetailUpSide)
+          // this.subjectService.setOrderDetail(getOrderDetailUpSide);
+          this.selectedOrderDetail = of(getOrderDetailUpSide);
+        }
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -618,8 +638,8 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     });
   }
 
-  public rowSingleCancel(cancel: boolean, orderId: any) {
-    this.singleCancelOrderId = orderId;
+  public rowSingleCancel(cancel: boolean, order: any) {
+    this.singleCancelOrderId = order;
     this.singleCancelOnStatusShipped = cancel;
     this.cancelOrder(cancel)
   }
@@ -628,20 +648,20 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
     return this.disableAcceptOrder && Object.keys(this.disableAcceptOrder).length
   }
 
-  public returnItemForMenu(orderId: any) {
+  public returnItemForMenu(order: any) {
     return [
       {
         label: 'Delivered',
         command: () => {
-          this.deliverOrder(orderId);
-          this.selectedSingleDeliveredOrderId = orderId;
+          // this.deliverOrder(orderId);
+          this.selectedSingleDeliveredOrderId = order;
           this.confirmDeliveredSingleOrder();
         }
       },
       {
         label: 'Cancel',
         command: () => {
-            this.rowSingleCancel(true, orderId);
+            this.rowSingleCancel(true, order);
         }
       }
     ]
@@ -717,5 +737,10 @@ export class OrderDetailComponent extends BaseComponent implements OnInit, OnDes
       height: '30%',
       width: '30%'
     });
+  }
+
+  public hitSameCancelSelected(hideShowCancelModel: boolean) {
+    this.selectedData = [this.singleCancelOrderId];
+    this.cancelSelected();
   }
 }
