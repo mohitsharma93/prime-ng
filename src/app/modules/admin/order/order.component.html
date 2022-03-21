@@ -11,8 +11,17 @@
         <ng-container>
           <div class="c-search col-md-4">
             <div>
-              <input class="c-search__input u-input" placeholder="Search Name/ Order ID/Mobile" type="text"
-                [formControl]="searchControl" />
+              <input
+                class="c-search__input u-input"
+                [placeholder]="(
+                  orderRequestParam.Status === 3 || orderRequestParam.Status === 4 ? 'Search Shipment Id' : 'Search Name/ Order ID/Mobile'
+                )"
+                type="text"
+                [formControl]="searchControl"
+                (keypress)="(
+                  orderRequestParam.Status === 3 || orderRequestParam.Status === 4 ? onlyDigit($event) : null
+                )"
+              />
               <!-- <i class="pi pi-times" (click)="resetSearch()"></i> -->
             </div>
           </div>

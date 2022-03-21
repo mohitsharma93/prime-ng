@@ -505,7 +505,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: any) {
-    // const newParam = this.removeParam(requestParam);
+    let newParam = cloneDeep(requestParam);
+    console.log('requestParam', requestParam);
+    if (requestParam.Status === 3 || requestParam.Status === 4) {
+      delete requestParam.SerchParameter;
+    }
     // console.log('newParam', newParam)
     this.setLoader(true);
     const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
