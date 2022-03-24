@@ -180,24 +180,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public searchOperation(res: any) {
     if (+res) {
-      // this.products.lstorderDetails = orders?.lstorderDetails?.filter((f: any) => {
-      //   return (
-      //     f?.OrderID?.toString()?.includes(res) ||
-      //     f?.Mobile?.toString()?.includes(res) ||
-      //     f?.ShipmentId?.toString()?.includes(res)
-      //   );
-      // });
       this.orderRequestParam = {
         ...this.orderRequestParam,
         OrderIdSerchParameter: +res,
         SerchParameter: +res
       }
     } else {
-      // this.products.lstorderDetails = orders.lstorderDetails.filter((f: any) => {
-      //   return f?.ShopName?.toLowerCase()?.includes(
-      //     res.toLowerCase()
-      //   );
-      // });
       this.orderRequestParam = {
         ...this.orderRequestParam,
         OrderIdSerchParameter: 0,
@@ -205,7 +193,11 @@ export class OrderComponent extends BaseComponent implements OnInit {
       }
 
     }
-    this.getOrders(this.orderRequestParam);
+    const newParams = cloneDeep(this.orderRequestParam);
+    if (Object.keys(this.allStatusSelected)?.length) {
+      newParams.Status = this.allStatusSelected.code;
+    }
+    this.getOrders(newParams);
   }
 
   public setProduct(res: any): void {
@@ -524,7 +516,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       }
       newParam.OrderIdSerchParameter = newOrderIdSearchParam;
     }
-    // console.log('newParam', newParam)
+    console.log('newParam', newParam)
     this.setLoader(true);
     const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
