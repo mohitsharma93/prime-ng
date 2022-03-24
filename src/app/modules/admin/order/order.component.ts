@@ -513,9 +513,16 @@ export class OrderComponent extends BaseComponent implements OnInit {
     let newParam = cloneDeep(requestParam);
     console.log('requestParam', newParam);
     if (this.orderRequestParam?.Status !== 0 && (newParam.Status === 3 || newParam.Status === 4)) {
-
       newParam.sortField = 'ShipmentId',
-        delete newParam.SerchParameter;
+      delete newParam.SerchParameter;
+    }
+    let newOrderIdSearchParam = newParam.OrderIdSerchParameter || 0;
+    console.log('newOrderIdSearchParam', newOrderIdSearchParam)
+    if (+newOrderIdSearchParam) {
+      if (newOrderIdSearchParam?.toString().length === 10) {
+        newOrderIdSearchParam = +newOrderIdSearchParam.toString().slice(0, newOrderIdSearchParam?.toString().length - 1);
+      }
+      newParam.OrderIdSerchParameter = newOrderIdSearchParam;
     }
     // console.log('newParam', newParam)
     this.setLoader(true);
