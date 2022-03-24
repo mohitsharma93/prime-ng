@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,aAAa,CAAC;EACZ,KAAK,EAAE,IAAI;EACX,KAAK,EAAE,GAAG;CACX;;AACD,AAAA,aAAa,CAAC,CAAC,CAAC;EACd,OAAO,EAAE,YAAY;EACrB,aAAa,EAAE,GAAG;CACnB;;AACD,AAAA,aAAa,CAAC,IAAI,CAAC;EACjB,aAAa,EAAE,IAAI;CACpB;;AACD,AAAA,gBAAgB,AAAA,iBAAiB,CAAC;EAChC,OAAO,EAAE,QAAQ;CAClB;;AAED,AAAA,SAAS,CAAC;EACR,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;EACT,OAAO,EAAE,MAAM;CAChB",
+    "sources": [
+        "order-detail-shipment.component.scss"
+    ],
+    "names": [],
+    "file": "order-detail-shipment.component.css"
+}

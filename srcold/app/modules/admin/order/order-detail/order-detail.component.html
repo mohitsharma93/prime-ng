@@ -406,6 +406,12 @@
           singleCancelOnStatusShipped = false
         "
       ></button>
+      <!-- (click)="
+          getCurrentOrder()?.Status === 'Shipped' &&
+          !singleCancelOnStatusShipped
+            ? cancelSelected()
+            : hitCancelOrderApi(false)
+        " -->
       <button
         pButton
         pRipple
@@ -417,7 +423,7 @@
           getCurrentOrder()?.Status === 'Shipped' &&
           !singleCancelOnStatusShipped
             ? cancelSelected()
-            : hitCancelOrderApi(false)
+            : (getCurrentOrder()?.Status === 'Shipped') ? hitSameCancelSelected(false) : hitCancelOrderApi(false);
         "
       ></button>
     </div>
@@ -481,7 +487,7 @@
     class="shipmentdc"
     #menu
     [popup]="true"
-    [model]="returnItemForMenu(order.OrderId)"
+    [model]="returnItemForMenu(order)"
     appendTo="body"
     styleClass="p-menu-popup"
   ></p-menu>

@@ -28,7 +28,7 @@ import { DataService } from 'src/app/shared/services/data.service';
 export class OrderComponent extends BaseComponent implements OnInit {
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
   @ViewChild('dt') dt: any;
-  public rangeDates: FormControl = new FormControl([]);
+  public rangeDates: Date[];
   public dateFormat: string = 'dd/mm/yy';
   public maxDateValue: Date = new Date();
 
@@ -54,6 +54,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public allStatusSelected: any = {};
   public holdAllStatusFilter: any = {};
   public holdFullFilter: any = {};
+  sortField: string = 'OrderID';
+  sortOrder: number = 1;
 
   constructor(
     private router: Router,
@@ -72,33 +74,33 @@ export class OrderComponent extends BaseComponent implements OnInit {
   public ngOnInit(): void {
     // this.getOrders(this.orderRequestParam);
 
-    this.rangeDates.valueChanges
-      .pipe(
-        debounceTime(500),
-        filter((date) => {
-          return date && date.length === 2 && date[1] !== null;
-        }),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((res) => {
-        if (this.rangeDates.valid) {
+    // this.rangeDates.valueChanges
+    //   .pipe(
+    //     debounceTime(500),
+    //     filter((date) => {
+    //       return date && date.length === 2 && date[1] !== null;
+    //     }),
+    //     distinctUntilChanged(),
+    //     takeUntil(this.destroy$)
+    //   )
+    //   .subscribe((res) => {
+    //     if (this.rangeDates.valid) {
 
-          this.orderRequestParam = cloneDeep({
-            ...this.orderRequestParam,
-            // endPoint: this.dateConvection(res),
-            searchTimeRange: this.dateConvection(res),
-            PageNo: 1,
-            PageSize: 200
-          });
-          if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
-            this.dateChangeByUser = true;
-          } else {
-            this.dateChangeByUser = false;
-          }
-          this.getOrders(this.orderRequestParam);
-        }
-      });
+    //       this.orderRequestParam = cloneDeep({
+    //         ...this.orderRequestParam,
+    //         // endPoint: this.dateConvection(res),
+    //         searchTimeRange: this.dateConvection(res),
+    //         PageNo: 1,
+    //         PageSize: 200
+    //       });
+    //       if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
+    //         this.dateChangeByUser = true;
+    //       } else {
+    //         this.dateChangeByUser = false;
+    //       }
+    //       this.getOrders(this.orderRequestParam);
+    //     }
+    //   });
 
     this.subjectService.apiCallStatusWise$
       .pipe(takeUntil(this.destroy$))
@@ -117,7 +119,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       });
 
     this.searchControl.valueChanges
-      .pipe( debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((res) => {
         if (res || res?.length === 0) {
           // this.orders$
@@ -199,8 +201,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       this.orderRequestParam = {
         ...this.orderRequestParam,
         OrderIdSerchParameter: 0,
-        SerchParameter:  res
+        SerchParameter: res
       }
+
     }
     this.getOrders(this.orderRequestParam);
   }
@@ -247,7 +250,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     // if (this.holdFullFilter && this.holdFullFilter.hasOwnProperty('searchString')) {
     //   this.searchControl.setValue(this.holdFullFilter.searchString)
     // }
-    
+
   }
 
   public setColumById(id: number) {
@@ -293,7 +296,25 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public dateChange(event: any): void {
-    if (this.rangeDates.value[1]) {
+
+    if (this.rangeDates.length) {
+
+      this.orderRequestParam = cloneDeep({
+        ...this.orderRequestParam,
+        // endPoint: this.dateConvection(res),
+        searchTimeRange: this.dateConvection(this.rangeDates),
+        PageNo: 1,
+        PageSize: 200
+      });
+      if (this.orderRequestParam?.Status === 1 || this.orderRequestParam?.Status === 2) {
+        this.dateChangeByUser = true;
+      } else {
+        this.dateChangeByUser = false;
+      }
+      this.getOrders(this.orderRequestParam);
+    }
+
+    if (this.rangeDates[1]) {
       // If second date is selected
       this.dashboardCalendar.overlayVisible = false;
     }
@@ -333,6 +354,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public paginate(event: any): void {
+    this.sortField = event.sortField;
+    this.sortOrder = event.sortOrder;
     const pageNo = (event.first / event.rows) ? (event.first / event.rows) + 1 : 0 + 1;
     // if (this.orderRequestParam.PageNo !== pageNo || this.orderRequestParam.PageSize !== event.rows) {
     //   this.orderRequestParam.PageNo = pageNo;
@@ -351,20 +374,20 @@ export class OrderComponent extends BaseComponent implements OnInit {
     // }
     this.orderRequestParam.PageNo = pageNo;
     this.orderRequestParam = {
-        ...this.orderRequestParam,
-        Status: this.orderRequestParam.Status,
-        searchTimeRange: this.orderRequestParam.searchTimeRange,
-        PageNo: pageNo,
-        PageSize: event.rows,
-        sortField: event.sortField || 'OrderID',
-        sortOrder: event.sortOrder,
-      };
+      ...this.orderRequestParam,
+      Status: this.orderRequestParam.Status,
+      searchTimeRange: this.orderRequestParam.searchTimeRange,
+      PageNo: pageNo,
+      PageSize: event.rows,
+      sortField: event.sortField || 'OrderID',
+      sortOrder: event.sortOrder,
+    };
 
-      const newParam = {
-        ...this.orderRequestParam,
-        Status: (this.orderRequestParam.Status === 0 && this.allStatusSelected?.code) ? this.allStatusSelected?.code : this.orderRequestParam.Status ,
-      }
-      this.getOrders(newParam);
+    const newParam = {
+      ...this.orderRequestParam,
+      Status: (this.orderRequestParam.Status === 0 && this.allStatusSelected?.code) ? this.allStatusSelected?.code : this.orderRequestParam.Status,
+    }
+    this.getOrders(newParam);
   }
 
   public customSort(field: string, order: boolean) {
@@ -404,7 +427,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       PageSize: 10,
       sortField: this.orderRequestParam.sortField || '',
       sortOrder: this.orderRequestParam.sortOrder || '',
-      OrderIdSerchParameter:  this.orderRequestParam.OrderIdSerchParameter || 0,
+      OrderIdSerchParameter: this.orderRequestParam.OrderIdSerchParameter || 0,
       SerchParameter: this.orderRequestParam.SerchParameter || ''
     };
     this.holdAllStatusFilter = pick(forAll, ['Status', 'searchTimeRange'])
@@ -413,30 +436,12 @@ export class OrderComponent extends BaseComponent implements OnInit {
     this.getOrders(forAll);
   }
 
-  // public export(orderStatus: number): void {
-  //   let dates: any = 'OverAll';
-  //   if (this.rangeDates.value && this.rangeDates.value.length > 0) {
-  //     dates = this.dateConvection(this.rangeDates.value);
-  //   }
-  //   const url = `api/sellerDashboard/ShopOverview/GetAllOrderDetailsExport?Status=${orderStatus}&PageNo=1&PageSize=2000&orderStatus=0&Name=0&searchTimeRange=${dates}`;
-  //   const req = { url, params: {} };
-  //   this.ds.get(req).subscribe((res: any) => {
-  //     if (res.Status === 'OK') {
-  //       this.exportExcel(res.Data?.lstorderDetails);
-  //     }
-  //   });
-  //   // const data = this.getOrdersLocal();
-  //   // if (data && data?.lstorderDetails?.length) {
-  //   //   this.exportExcel(data?.lstorderDetails);
-  //   // }
-  // }
-
-    public export(status: number): void {
+  public export(status: number): void {
     let filterQuery = '';
     let searchValue = 0;
     let dates: any = 'OverAll';
-    if (this.rangeDates.value && this.rangeDates.value.length > 0) {
-      dates = this.getDateFilter(this.rangeDates.value);
+    if (this.rangeDates && this.rangeDates.length > 0) {
+      dates = this.getDateFilter(this.rangeDates);
     }
     if (this.searchControl.value) {
       searchValue = this.searchControl.value;
@@ -457,7 +462,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     console.log('newOrderIdSearchParam', newOrderIdSearchParam)
     if (+newOrderIdSearchParam) {
       // if (newOrderIdSearchParam?.toString().length >= 8 && newOrderIdSearchParam?.toString().length <= 10){
-      if (newOrderIdSearchParam?.toString().length === 10){
+      if (newOrderIdSearchParam?.toString().length === 10) {
         console.log('newOrderIdSearchParam', newOrderIdSearchParam)
         newOrderIdSearchParam = +newOrderIdSearchParam.toString().slice(0, newOrderIdSearchParam?.toString().length - 1);
       }
@@ -484,7 +489,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     });
   }
 
-  getDateFilter(dates: Array<any>) {
+  public getDateFilter(dates: Array<any>) {
     if (dates && dates.length > 0) {
       const sDate = dates[0].getDate() + ',' + (dates[0].getMonth() + 1) + ',' + dates[0].getFullYear();
       let eDate: any = '';
@@ -506,15 +511,17 @@ export class OrderComponent extends BaseComponent implements OnInit {
 
   public getOrders(requestParam: any) {
     let newParam = cloneDeep(requestParam);
-    console.log('requestParam', requestParam);
-    if (requestParam.Status === 3 || requestParam.Status === 4) {
-      delete requestParam.SerchParameter;
+    console.log('requestParam', newParam);
+    if (this.orderRequestParam?.Status !== 0 && (newParam.Status === 3 || newParam.Status === 4)) {
+
+      newParam.sortField = 'ShipmentId',
+        delete newParam.SerchParameter;
     }
     // console.log('newParam', newParam)
     this.setLoader(true);
     const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam, endStringPoint)
+      .getOrdersServiceSingle(newParam, endStringPoint)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
@@ -546,9 +553,9 @@ export class OrderComponent extends BaseComponent implements OnInit {
       searchTimeRange: 'OverAll',
       PageNo: 1,
       PageSize: 10,
-      sortField:'OrderID',
-      sortOrder:1,
-      OrderIdSerchParameter:0,
+      sortField: 'OrderID',
+      sortOrder: 1,
+      OrderIdSerchParameter: 0,
       SerchParameter: ''
     };
     this.selectedData = [];
@@ -564,7 +571,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2 || this.allStatusSelected?.code === 1 || this.allStatusSelected?.code === 2) {
-      
+
       this.orderRequestParam.PageNo = 1;
       this.orderRequestParam.PageSize = 1000;
     }
@@ -643,7 +650,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
       params: '',
     };
     this.ds.get(req).subscribe((res: any) => {
-      console.log("ShipmentModal",res);
+      console.log("ShipmentModal", res);
       if (res.Status === 'OK') {
         const ref = this.dialogService.open(PrintShipmentModelComponent, {
           data: res.Data,

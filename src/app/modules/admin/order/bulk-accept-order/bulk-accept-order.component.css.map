@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,eAAe,CAAC;EACd,QAAQ,EAAE,QAAQ;EAClB,GAAG,EAAE,IAAI;EACT,SAAS,EAAE,IAAI;CAChB;;AAED,AAAA,iBAAiB,CAAC;EAChB,aAAa,EAAE,eAAe;CAC/B;;AAED,AAAA,gBAAgB,CAAC;EACf,SAAS,EAAE,GAAG;EAEd,kBAAkB,EAAE,IAAI;EACxB,QAAQ,EAAE,oBAAoB;CAC/B;;AACD,AAAA,gBAAgB,AAAA,mBAAmB,CAAC;EAClC,KAAK,EAAE,YACT;CAAC",
+    "sources": [
+        "bulk-accept-order.component.scss"
+    ],
+    "names": [],
+    "file": "bulk-accept-order.component.css"
+}

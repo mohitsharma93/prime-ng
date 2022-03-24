@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,OAAO,CAAC;EACJ,YAAY,EAAE,cAAc;CAC7B",
+    "sources": [
+        "admin.component.scss"
+    ],
+    "names": [],
+    "file": "admin.component.css"
+}

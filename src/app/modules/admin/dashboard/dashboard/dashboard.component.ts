@@ -18,9 +18,7 @@ import { IDashboardAnalytics } from 'src/app/models/admin/dashboard';
 export class DashboardComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @ViewChild('dashboardCalendar') dashboardCalendar: any;
-  public rangeDates: FormControl = new FormControl(
-    []
-  );
+  public rangeDates: Date[];
   public dateFormat: string = 'dd/mm/yy';
   maxDateRange: Date = new Date();
   public chartData: any;
@@ -45,8 +43,8 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   public dashboardAnalytics$: Observable<any> = of({} as IDashboardAnalytics);
   totalPreviousOrder: number;
   totalPreviousSale: number;
-  PreviousOrder_perce:number;
-  PreviousSale_perce:number;
+  PreviousOrder_perce: number;
+  PreviousSale_perce: number;
 
   constructor(
     private router: Router,
@@ -61,21 +59,21 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.rangeDates.valueChanges.pipe(
-      debounceTime(500),
-      filter(date => {
-        if (date && date.length === 2 && date[1] == null) {
-          this.updateMaxDateRange(this.rangeDates.value[0]);
-        }
-        return date && date.length === 2 && date[1] !== null
-      }),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(res => {
-      if (this.rangeDates.valid) {
-        this.getDashboardAnalytics(this.dateConvection(res))
-      }
-    })
+    // this.rangeDates.valueChanges.pipe(
+    //   debounceTime(500),
+    //   filter(date => {
+    //     if (date && date.length === 2 && date[1] == null) {
+    //       this.updateMaxDateRange(this.rangeDates.value[0]);
+    //     }
+    //     return date && date.length === 2 && date[1] !== null
+    //   }),
+    //   distinctUntilChanged(),
+    //   takeUntil(this.destroy$)
+    // ).subscribe(res => {
+    //   if (this.rangeDates.valid) {
+    //     this.getDashboardAnalytics(this.dateConvection(res))
+    //   }
+    // })
   }
 
   ngOnDestroy(): void {
@@ -84,8 +82,8 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
   public getDashboardAnalytics(filter: string): void {
     this.selectedFilter = filter;
-    this.adminDashboardService.getDashboardAnalyticsService(filter).subscribe(res => {
-      console.log("dashboard" ,res)
+    this.adminDashboardService.getDashboardAnalyticsService(filter).subscribe((res: any) => {
+      console.log("dashboard", res)
       if (res && res.Status == 'OK') {
         // this.setGraphLabelDetail(res?.Data);
         this.dashboardAnalytics$ = of(res?.Data)
@@ -110,10 +108,16 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   public dateChange(event: any): void {
-    if (this.rangeDates.value[1]) {
-      this.dashboardCalendar.overlayVisible = false;
+    console.log(this.rangeDates.length);
+    if (this.rangeDates && this.rangeDates.length) {
+      if (this.rangeDates[1] == null) {
+        this.updateMaxDateRange(this.rangeDates[0]);
+      }
+      if (this.rangeDates[1] !== null) {
+        this.getDashboardAnalytics(this.dateConvection(this.rangeDates));
+        this.dashboardCalendar.overlayVisible = false;
+      }
     }
-
   }
 
   public setChartData(data: any) {

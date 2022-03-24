@@ -2,6 +2,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { FormArray, FormGroup } from '@angular/forms';
 import * as FileSaver from 'file-saver';
+import { ONLY_DIGIT } from 'src/app/shared/validators/Regex-validators';
+
 @Component({
     template: '',
 })
@@ -44,8 +46,15 @@ export abstract class BaseComponent implements OnDestroy {
         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
     }
 
-public setLoader(showHideLoader: boolean): void {
-        this.showLoader = of(showHideLoader)
-}
+    public setLoader(showHideLoader: boolean): void {
+            this.showLoader = of(showHideLoader)
+    }
+
+    public onlyDigit(e: KeyboardEvent): void {
+        const inputChar = String.fromCharCode(e.charCode);
+        if (e.keyCode !== 8 && !ONLY_DIGIT.test(inputChar)) {
+          e.preventDefault();
+        }
+      }
 }
 

@@ -159,6 +159,12 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
         // this.backClicked();
         const deliveredOrder = this.getCurrentOrder();
         deliveredOrder.Status = 'Delivered'
+        let getOrderDetailUpSide = this.getOrderDetailUpSide();
+        if ((getOrderDetailUpSide && getOrderDetailUpSide?.ShipmentId) && (res?.Data?.Item2 && res?.Data?.Item2 !== '1900-01-01T00:00:00')) {
+          getOrderDetailUpSide['CloseDate'] = res?.Data.Item2;
+          getOrderDetailUpSide['Status'] = 'Delivered'
+          this.subjectService.setOrderDetail(getOrderDetailUpSide);
+        }
         this.subjectService.setOrderDetailShipment(deliveredOrder);
       } else {
         this.toasterService.error(res?.ErrorMessage);
@@ -192,5 +198,12 @@ export class OrderDetailShipmentComponent extends BaseComponent implements OnIni
       height: '34%',
       width: '30%'
     });
+  }
+  public getOrderDetailUpSide(): any {
+    let upSideOrderDetail: any;
+    this.subjectService.orderDetail$.pipe(take(1)).subscribe(res => {
+      upSideOrderDetail = res;
+    });
+    return upSideOrderDetail
   }
 }

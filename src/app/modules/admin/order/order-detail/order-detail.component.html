@@ -423,7 +423,7 @@
           getCurrentOrder()?.Status === 'Shipped' &&
           !singleCancelOnStatusShipped
             ? cancelSelected()
-            : hitSameCancelSelected(false);
+            : (getCurrentOrder()?.Status === 'Shipped') ? hitSameCancelSelected(false) : hitCancelOrderApi(false);
         "
       ></button>
     </div>

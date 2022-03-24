@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,eAAe,CAAC;EACd,SAAS,EAAE,KAAK;EAChB,UAAU,EAAE,iBAAiB;EAC7B,kBAAkB,EAAE,IAAI;EACxB,QAAQ,EAAE,oBAAoB;CAC/B;;AACD,AAAA,eAAe,AAAA,mBAAmB,CAAC;EACjC,KAAK,EAAE,YACT;CAAC",
+    "sources": [
+        "review-shipment.component.scss"
+    ],
+    "names": [],
+    "file": "review-shipment.component.css"
+}

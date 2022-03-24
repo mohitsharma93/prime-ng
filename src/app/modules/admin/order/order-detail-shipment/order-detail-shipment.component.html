@@ -126,7 +126,7 @@
             <div>
 
               <!-- scrollHeight="700px" -->
-              <p-table responsiveLayout="scroll" scrollHeight="300px"
+              <p-table responsiveLayout="scroll" scrollHeight="calc(100vh - 437px)"
                 [value]="(orders$ | async)?.getShowOrderDetailList || []" [scrollable]="true" [columns]="columns">
                 <ng-template pTemplate="header" let-columns>
                   <tr>

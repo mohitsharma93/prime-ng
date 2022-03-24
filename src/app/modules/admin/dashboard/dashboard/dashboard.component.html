@@ -13,10 +13,14 @@
         (click)="getDashboardAnalytics('OverAll')" [ngClass]="{'btn-color': selectedFilter === 'OverAll'}"></p-button>
     </div>
     <div class="mx-4">
-      <p-calendar selectionMode="range" [readonlyInput]="true" inputId="range" [showTime]="false" [showIcon]="true"
+      <!-- <p-calendar selectionMode="range" [readonlyInput]="true" inputId="range" [showTime]="false" [showIcon]="true"
         (onSelect)="dateChange($event)" #dashboardCalendar [dateFormat]="dateFormat" [formControl]="rangeDates"
         [maxDate]="maxDateRange" placeholder="Select date range.">
-      </p-calendar>
+      </p-calendar> -->
+      <p-calendar #dashboardCalendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true"
+      inputId="range" [showTime]="false" [showIcon]="true" (onSelect)="dateChange($event)" [dateFormat]="dateFormat"
+      [maxDate]="maxDateRange" placeholder="Select date range.">
+    </p-calendar>
     </div>
   </div>
 

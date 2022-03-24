@@ -133,4 +133,7 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit, On
     });
 
   }
+  // public refreshData(rowData: any) {
+  //   rowData.expandedRow.map((obj : any) => obj.show = true);
+  // }
 }

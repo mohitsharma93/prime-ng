@@ -1,0 +1,20 @@
+.overall-demand {
+  position: relative;
+  top: 20px;
+  font-size: 24px;
+}
+
+.tr-border-bottom {
+  border-bottom: none !important;
+}
+
+.bulk-hor-scroll {
+  max-width: 90%;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+.bulk-hor-scroll::-webkit-scrollbar {
+  width: 0 !important;
+}
+/*# sourceMappingURL=bulk-accept-order.component.css.map */

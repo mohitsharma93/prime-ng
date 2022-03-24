@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,mBAAmB,CAAC;EAChB,KAAK,EAAE,OAAO;EACd,cAAc,EAAE,gBAAgB;EAChC,MAAM,EAAE,OAAO;EACf,eAAe,EAAE,IAAI;CACxB",
+    "sources": [
+        "otp-login.component.scss"
+    ],
+    "names": [],
+    "file": "otp-login.component.css"
+}

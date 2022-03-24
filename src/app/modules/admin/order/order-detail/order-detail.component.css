@@ -1,0 +1,37 @@
+.tab_sec_left {
+  float: left;
+  width: 70%;
+}
+
+.tab_sec_left p {
+  display: inline-block;
+  margin-bottom: 3px;
+}
+
+.tab_sec_left span {
+  padding-right: 80px;
+}
+
+.p-button-raised.p-button-success {
+  padding: 8px 8px;
+  margin-right: 0;
+  color: white !important;
+}
+
+.cancel-reason {
+  background-color: #fff4e4;
+  border-radius: 10px;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.inc-dec-button.ng-star-inserted {
+  text-align: center;
+}
+
+p-inputnumber.p-element.p-inputwrapper.ng-untouched.ng-pristine.ng-valid.p-inputwrapper-filled {
+  width: 80%;
+}
+/*# sourceMappingURL=order-detail.component.css.map */

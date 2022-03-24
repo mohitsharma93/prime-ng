@@ -505,12 +505,18 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   public getOrders(requestParam: any) {
-    // const newParam = this.removeParam(requestParam);
+    let newParam = cloneDeep(requestParam);
+    console.log('requestParam', newParam);
+    (this.orderRequestParam?.Status === 0) ? 'OrderId' : this.orderRequestParam.sortField || ''
+    if (this.orderRequestParam?.Status !== 0 && (newParam.Status === 3 || newParam.Status === 4)) {
+      newParam.sortField = 'ShipmentId',
+      delete newParam.SerchParameter;
+    }
     // console.log('newParam', newParam)
     this.setLoader(true);
     const endStringPoint = (this.orderRequestParam.Status === 0) ? 'GetAllOrderDetails' : this.getApiCallStatusWise(requestParam.Status);
     this.adminOrderService
-      .getOrdersServiceSingle(requestParam, endStringPoint)
+      .getOrdersServiceSingle(newParam, endStringPoint)
       .subscribe((res) => {
         if (res && res.Status == 'OK') {
           console.log('orders', res?.Data)
@@ -560,6 +566,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
     }
     this.setColumById(orderStatusId);
     if (orderStatusId === 1 || orderStatusId === 2 || this.allStatusSelected?.code === 1 || this.allStatusSelected?.code === 2) {
+      
       this.orderRequestParam.PageNo = 1;
       this.orderRequestParam.PageSize = 1000;
     }

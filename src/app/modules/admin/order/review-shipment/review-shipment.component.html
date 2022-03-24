@@ -50,11 +50,22 @@
                       <ng-template #showThroughArray>
                        <div class="bulk-tbl">
                         <div class="d-flex " *ngFor="let orderQuantity of rowData?.OrderQuantityList">
-                          <div style="margin-top: 7px" class="mr-1">{{orderQuantity.OrderId}}</div>
+                          <div style="margin-top: 7px; width: 31px;" class="mr-1">{{orderQuantity.OrderId}}</div>
                           <div class="box-catskill-white mr-1">
                             {{orderQuantity.Quantity}}
                           </div>
                         </div>
+                      <!-- <div class="outlined-button" >
+                          <button
+                            pButton
+                            pRipple
+                            type="button"
+                            label="View"
+                            class="p-button-outlined order-detail-action"
+                            (click)="rowData.showView = false; refreshData(rowData)"
+                            style="width: 38px; padding: 7px 1px; font-size: 13px; margin-left: 18px;"
+                          ></button>
+                        </div>  -->
                        </div>
                       </ng-template>
                     </td>
