@@ -77,7 +77,23 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit, On
     this.adminOrderService.getReviewShipmentService(allIds).subscribe(res => {
       console.log('getReviewShipmentData', res);
       if (res && res.Status == 'OK') {
-        this.orders$ = of(res.Data);
+        const newRes = res.Data.Item1.reduce((acc: any[], value: any) => {
+          if (value?.OrderQuantityList?.length > 3) {
+            value.showView = true;
+          } else {
+            value.showView = false;
+          }
+          value.OrderQuantityList.forEach((obj: any, index: number) => {
+            if (index < 3) {
+              obj.show = true;
+            } else {
+              obj.show = false;
+            }
+          })
+          acc.push(value);
+          return acc;
+        }, []);
+        this.orders$ = of({Item1: newRes, Item2: res.Data.Item2});
       } else {
         this.toasterService.error(res?.ErrorMessage);
       }
@@ -133,7 +149,8 @@ export class ReviewShipmentComponent extends BaseComponent implements OnInit, On
     });
 
   }
-  // public refreshData(rowData: any) {
-  //   rowData.expandedRow.map((obj : any) => obj.show = true);
-  // }
+
+  public refreshData(rowData: any) {
+    rowData.OrderQuantityList.map((obj : any) => obj.show = true);
+  }
 }
